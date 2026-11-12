@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "components/favicon.html" %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in | PESO Pio Duran Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/admin-login.css' %}">
+</head>
+
+<body class="al">
+    <main class="al-layout">
+
+        <!-- Brand panel (navy, same as the admin sidebar) -->
+        <section class="al-brand" aria-label="PESO Pio Duran">
+            <div class="al-brand-inner">
+                <div class="al-logos">
+                    <span class="al-logo"><img src="{% static 'images/PESO.png' %}" alt="PESO logo" width="52" height="52"></span>
+                    <span class="al-logo"><img src="{% static 'images/PIODURAN.png' %}" alt="Municipality of Pio Duran seal" width="52" height="52"></span>
+                </div>
+
+                <div class="al-brand-copy">
+                    <p class="al-eyebrow">Public Employment Service Office</p>
+                    <h1>PESO Pio Duran<br>Administrative Portal</h1>
+                    <p class="al-lead">Manage employer accounts, review job posts, and monitor hiring across the municipality.</p>
+                </div>
+
+                <ul class="al-points">
+                    <li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4 10-10"/></svg></span>Approve employers and job posts</li>
+                    <li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Track applications, hires, and job demand</li>
+                    <li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span>Generate official PDF reports</li>
+                </ul>
+
+                <p class="al-brand-foot">Municipality of Pio Duran, Albay</p>
+            </div>
+        </section>
+
+        <!-- Sign-in panel -->
+        <section class="al-panel" aria-labelledby="al-title">
+            <div class="al-card">
+                <p class="al-kicker">Administrative access</p>
+                <h2 id="al-title">Sign in to your account</h2>
+                <p class="al-sub">Use the PESO administrator account issued to you.</p>
+
+                <form method="POST" id="adminLoginForm" class="al-form" novalidate>
+                    {% csrf_token %}
+
+                    <div class="al-field">
+                        <label for="admin-username">Username</label>
+                        <input type="text" id="admin-username" name="username" aria-describedby="username-error"
+                               placeholder="Enter your username" required autocomplete="username" autocapitalize="none" spellcheck="false"
+                               {% if login_error_field == 'username' %}aria-invalid="true"{% endif %}>
+                        <div class="login-field-error" id="username-error" aria-live="polite">{% if login_error_field == 'username' %}{{ login_error }}{% endif %}</div>
+                    </div>
+
+                    <div class="al-field">
+                        <label for="admin-password">Password</label>
+                        <div class="al-password">
+                            <input type="password" id="admin-password" name="password" aria-describedby="password-error"
+                                   placeholder="Enter your password" required autocomplete="current-password"
+                                   {% if login_error_field == 'password' %}aria-invalid="true"{% endif %}>
+                            <button type="button" class="al-reveal" id="togglePassword" aria-label="Show password" aria-pressed="false" title="Show password">
+                                <svg id="adminEyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="login-field-error" id="password-error" aria-live="polite">{% if login_error_field == 'password' %}{{ login_error }}{% endif %}</div>
+                    </div>
+
+                    <div id="login-status" class="al-status" role="status">{{ login_notice }}</div>
+
+                    <button type="submit" class="al-submit" id="loginButton">Sign In</button>
+                </form>
+
+                <p class="al-secure">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                    For authorized PESO personnel only. Repeated failed attempts trigger a 5-minute cooldown.
+                </p>
+            </div>
+            <p class="al-copy">&copy; {% now "Y" %} PESO Pio Duran</p>
+        </section>
+    </main>
+
+    <script>
+    (function () {
+        const button = document.getElementById('togglePassword');
+        const input = document.getElementById('admin-password');
+        const icon = document.getElementById('adminEyeIcon');
+        const eye = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+        const eyeOff = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+        button.addEventListener('click', function () {
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            icon.innerHTML = show ? eyeOff : eye;
+            const label = show ? 'Hide password' : 'Show password';
+            button.setAttribute('aria-label', label);
+            button.setAttribute('title', label);
+            button.setAttribute('aria-pressed', String(show));
+        });
+    })();
+    </script>
+    <script src="{% static 'js/login-submit.js' %}"></script>
+</body>
+</html>

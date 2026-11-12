@@ -1,0 +1,146 @@
+{% extends "employer_base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/company-profile-v2.css' %}">
+<link rel="stylesheet" href="{% static 'css/employer-dashboard-v2.css' %}">
+<div class="cp ed">
+
+    <!-- Heading -->
+    <header class="ed-head">
+        <div>
+            <p class="cp-eyebrow">Employer overview</p>
+            <h1>{{ employer.company_name }}</h1>
+            <p class="ed-sub">Here is how your hiring is going today, {% now "F j, Y" %}.</p>
+        </div>
+        <div class="cp-actions">
+            <a class="cp-btn cp-btn-ghost" href="{% url 'applicants' %}">View applicants</a>
+            <a class="cp-btn cp-btn-primary" href="{% url 'job-post' %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                Post a job
+            </a>
+        </div>
+    </header>
+
+    {% if awaiting %}
+    <div class="ed-alert" role="status">
+        <span class="ed-alert-dot" aria-hidden="true"></span>
+        <p><strong>{{ awaiting }} application{{ awaiting|pluralize }}</strong> waiting for your review.</p>
+        <a class="cp-link" href="{% url 'applicants' %}?status=pending">Review now &rarr;</a>
+    </div>
+    {% endif %}
+
+    <!-- Stats -->
+    <section class="cp-stats" aria-label="Recruitment summary">
+        <a class="cp-stat" href="{% url 'job-list' %}"><span>Published job posts</span><strong>{{ published_jobs|default:0 }}</strong><small>{% if pending_jobs %}{{ pending_jobs }} waiting for PESO approval{% else %}approved by PESO{% endif %}</small></a>
+        <a class="cp-stat" href="{% url 'applicants' %}"><span>Applications</span><strong>{{ total_applications|default:0 }}</strong><small>{{ this_week }} this week &middot; {{ last_week }} last week</small></a>
+        <a class="cp-stat" href="{% url 'applicants' %}?status=shortlisted"><span>Shortlisted</span><strong>{{ shortlisted|default:0 }}</strong><small>candidates in your shortlist</small></a>
+        <a class="cp-stat" href="{% url 'applicants' %}?status=hired"><span>Hired</span><strong>{{ hired|default:0 }}</strong><small>accepted job offers</small></a>
+    </section>
+
+    <div class="cp-grid">
+        <div class="cp-main">
+            <!-- Applications per month -->
+            <section class="cp-card" aria-labelledby="ed-trend-title">
+                <header class="cp-head">
+                    <h2 id="ed-trend-title">Applications per month</h2>
+                    <span class="ed-muted">Last 6 months &middot; {{ month_series_total }} total</span>
+                </header>
+                <div class="ed-bars" role="img" aria-label="Applications per month: {% for m in month_series %}{{ m.label }} {{ m.total }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+                    {% for m in month_series %}
+                    <div class="ed-bar{% if forloop.last %} is-current{% endif %}">
+                        <span class="ed-bar-value">{{ m.total }}</span>
+                        <span class="ed-bar-track"><span class="ed-bar-fill" style="height:{{ m.percent }}%"></span></span>
+                        <span class="ed-bar-label">{{ m.label }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Recent applications -->
+            <section class="cp-card" aria-labelledby="ed-recent-title">
+                <header class="cp-head">
+                    <h2 id="ed-recent-title">Recent applications</h2>
+                    <a class="cp-link" href="{% url 'applicants' %}">View all &rarr;</a>
+                </header>
+                {% if recent_applications %}
+                <div class="ed-table-wrap">
+                    <table class="ed-table">
+                        <thead><tr><th scope="col">Applicant</th><th scope="col">Position</th><th scope="col">Applied</th><th scope="col">Status</th></tr></thead>
+                        <tbody>
+                            {% for application in recent_applications %}
+                            <tr>
+                                <td><span class="ed-person"><span class="ed-initials" aria-hidden="true">{{ application.applicant.first_name|first|upper }}{{ application.applicant.last_name|first|upper }}</span>{{ application.applicant.first_name }} {{ application.applicant.last_name }}</span></td>
+                                <td>{{ application.job.title }}</td>
+                                <td class="ed-nowrap">{{ application.applied_at|date:"M j, Y" }}</td>
+                                <td><span class="cp-badge {% if application.status == 'hired' or application.status == 'offered' or application.status == 'accepted' %}is-good{% elif application.status == 'rejected' or application.status == 'declined' or application.status == 'withdrawn' %}is-bad{% elif application.status == 'shortlisted' %}is-info{% else %}is-warn{% endif %}">{{ application.get_status_display }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="cp-empty"><p>No applications yet. Once your job posts are approved, applicants will appear here.</p><a class="cp-btn cp-btn-primary" href="{% url 'job-post' %}">Post a job</a></div>
+                {% endif %}
+            </section>
+
+            <!-- Open jobs -->
+            <section class="cp-card" aria-labelledby="ed-jobs-title">
+                <header class="cp-head">
+                    <h2 id="ed-jobs-title">Open job posts</h2>
+                    <a class="cp-link" href="{% url 'job-list' %}">Manage jobs &rarr;</a>
+                </header>
+                {% if open_jobs %}
+                <ul class="cp-jobs ed-jobs">
+                    {% for job in open_jobs %}
+                    <li>
+                        <div><strong>{{ job.title }}</strong><span>{{ job.vacancies }} opening{{ job.vacancies|pluralize }} &middot; closes {{ job.deadline|date:'M j, Y' }}</span></div>
+                        <span class="cp-count">{{ job.application_count }} applicant{{ job.application_count|pluralize }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="ed-muted">No open job posts right now.</p>
+                {% endif %}
+            </section>
+        </div>
+
+        <aside class="cp-side">
+            <!-- Pipeline -->
+            <section class="cp-card" aria-labelledby="ed-pipe-title">
+                <header class="cp-head"><h2 id="ed-pipe-title">Hiring pipeline</h2></header>
+                <ul class="ed-pipeline">
+                    {% for step in pipeline %}
+                    <li>
+                        <a href="{% url 'applicants' %}?status={{ step.key }}">
+                            <span class="ed-pipe-label">{{ step.label }}</span>
+                            <span class="ed-pipe-track" aria-hidden="true"><span style="width:{{ step.percent }}%"></span></span>
+                            <strong>{{ step.count }}</strong>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <!-- Time to hire -->
+            <section class="cp-card" aria-labelledby="ed-tth-title">
+                <header class="cp-head"><h2 id="ed-tth-title">Time to Hire</h2></header>
+                {% if hiring_stats.average_days != None %}
+                <p class="ed-big">{{ hiring_stats.average_days }} <small>days average</small></p>
+                <p class="ed-muted">From application to accepted offer, based on {{ hiring_stats.measured_count }} hire{{ hiring_stats.measured_count|pluralize }}.</p>
+                {% if hiring_stats.breakdown %}
+                <ul class="ed-tth">
+                    {% for group in hiring_stats.breakdown|slice:":4" %}
+                    <li><span>{{ group.job }}</span><strong>{{ group.average_days }} d</strong></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% else %}
+                <p class="ed-muted">No measured hires yet. This shows how many days it takes from application to an accepted job offer.</p>
+                {% endif %}
+                <a class="cp-link" href="{% url 'employer-reports' %}">Open reports &rarr;</a>
+            </section>
+        </aside>
+    </div>
+</div>
+{% endblock %}

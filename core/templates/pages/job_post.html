@@ -1,0 +1,874 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* =========================================================
+       SCOPED CLEAN LIGHT THEME JOB POSTS MANAGEMENT STYLES
+    ========================================================= */
+
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .page-title h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #15284b;
+        letter-spacing: -0.012em;
+    }
+
+    .admin-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #15284b;
+        font-size: 0.9rem;
+    }
+
+    .admin-profile strong {
+        color: #15284b;
+    }
+
+    .profile-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-badge svg {
+        width: 20px;
+        height: 20px;
+        stroke: #2563eb;
+        fill: none;
+    }
+
+    .dashboard-workspace {
+        padding: 32px;
+        background-color: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-height: calc(100vh - 87px);
+    }
+
+    /* =========================================================
+       CONTROL PANEL & SEARCH
+    ========================================================= */
+
+    .control-panel {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 16px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        color: #15284b;
+        outline: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        box-sizing: border-box;
+    }
+
+    .search-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* =========================================================
+       DATA TABLE CARD
+    ========================================================= */
+
+    .data-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .data-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+    }
+
+    .data-card-header h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #15284b;
+        margin: 0;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    th {
+        background: #f8fafc;
+        color: #15284b;
+        padding: 14px 24px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    td {
+        padding: 16px 24px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #15284b;
+        vertical-align: middle;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    .permit-code {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        font-size: 0.85rem;
+        background: #f1f5f9;
+        color: #15284b;
+        padding: 3px 8px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* =========================================================
+       STATUS BADGES
+    ========================================================= */
+
+    .badge-status {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        background: #f1f5f9;
+        color: #15284b;
+        border: 1px solid #cbd5e1;
+    }
+
+    .badge-status.active {
+        background: #dbeafe;
+        color: #15284b;
+        border: 1px solid #bfdbfe;
+    }
+
+    /* =========================================================
+       ACTION BUTTONS
+    ========================================================= */
+
+    .action-group {
+        display: inline-flex;
+        gap: 8px;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 6px 14px;
+        min-width: 76px;
+        box-sizing: border-box;
+        font-size: 0.825rem;
+        font-weight: 600;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    /* =========================================================
+       VIEW
+    ========================================================= */
+
+    .btn-action-view {
+        color: #2563eb;
+        background-color: #eff6ff;
+        border: 1px solid #bfdbfe;
+    }
+
+    .btn-action-view:hover {
+        background-color: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    /* =========================================================
+       APPROVE
+    ========================================================= */
+
+    .btn-action-approve {
+        color: #15284b;
+        background-color: #eff6ff;
+        border: 1px solid #bfdbfe;
+    }
+
+    .btn-action-approve:hover {
+        background-color: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    /* =========================================================
+       DELETE
+    ========================================================= */
+
+    .btn-action-delete {
+        color: #dc2626;
+        background-color: #fef2f2;
+        border: 1px solid #fecaca;
+    }
+
+    .btn-action-delete:hover {
+        background-color: #fee2e2;
+        color: #b91c1c;
+    }
+
+    /* =========================================================
+       LOADING STATE
+    ========================================================= */
+
+    .btn-action.loading {
+        cursor: not-allowed;
+        opacity: 0.75;
+        pointer-events: none;
+    }
+
+    .btn-action:disabled {
+        cursor: not-allowed;
+        opacity: 0.75;
+    }
+
+    .normal-content {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .loading-content {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+    }
+
+    .btn-action.loading .normal-content {
+        display: none;
+    }
+
+    .btn-action.loading .loading-content {
+        display: inline-flex;
+    }
+
+    /* =========================================================
+       SPINNER
+    ========================================================= */
+
+    .button-spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        animation: buttonSpin 0.7s linear infinite;
+        flex-shrink: 0;
+    }
+
+    @keyframes buttonSpin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* =========================================================
+       SEARCH LOADING EFFECT
+    ========================================================= */
+
+    .search-input.searching {
+        background-image: linear-gradient(
+            90deg,
+            #ffffff 0%,
+            #f8fafc 50%,
+            #ffffff 100%
+        );
+
+        background-size: 200% 100%;
+        animation: searchLoading 1.2s linear infinite;
+    }
+
+    @keyframes searchLoading {
+        from {
+            background-position: 200% 0;
+        }
+
+        to {
+            background-position: -200% 0;
+        }
+    }
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    @media (max-width: 768px) {
+
+        .content-header {
+            padding: 20px;
+        }
+
+        .dashboard-workspace {
+            padding: 20px;
+        }
+
+        .admin-profile {
+            display: none;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+        }
+
+        .action-group {
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            min-width: 75px;
+        }
+    }
+</style>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="content-header">
+
+    <div class="page-title">
+        <h2>List of Job Posts</h2>
+    </div>
+
+    <div class="admin-profile">
+
+        <span>
+            Welcome, <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+        </span>
+
+        <div class="profile-badge">
+
+            <svg
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     WORKSPACE
+========================================================= -->
+
+<div class="dashboard-workspace job-list-workspace">
+
+
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
+
+    <div class="control-panel">
+
+        <div class="search-wrapper">
+
+            <input
+                type="text"
+                id="jobSearch"
+                aria-label="Search job posts"
+                placeholder="Search company, permit number, or job title..."
+                class="search-input"
+                autocomplete="off"
+            >
+
+        </div>
+
+        <select id="jobStatusFilter" class="search-input job-status-filter" aria-label="Filter by job status">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+        </select>
+    </div>
+
+
+    <!-- =====================================================
+         DATA TABLE
+    ====================================================== -->
+
+    <div class="data-card">
+
+        <div class="data-card-header">
+
+            <h3>
+                Job Posts
+            </h3>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table id="jobTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Company Name</th>
+                        <th>Business Permit No.</th>
+                        <th>Contact No.</th>
+                        <th>Job Title</th>
+                        <th>Status</th>
+
+                        <th style="text-align: right;">
+                            System Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for i in jobs %}
+
+                    <tr class="job-row" data-status="{{ i.status|lower }}">
+
+                        <!-- =================================================
+                             COMPANY
+                        ================================================== -->
+
+                        <td>
+
+                            <div
+                                style="
+                                    font-weight: 700;
+                                    color: #15284b;
+                                "
+                            >
+                                {{ i.employer.company_name }}
+                            </div>
+
+                            <div
+                                style="
+                                    font-size: 0.78rem;
+                                    color: #15284b;
+                                    margin-top: 2px;
+                                "
+                            >
+                                Posted: {{ i.created_at|date:"M d, Y" }}
+                            </div>
+
+                        </td>
+
+
+                        <!-- =================================================
+                             BUSINESS PERMIT
+                        ================================================== -->
+
+                        <td>
+
+                            <code class="permit-code">
+                                {{ i.employer.business_permit_no }}
+                            </code>
+
+                        </td>
+
+
+                        <!-- =================================================
+                             CONTACT
+                        ================================================== -->
+
+                        <td style="color: #15284b;">
+
+                            {{ i.employer.contact_no }}
+
+                        </td>
+
+
+                        <!-- =================================================
+                             JOB TITLE
+                        ================================================== -->
+
+                        <td>
+
+                            <div
+                                style="
+                                    font-weight: 600;
+                                    color: #2563eb;
+                                "
+                            >
+                                {{ i.title }}
+                            </div>
+
+                        </td>
+
+
+                        <!-- =================================================
+                             STATUS
+                        ================================================== -->
+
+                        <td>
+
+                            {% if i.status|lower == 'approved' or i.status|lower == 'active' %}
+
+                                <span class="badge-status active">
+                                    {{ i.get_status_display }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge-status {{ i.status|lower }}">
+                                    {{ i.get_status_display }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- =================================================
+                             ACTIONS
+                        ================================================== -->
+
+                        <td style="text-align: right;">
+
+                            <button type="button" class="employer-actions-toggle" aria-label="Actions for {{ i.title }}" aria-expanded="false" aria-controls="job-actions-{{ i.id }}">&#8942;</button>
+                            <div class="action-group employer-actions-menu" id="job-actions-{{ i.id }}">
+
+
+                                <!-- =================================================
+                                     VIEW
+                                ================================================== -->
+
+                                <a
+                                    href="{% url 'view-job' i.id %}"
+                                    title="View Job Post"
+                                    class="btn-action btn-action-view"
+                                    onclick="return handleView(this, event);"
+                                >
+
+                                    <span class="normal-content action-icon-content"><img src="{% static 'images/nav/action-view.png' %}" alt="" width="18" height="18"><span class="action-button-label">View</span></span>
+
+                                    <span class="loading-content">
+
+                                        <span class="button-spinner"></span>
+                                        Loading...
+
+                                    </span>
+
+                                </a>
+
+
+                                <!-- =================================================
+                                     APPROVE
+                                ================================================== -->
+
+                                {% if i.status|lower != 'approved' %}
+
+                                <a
+                                    href="{% url 'approved-job' i.id %}"
+                                    title="Approve Job Post"
+                                    class="btn-action btn-action-approve"
+                                    data-confirm-approve data-job-title="{{ i.title }}"
+                                >
+
+                                    <span class="normal-content action-icon-content"><img src="{% static 'images/nav/action-approve.png' %}" alt="" width="18" height="18"><span class="action-button-label">Approve</span></span>
+
+                                    <span class="loading-content">
+
+                                        <span class="button-spinner"></span>
+                                        Approving...
+
+                                    </span>
+
+                                </a>
+
+                                {% endif %}
+
+
+                                <!-- =================================================
+                                     DELETE
+                                ================================================== -->
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'delete-job' i.id %}"
+                                    class="delete-job-form"
+                                    style="display:inline;"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        title="Delete Permanently"
+                                        class="btn-action btn-action-delete"
+                                    >
+
+                                        <span class="normal-content action-icon-content"><img src="{% static 'images/nav/action-delete.png' %}" alt="" width="18" height="18"><span class="action-button-label">Delete</span></span>
+
+                                        <span class="loading-content">
+
+                                            <span class="button-spinner"></span>
+                                            Deleting...
+
+                                        </span>
+
+                                    </button>
+
+                                </form>
+
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            style="
+                                text-align: center;
+                                padding: 40px 0;
+                                color: #15284b;
+                            "
+                        >
+                            No job posts found in the system database.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    <tr id="jobNoMatches" hidden>
+                        <td colspan="6" style="text-align:center;padding:36px;" role="status">No job posts match your search and status filter.</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<dialog id="deleteJobDialog" class="job-delete-dialog" aria-labelledby="deleteJobTitle" aria-describedby="deleteJobDescription">
+    <div class="job-delete-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg></div>
+    <h2 id="deleteJobTitle">Delete job post?</h2>
+    <p id="deleteJobDescription">You are about to permanently delete <strong id="deleteJobName"></strong>. This action cannot be undone.</p>
+    <div class="job-delete-dialog-actions"><button type="button" id="cancelJobDelete" autofocus>Cancel</button><button type="button" id="confirmJobDelete">Delete Job Post</button></div>
+</dialog>
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    let actionInProgress = false;
+
+
+    /* =========================================================
+       VIEW BUTTON
+    ========================================================= */
+
+    window.handleView = function (button, event) {
+
+        if (actionInProgress) {
+
+            event.preventDefault();
+
+            return false;
+        }
+
+        actionInProgress = true;
+
+        button.classList.add("loading");
+
+        return true;
+    };
+
+
+    /* =========================================================
+       APPROVE BUTTON
+    ========================================================= */
+
+    /* =========================================================
+       DELETE FORMS
+    ========================================================= */
+
+    const deleteDialog = document.getElementById("deleteJobDialog");
+    const confirmDelete = document.getElementById("confirmJobDelete");
+    let pendingDeleteForm = null;
+    document.querySelectorAll(".delete-job-form").forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            if (actionInProgress || deleteDialog.open) return;
+            pendingDeleteForm = form;
+            document.getElementById("deleteJobName").textContent = form.closest("tr").querySelector("td:nth-child(4)").textContent.trim();
+            deleteDialog.showModal();
+        });
+    });
+    document.getElementById("cancelJobDelete").addEventListener("click", () => deleteDialog.close());
+    deleteDialog.addEventListener("click", function (event) {
+        if (event.target === deleteDialog) {
+            const box = deleteDialog.getBoundingClientRect();
+            if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) deleteDialog.close();
+        }
+    });
+    deleteDialog.addEventListener("close", () => { if (!actionInProgress) pendingDeleteForm = null; });
+    confirmDelete.addEventListener("click", function () {
+        if (!pendingDeleteForm || actionInProgress) return;
+        actionInProgress = true;
+        confirmDelete.disabled = true;
+        document.getElementById("cancelJobDelete").disabled = true;
+        confirmDelete.textContent = "Deleting...";
+        deleteDialog.setAttribute("aria-busy", "true");
+        HTMLFormElement.prototype.submit.call(pendingDeleteForm);
+    });
+    deleteDialog.addEventListener("cancel", event => { if (actionInProgress) event.preventDefault(); });
+
+    /* =========================================================
+       SEARCH
+    ========================================================= */
+
+    const searchInput =
+        document.getElementById("jobSearch");
+
+
+    const statusFilter = document.getElementById("jobStatusFilter");
+    const rows = Array.from(document.querySelectorAll(".job-row"));
+    const noMatches = document.getElementById("jobNoMatches");
+
+    function filterJobs() {
+        const query = searchInput.value.toLowerCase().trim();
+        const status = statusFilter.value;
+        let visible = 0;
+        rows.forEach(function (row) {
+            const matches = row.textContent.toLowerCase().includes(query)
+                && (!status || row.dataset.status === status);
+            row.dataset.filterHidden = String(!matches);
+            row.hidden = !matches;
+            if (matches) visible += 1;
+        });
+        noMatches.hidden = rows.length === 0 || visible > 0;
+        document.getElementById("jobTable").dispatchEvent(new Event("table-filter-change"));
+    }
+
+    searchInput.addEventListener("input", filterJobs);
+    statusFilter.addEventListener("change", filterJobs);
+    filterJobs();
+
+
+    /* =========================================================
+       SIDEBAR ACTIVE LINK
+    ========================================================= */
+
+    const links =
+        document.querySelectorAll(
+            ".sidebar-menu-item a"
+        );
+
+
+    links.forEach(function (link) {
+
+        if (
+            link.getAttribute("href") ===
+            window.location.pathname
+
+            ||
+
+            link.href === window.location.href
+        ) {
+
+            link.parentElement.classList.add("active");
+
+        }
+
+    });
+
+});
+
+</script>
+<script src="{% static 'js/employer-actions-menu.js' %}"></script>
+
+{% endblock %}

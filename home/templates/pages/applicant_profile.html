@@ -1,0 +1,190 @@
+{% extends "home_base.html" %}
+{% load static %}
+{% block body_class %}portal-home portal-profile ap-page{% endblock %}
+{% block main_class %}portal-main{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+<link rel="stylesheet" href="{% static 'css/company-profile-v2.css' %}">
+<link rel="stylesheet" href="{% static 'css/applicant-profile-v2.css' %}">
+{% endblock %}
+
+{% block title %}My Profile | PESO Pio Duran{% endblock %}
+
+{% block content %}
+<div class="cp ap">
+    {% for message in messages %}<p class="ap-message" role="status">{{ message }}</p>{% endfor %}
+
+    {% if applicant %}
+    <!-- Identity -->
+    <section class="cp-card cp-identity" aria-label="Your profile">
+        <a class="ap-avatar" href="{% url 'applicant-profile-photo' %}" title="Change profile photo">
+            {% if applicant.profile_photo %}
+            <img src="{{ applicant.profile_photo.url }}" alt="Your profile photo" width="88" height="88">
+            {% else %}
+            <span aria-hidden="true">{{ applicant.first_name|first|upper }}{{ applicant.last_name|first|upper }}</span>
+            {% endif %}
+            <span class="ap-avatar-edit" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l2-3h4l2 3h4v13H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
+            <span class="visually-hidden">Change profile photo</span>
+        </a>
+        <div class="cp-identity-text">
+            <p class="cp-eyebrow">Applicant profile</p>
+            <h1>{{ applicant.first_name }} {% if applicant.middle_name %}{{ applicant.middle_name }} {% endif %}{{ applicant.last_name }}</h1>
+            <div class="cp-meta">
+                {% if profile_completion == 100 %}
+                <span class="cp-badge is-good">Profile complete</span>
+                {% else %}
+                <span class="cp-badge is-warn">Profile {{ profile_completion }}% complete</span>
+                {% endif %}
+                {% if skill_tags %}<span>{{ skill_tags|slice:':3'|join:' · ' }}</span>{% endif %}
+                <span>Member since {{ applicant.user.date_joined|date:'F Y' }}</span>
+            </div>
+        </div>
+        <div class="cp-actions">
+            {% if applicant.resume %}
+            <a class="cp-btn cp-btn-ghost" href="{% url 'my-document' 'resume' %}" target="_blank" rel="noopener noreferrer">View resume<span class="visually-hidden"> (opens in a new tab)</span></a>
+            {% endif %}
+            <a class="cp-btn cp-btn-primary" href="{% url 'edit-applicant-profile' %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                Edit profile
+            </a>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="cp-stats" aria-label="Application summary">
+        <a class="cp-stat" href="{% url 'my-applications' %}"><span>Applied</span><strong>{{ stats.applied }}</strong><small>job applications sent</small></a>
+        <a class="cp-stat" href="{% url 'my-applications' %}"><span>In review</span><strong>{{ stats.in_review }}</strong><small>waiting for the employer</small></a>
+        <a class="cp-stat" href="{% url 'my-applications' %}"><span>Job offers</span><strong>{{ stats.offers }}</strong><small>waiting for your answer</small></a>
+        <a class="cp-stat" href="{% url 'my-applications' %}"><span>Hired</span><strong>{{ stats.hired }}</strong><small>accepted job offers</small></a>
+    </section>
+
+    <div class="cp-grid">
+        <div class="cp-main">
+            <!-- Skills -->
+            <section class="cp-card" aria-labelledby="ap-skills-title">
+                <header class="cp-head">
+                    <h2 id="ap-skills-title">Skills</h2>
+                    <a class="cp-link" href="{% url 'review-resume-skills' %}">Review resume skills &rarr;</a>
+                </header>
+                <p class="ap-note">Employers and the job matching use these skills.</p>
+                {% if skill_tags %}
+                <ul class="ap-skills">{% for skill in skill_tags %}<li>{{ skill }}</li>{% endfor %}</ul>
+                {% else %}
+                <div class="cp-empty"><p>No skills added yet.</p><a class="cp-btn cp-btn-primary" href="{% url 'edit-applicant-profile' %}">Add skills</a></div>
+                {% endif %}
+            </section>
+
+            <!-- Work experience -->
+            <section class="cp-card" aria-labelledby="ap-exp-title">
+                <header class="cp-head">
+                    <h2 id="ap-exp-title">Work experience</h2>
+                    <a class="cp-btn cp-btn-ghost ap-btn-sm" href="{% url 'add-work-experience' %}">+ Add experience</a>
+                </header>
+                {% if experiences %}
+                <ol class="ap-timeline">
+                    {% for experience in experiences %}
+                    <li>
+                        <div class="ap-timeline-head">
+                            <div>
+                                <h3>{{ experience.job_title }}</h3>
+                                <p>{{ experience.company }} &middot; {{ experience.start_date|date:'M Y' }} &ndash; {% if experience.is_current %}Present{% else %}{{ experience.end_date|date:'M Y' }}{% endif %}</p>
+                            </div>
+                            <div class="ap-row-actions">
+                                <a href="{% url 'edit-work-experience' experience.pk %}">Edit</a>
+                                <form method="post" action="{% url 'delete-work-experience' experience.pk %}" class="experience-delete-form" data-title="{{ experience.job_title }} at {{ experience.company }}">{% csrf_token %}<button type="submit">Delete</button></form>
+                            </div>
+                        </div>
+                        {% if experience.description %}<div class="ap-desc">{{ experience.description|linebreaksbr }}</div>{% endif %}
+                    </li>
+                    {% endfor %}
+                </ol>
+                {% else %}
+                <p class="ap-note">No work experience added yet. Fresh graduate? You can leave this empty.</p>
+                {% endif %}
+            </section>
+
+            <!-- Documents -->
+            <section class="cp-card" aria-labelledby="ap-docs-title">
+                <header class="cp-head"><h2 id="ap-docs-title">Documents</h2><a class="cp-link" href="{% url 'edit-applicant-profile' %}">Update files &rarr;</a></header>
+                <ul class="ap-docs">
+                    <li>
+                        <span class="ap-doc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H5v18h14V8l-5-5ZM14 3v5h5M8 12h8M8 16h5"/></svg></span>
+                        <div><strong>Resume / CV</strong><span>{% if applicant.resume %}Uploaded{% else %}Not uploaded{% endif %}</span></div>
+                        {% if applicant.resume %}<a class="cp-link" href="{% url 'my-document' 'resume' %}" target="_blank" rel="noopener noreferrer">View<span class="visually-hidden"> resume (opens in a new tab)</span></a>{% endif %}
+                    </li>
+                    <li>
+                        <span class="ap-doc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg></span>
+                        <div><strong>Cover letter</strong><span>{% if applicant.cover_letter %}Uploaded{% else %}Not uploaded{% endif %}</span></div>
+                        {% if applicant.cover_letter %}<a class="cp-link" href="{% url 'my-document' 'cover_letter' %}" target="_blank" rel="noopener noreferrer">View<span class="visually-hidden"> cover letter (opens in a new tab)</span></a>{% endif %}
+                    </li>
+                    <li>
+                        <span class="ap-doc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="m9 12-2 9 5-3 5 3-2-9"/></svg></span>
+                        <div><strong>Certificates</strong><span>{{ certificate_count }} uploaded</span></div>
+                        <a class="cp-link" href="{% url 'applicant-certificates' %}">Manage</a>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Recent applications -->
+            <section class="cp-card" aria-labelledby="ap-apps-title">
+                <header class="cp-head">
+                    <h2 id="ap-apps-title">Recent applications</h2>
+                    {% if recent_applications %}<a class="cp-link" href="{% url 'my-applications' %}">View all &rarr;</a>{% endif %}
+                </header>
+                {% if recent_applications %}
+                <ul class="cp-jobs ap-apps">
+                    {% for application in recent_applications %}
+                    <li>
+                        <div><strong>{{ application.job.title }}</strong><span>{{ application.job.employer.company_name }} &middot; applied {{ application.applied_at|date:'M j, Y' }}</span></div>
+                        <span class="cp-badge {% if application.status == 'hired' or application.status == 'offered' %}is-good{% elif application.status == 'rejected' or application.status == 'declined' or application.status == 'withdrawn' %}is-bad{% else %}is-warn{% endif %}">{{ application.get_status_display }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="cp-empty"><p>You have not applied to a job yet.</p><a class="cp-btn cp-btn-primary" href="{% url 'browse-job' %}">Browse jobs</a></div>
+                {% endif %}
+            </section>
+        </div>
+
+        <aside class="cp-side">
+            <!-- Completeness -->
+            <section class="cp-card" aria-labelledby="ap-complete-title">
+                <header class="cp-head"><h2 id="ap-complete-title">Profile completeness</h2><strong class="cp-percent">{{ profile_completion }}%</strong></header>
+                <span class="cp-meter" role="img" aria-label="{{ profile_completion }} percent complete"><span style="width:{{ profile_completion }}%"></span></span>
+                <ul class="cp-checklist">
+                    {% for label, done in profile_items %}
+                    <li class="{% if done %}is-done{% endif %}">{{ label }}<span class="visually-hidden">{% if done %} (done){% else %} (missing){% endif %}</span></li>
+                    {% endfor %}
+                </ul>
+                {% if profile_completion < 100 %}<a class="cp-link" href="{% url 'edit-applicant-profile' %}">Complete your profile &rarr;</a>{% endif %}
+            </section>
+
+            <!-- Contact -->
+            <section class="cp-card" aria-labelledby="ap-contact-title">
+                <header class="cp-head"><h2 id="ap-contact-title">Contact details</h2></header>
+                <dl class="cp-contact">
+                    <div><dt>Email</dt><dd><span>{{ applicant.email|default:'Not provided' }}</span></dd></div>
+                    <div><dt>Mobile number</dt><dd><span>{{ applicant.phone_number|default:'Not provided' }}</span></dd></div>
+                </dl>
+            </section>
+
+            <!-- Account -->
+            <section class="cp-card" aria-labelledby="ap-account-title">
+                <header class="cp-head"><h2 id="ap-account-title">Account</h2></header>
+                <ul class="ap-account">
+                    <li><a href="{% url 'change-password' %}"><span>Change password</span><span aria-hidden="true">&rsaquo;</span></a></li>
+                    <li><a href="{% url 'applicant-profile-photo' %}"><span>Change profile photo</span><span aria-hidden="true">&rsaquo;</span></a></li>
+                </ul>
+            </section>
+        </aside>
+    </div>
+    {% else %}
+    <section class="cp-card" role="alert">
+        <h1 class="ap-missing-title">Applicant profile not found</h1>
+        <p class="ap-note">Your account does not have an applicant profile yet.</p>
+    </section>
+    {% endif %}
+</div>
+<dialog id="experienceDeleteDialog" class="portal-logout-dialog" aria-labelledby="experienceDeleteTitle" aria-describedby="experienceDeleteText"><h2 id="experienceDeleteTitle">Delete work experience?</h2><p id="experienceDeleteText"></p><div class="portal-logout-actions"><button type="button" id="experienceDeleteCancel" autofocus>Cancel</button><button type="button" id="experienceDeleteConfirm">Delete Experience</button></div></dialog>
+<script src="{% static 'js/work-experience.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'employer_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/company-profile-v2.css' %}">
+<div class="cp">
+    <a class="cp-back" href="{% url 'employer-company-profile' %}">&larr; Back to company profile</a>
+
+    <form method="post" enctype="multipart/form-data" class="cp-card cp-form" novalidate>
+        {% csrf_token %}
+        <header class="cp-head cp-form-head">
+            <div>
+                <h1>Edit company profile</h1>
+                <p>This information appears on your public company page and on every job you post.</p>
+            </div>
+        </header>
+
+        {% if form.non_field_errors %}<div class="cp-error-box" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+
+        <!-- Logo -->
+        <div class="cp-logo-row">
+            {% if employer.company_logo %}
+            <img class="cp-logo" id="logoPreview" src="{{ employer.company_logo.url }}" alt="Current company logo" width="88" height="88">
+            {% else %}
+            <span class="cp-logo cp-logo-text" id="logoPreview" aria-hidden="true">{{ employer.company_name|first|upper }}</span>
+            {% endif %}
+            <div class="cp-field">
+                <label for="{{ form.company_logo.id_for_label }}">Company logo</label>
+                {{ form.company_logo }}
+                <span class="cp-help">PNG, JPEG, or WebP, up to 5 MB. Leave empty to keep the current logo.</span>
+                {% for error in form.company_logo.errors %}<span class="cp-error" role="alert">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+
+        <div class="cp-fields">
+            <div class="cp-field cp-span-2">
+                <label for="{{ form.company_name.id_for_label }}">Company name <span class="cp-req">*</span></label>
+                {{ form.company_name }}
+                {% for error in form.company_name.errors %}<span class="cp-error" role="alert">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="cp-field">
+                <label for="{{ form.email.id_for_label }}">Company email <span class="cp-req">*</span></label>
+                {{ form.email }}
+                {% for error in form.email.errors %}<span class="cp-error" role="alert">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="cp-field">
+                <label for="{{ form.contact_no.id_for_label }}">Mobile number <span class="cp-req">*</span></label>
+                {{ form.contact_no }}
+                <span class="cp-help">11 digits starting with 09.</span>
+                {% for error in form.contact_no.errors %}<span class="cp-error" role="alert">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="cp-field cp-span-2">
+                <label for="{{ form.description.id_for_label }}">About the company <span class="cp-req">*</span></label>
+                {{ form.description }}
+                <span class="cp-help"><span id="aboutCount">0</span> characters &middot; aim for at least 100 so applicants know what you do.</span>
+                {% for error in form.description.errors %}<span class="cp-error" role="alert">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+
+        <footer class="cp-form-foot">
+            <a class="cp-btn cp-btn-ghost" href="{% url 'employer-company-profile' %}">Cancel</a>
+            <button type="submit" class="cp-btn cp-btn-primary">Save changes</button>
+        </footer>
+    </form>
+</div>
+<script>
+(function () {
+    const about = document.getElementById('{{ form.description.id_for_label }}');
+    const count = document.getElementById('aboutCount');
+    if (about && count) {
+        const update = () => { count.textContent = about.value.trim().length; };
+        about.addEventListener('input', update); update();
+    }
+    const file = document.getElementById('{{ form.company_logo.id_for_label }}');
+    if (file) {
+        file.addEventListener('change', function () {
+            const preview = document.getElementById('logoPreview');
+            const chosen = file.files && file.files[0];
+            if (!chosen || !chosen.type.startsWith('image/')) return;
+            const img = document.createElement('img');
+            img.className = 'cp-logo'; img.id = 'logoPreview'; img.alt = 'New logo preview'; img.width = 88; img.height = 88;
+            img.src = URL.createObjectURL(chosen);
+            preview.replaceWith(img);
+        });
+    }
+})();
+</script>
+{% endblock %}

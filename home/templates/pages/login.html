@@ -1,0 +1,104 @@
+{% extends 'home_base.html' %}
+{% load static %}
+{% block title %}Sign in{% endblock %}
+{% block body_class %}portal-home portal-login{% endblock %}
+{% block main_class %}portal-main{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+<link rel="stylesheet" href="{% static 'css/login-v2.css' %}?v=solo3">
+{% endblock %}
+
+{% block site_header %}{% endblock %}
+{% block site_footer %}{% endblock %}
+
+{% block content %}
+<div class="lg">
+    <a class="lg-back" href="{% url 'home' %}">&larr; Back to home</a>
+    <div class="lg-card">
+
+        <!-- Info panel -->
+        <section class="lg-info" aria-label="About your account">
+            <a class="lg-brand" href="{% url 'home' %}">
+                <img src="{% static 'images/PESO.png' %}" alt="" width="44" height="44">
+                <span><strong>Pio Duran Job Portal</strong><small>Public Employment Service Office</small></span>
+            </a>
+            <h1>Welcome back.</h1>
+            <p class="lg-lead">Sign in to continue where you left off.</p>
+            <div class="lg-roles">
+                <div class="lg-role">
+                    <span class="lg-role-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+                    <div><strong>Applicants</strong><span>Apply to jobs, track your applications, and respond to job offers.</span></div>
+                </div>
+                <div class="lg-role">
+                    <span class="lg-role-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 12h18"/></svg></span>
+                    <div><strong>Employers</strong><span>Post vacancies, review ranked applicants, and manage hiring.</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Form -->
+        <section class="lg-form-wrap" aria-labelledby="lg-title">
+            <h2 id="lg-title">Sign in to your account</h2>
+            <p class="lg-sub">Use the username and password you registered with.</p>
+
+            <form id="loginForm" method="POST" class="lg-form" novalidate>
+                {% csrf_token %}
+                <div class="lg-field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ login_username|default:'' }}"
+                           placeholder="Enter your username" required autocomplete="username" autocapitalize="none" spellcheck="false"
+                           aria-describedby="username-error" {% if login_error_field == 'username' %}aria-invalid="true"{% endif %}>
+                    <div class="login-field-error" id="username-error" aria-live="polite">{% if login_error_field == 'username' %}{{ login_error }}{% endif %}</div>
+                </div>
+
+                <div class="lg-field">
+                    <label for="password">Password</label>
+                    <div class="lg-password">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required
+                               autocomplete="current-password" aria-describedby="password-error"
+                               {% if login_error_field == 'password' %}aria-invalid="true"{% endif %}>
+                        <button type="button" class="lg-reveal" id="passwordToggle" aria-label="Show password" aria-pressed="false" title="Show password">
+                            <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="login-field-error" id="password-error" aria-live="polite">{% if login_error_field == 'password' %}{{ login_error }}{% endif %}</div>
+                </div>
+
+                <div id="login-status" class="lg-status" role="status">{{ login_notice }}</div>
+
+                <button type="submit" class="lg-submit">Sign In</button>
+            </form>
+
+            <div class="lg-register">
+                <span>New to the portal?</span>
+                <div class="lg-register-links">
+                    <a href="{% url 'applicant-registration' %}">Register as Applicant</a>
+                    <a href="{% url 'employee-registration' %}">Register as Employer</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+(function () {
+    const button = document.getElementById('passwordToggle');
+    const input = document.getElementById('password');
+    const icon = document.getElementById('eyeIcon');
+    const eye = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+    const eyeOff = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+    button.addEventListener('click', function () {
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        icon.innerHTML = show ? eyeOff : eye;
+        const label = show ? 'Hide password' : 'Show password';
+        button.setAttribute('aria-label', label);
+        button.setAttribute('title', label);
+        button.setAttribute('aria-pressed', String(show));
+    });
+})();
+</script>
+<script src="{% static 'js/login-submit.js' %}"></script>
+{% endblock %}

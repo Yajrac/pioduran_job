@@ -1,0 +1,15 @@
+./venv
+.env
+private_uploads/
+
+# Local environments and data (never commit personal uploads)
+.venv/
+venv/
+__pycache__/
+*.pyc
+db.sqlite3
+*.sqlite3
+*.sqlite3-journal
+data.json
+media/
+staticfiles/

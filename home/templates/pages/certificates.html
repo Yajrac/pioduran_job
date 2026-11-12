@@ -1,0 +1,24 @@
+{% extends 'home_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/certificates.css' %}">
+<main class="certificates-page">
+    <a class="certificate-button" href="{% url 'applicant-profile' %}">&larr; Back to My Profile</a>
+    <header><h1>My Certificates</h1><p>Add training certificates and qualifications. Employers you apply to can view them.</p></header>
+    {% for message in messages %}<p class="certificate-notice" role="status">{{ message }}</p>{% endfor %}
+    <section class="certificate-card"><h2>Upload Certificate</h2>
+        <form method="post" enctype="multipart/form-data" id="certificateUploadForm">{% csrf_token %}
+            {{ certificate_form.non_field_errors }}
+            <div class="certificate-fields"><div><label for="{{ certificate_form.title.id_for_label }}">Certificate title</label>{{ certificate_form.title }}{{ certificate_form.title.errors }}</div><div><label for="{{ certificate_form.file.id_for_label }}">Certificate file</label>{{ certificate_form.file }}{{ certificate_form.file.errors }}<p class="certificate-help">PDF, JPG, or PNG. Maximum 5 MB per file, up to 20 certificates.</p></div></div>
+            <button class="certificate-button certificate-primary" type="submit">Upload Certificate</button>
+        </form>
+    </section>
+    <section class="certificate-card"><h2>Uploaded Certificates <span>({{ certificates|length }})</span></h2>
+        {% for certificate in certificates %}
+        <div class="certificate-row"><div><h3>{{ certificate.title }}</h3><p>Uploaded {{ certificate.uploaded_at|date:'M d, Y' }}</p></div><div class="certificate-actions"><a class="certificate-button" href="{% url 'certificate-file' certificate.pk %}" target="_blank" rel="noopener">View Certificate</a><form method="post" action="{% url 'delete-certificate' certificate.pk %}" class="certificate-delete-form" data-title="{{ certificate.title }}">{% csrf_token %}<button class="certificate-button certificate-danger" type="submit">Delete</button></form></div></div>
+        {% empty %}<p class="certificate-help">No certificates uploaded yet.</p>{% endfor %}
+    </section>
+</main>
+<dialog class="certificate-dialog" id="certificateDeleteDialog" aria-labelledby="certificateDeleteTitle"><h2 id="certificateDeleteTitle">Delete certificate?</h2><p id="certificateDeleteText"></p><div class="certificate-actions"><button type="button" class="certificate-button" id="certificateDeleteCancel" autofocus>Cancel</button><button type="button" class="certificate-button certificate-danger" id="certificateDeleteConfirm">Delete Certificate</button></div></dialog>
+<script src="{% static 'js/certificates.js' %}"></script>
+{% endblock %}

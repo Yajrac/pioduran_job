@@ -1,0 +1,35 @@
+/* Employer Applicants: compact "Job match" cell (score first, small tags, one Details toggle) */
+.candidate-score-cell { min-width: 220px; vertical-align: top; }
+.jm { display: grid; gap: 6px; max-width: 260px; }
+.jm-score { display: flex; align-items: baseline; gap: 4px; }
+.jm-score strong { color: #0f172a; font-size: 22px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.jm-score span { color: #64748b; font-size: 12.5px; font-weight: 600; }
+.jm-score.is-none strong { color: #64748b; font-size: 14px; font-weight: 700; }
+.jm-meter { display: block; height: 6px; border-radius: 999px; background: #e2e8f0; overflow: hidden; }
+.jm-meter > span { display: block; height: 100%; min-width: 2px; border-radius: inherit; background: #94a3b8; }
+.jm-score.is-high + .jm-meter > span { background: #15803d; }
+.jm-score.is-mid + .jm-meter > span { background: #1d4ed8; }
+.jm-score.is-low + .jm-meter > span { background: #b45309; }
+.jm-cov { margin: 0; color: #475569; font-size: 12.5px; }
+
+.jm-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none; }
+.jm-tag {
+  padding: 3px 9px; border: 1px solid #e2e8f0; border-radius: 999px; background: #f8fafc;
+  color: #334155; font-size: 11.5px; font-weight: 600; line-height: 1.45; cursor: help;
+}
+.jm-tag.is-muted { border-style: dashed; background: transparent; color: #64748b; font-weight: 500; }
+.jm-tag.is-info { border-color: #bfdbfe; background: #eff6ff; color: #1d4ed8; }
+.jm-tag.is-above { border-color: #bbf7d0; background: #ecfdf3; color: #15803d; }
+.jm-tag.is-near { border-color: #bfdbfe; background: #eff6ff; color: #1d4ed8; }
+.jm-tag.is-below { border-color: #fde68a; background: #fffbeb; color: #b45309; }
+
+.jm-details summary { width: fit-content; color: #1d4ed8; font-size: 12.5px; font-weight: 600; cursor: pointer; list-style: none; }
+.jm-details summary::-webkit-details-marker { display: none; }
+.jm-details summary::after { content: " \25BE"; }
+.jm-details[open] summary::after { content: " \25B4"; }
+.jm-details-body { display: grid; gap: 6px; margin-top: 8px; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; }
+.jm-details-body p { margin: 0; color: #334155; font-size: 12.5px; line-height: 1.5; }
+.jm-details-body strong { color: #0f172a; }
+.jm-checks { display: grid; gap: 4px; margin: 0; padding-left: 16px; color: #334155; font-size: 12px; line-height: 1.45; }
+.jm-checks .is-above strong { color: #15803d; }
+.jm-checks .is-below strong { color: #b45309; }

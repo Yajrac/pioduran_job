@@ -1,0 +1,54 @@
+{% if demo_sms %}
+{# Demo mode only (DEBUG + OTP_DEV_MODE): shows the SMS that would have been sent. #}
+<style>
+    .demo-sms { margin: 0 0 22px; padding: 14px; border: 1px dashed #93c5fd; border-radius: 14px; background: #f8fbff; text-align: left; }
+    .demo-sms-tag { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; padding: 3px 10px; border-radius: 999px; background: #fef3c7; color: #92400e; font-size: 11.5px; font-weight: 700; letter-spacing: .02em; }
+    .demo-sms-phone { padding: 12px 14px; border-radius: 14px; background: #0f172a; color: #e2e8f0; box-shadow: 0 8px 20px rgba(15, 23, 42, .18); }
+    .demo-sms-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; color: #94a3b8; font-size: 11.5px; }
+    .demo-sms-head strong { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 12.5px; }
+    .demo-sms-head strong span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: #2563eb; font-size: 11px; }
+    .demo-sms-body { margin: 0; font-size: 13px; line-height: 1.55; }
+    .demo-sms-body b { color: #fff; font-size: 15px; letter-spacing: .12em; }
+    .demo-sms-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
+    .demo-sms-actions small { color: #64748b; font-size: 11.5px; }
+    aside.demo-sms button.demo-sms-use {
+        flex: 0 0 auto; width: auto; min-width: 0; height: 34px; min-height: 0; margin: 0; padding: 0 14px;
+        border: 1px solid #bfdbfe; border-radius: 9px; background: #fff; box-shadow: none;
+        color: #1d4ed8; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transform: none;
+    }
+    aside.demo-sms button.demo-sms-use:hover { background: #eff6ff; }
+</style>
+<aside class="demo-sms" aria-label="Demo SMS">
+    <span class="demo-sms-tag">DEMO MODE &middot; no real SMS sent</span>
+    <div class="demo-sms-phone" role="note">
+        <div class="demo-sms-head">
+            <strong><span aria-hidden="true">✉</span>Messages &middot; PESO Pio Duran</strong>
+            <span>now &middot; to {{ demo_sms.to }}</span>
+        </div>
+        <p class="demo-sms-body">{{ demo_sms.message }}<br>Code: <b>{{ demo_sms.code }}</b></p>
+    </div>
+    <div class="demo-sms-actions">
+        <small>Shown only while OTP_DEV_MODE is on.</small>
+        <button type="button" class="demo-sms-use" data-demo-code="{{ demo_sms.code }}">Use this code</button>
+    </div>
+</aside>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const button = document.querySelector('[data-demo-code]');
+    if (!button) return;
+    button.addEventListener('click', function () {
+        const digits = button.dataset.demoCode.split('');
+        const boxes = document.querySelectorAll('.otp-box');
+        boxes.forEach(function (box, i) {
+            box.value = digits[i] || '';
+            box.classList.toggle('filled', Boolean(box.value));
+            box.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        const hidden = document.getElementById('otp');
+        if (hidden) hidden.value = button.dataset.demoCode;
+        const submit = document.querySelector('#verificationForm [type="submit"], form [type="submit"]');
+        if (submit) { submit.disabled = false; submit.focus(); }
+    });
+});
+</script>
+{% endif %}

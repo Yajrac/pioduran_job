@@ -1,0 +1,84 @@
+/* Applicant "My Profile" (pages/applicant_profile.html). Builds on company-profile-v2.css (.cp-*). */
+.ap-page .portal-main { padding: 32px 20px 56px; background: #f6f7f9; }
+.ap { font-family: inherit; }
+.ap h1, .ap h2, .ap h3 { font-family: inherit; }
+
+.ap-message { margin: 0; padding: 10px 14px; border: 1px solid var(--c-good-line); border-radius: 10px; background: var(--c-good-bg); color: var(--c-good); font-size: 13.5px; }
+.ap-note { margin: 0 0 14px; color: var(--c-muted); font-size: 13.5px; line-height: 1.6; }
+.ap-missing-title { margin: 0 0 6px; color: var(--c-ink); font-size: 20px; }
+
+/* avatar */
+.ap-avatar {
+  position: relative; display: grid; place-items: center; width: 88px; height: 88px; flex-shrink: 0;
+  border-radius: 50%; background: var(--c-brand-soft); color: var(--c-brand); font-size: 30px; font-weight: 800; text-decoration: none;
+}
+.ap-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.ap-avatar-edit {
+  position: absolute; right: -2px; bottom: -2px; display: grid; place-items: center; width: 30px; height: 30px;
+  border: 3px solid #fff; border-radius: 50%; background: var(--c-brand); color: #fff;
+}
+.ap-avatar-edit svg { width: 14px; height: 14px; }
+.ap-avatar:hover .ap-avatar-edit { background: var(--c-brand-hover); }
+
+/* skills */
+.ap-skills { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.ap-skills li { padding: 6px 12px; border: 1px solid #bfdbfe; border-radius: 999px; background: var(--c-brand-soft); color: #1e3a8a; font-size: 13px; font-weight: 600; }
+
+/* experience */
+.ap .ap-btn-sm { height: 34px; padding: 0 12px; font-size: 13px; }
+.ap-timeline { display: grid; margin: 0; padding: 0; list-style: none; }
+.ap-timeline li { position: relative; padding: 0 0 18px 22px; }
+.ap-timeline li:last-child { padding-bottom: 0; }
+.ap-timeline li::before { content: ""; position: absolute; top: 6px; left: 0; width: 10px; height: 10px; border: 2px solid var(--c-brand); border-radius: 50%; background: #fff; }
+.ap-timeline li:not(:last-child)::after { content: ""; position: absolute; top: 20px; bottom: 0; left: 6px; width: 2px; background: var(--c-line); }
+.ap-timeline-head { display: flex; justify-content: space-between; gap: 12px; }
+.ap-timeline h3 { margin: 0; color: var(--c-ink); font-size: 15px; font-weight: 700; }
+.ap-timeline-head p { margin: 2px 0 0; color: var(--c-muted); font-size: 13px; }
+.ap-desc { margin-top: 8px; color: var(--c-ink-2); font-size: 13.5px; line-height: 1.6; overflow-wrap: anywhere; }
+.ap-row-actions { display: flex; align-items: flex-start; gap: 6px; flex-shrink: 0; }
+.ap-row-actions form { margin: 0; }
+.ap .ap-row-actions a, .ap .ap-row-actions button {
+  width: auto; min-width: 0; height: auto; min-height: 0; margin: 0; padding: 4px 10px;
+  border: 1px solid var(--c-line); border-radius: 8px; background: #fff; box-shadow: none; transform: none;
+  color: var(--c-ink-2); font: inherit; font-size: 12.5px; font-weight: 600; text-decoration: none; cursor: pointer;
+}
+.ap .ap-row-actions a:hover { border-color: var(--c-brand); color: var(--c-brand); }
+.ap .ap-row-actions button:hover { border-color: var(--c-bad-line); background: var(--c-bad-bg); color: var(--c-bad); }
+
+/* documents */
+.ap-docs { display: grid; margin: 0; padding: 0; list-style: none; }
+.ap-docs li { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+.ap-docs li:first-child { padding-top: 0; }
+.ap-docs li:last-child { padding-bottom: 0; border-bottom: 0; }
+.ap-docs li > div { display: grid; flex: 1; min-width: 0; }
+.ap-docs strong { color: var(--c-ink); font-size: 14px; }
+.ap-docs li > div span { color: var(--c-muted); font-size: 12.5px; }
+.ap-doc-icon { display: grid; place-items: center; width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; background: var(--c-brand-soft); color: var(--c-brand); }
+.ap-doc-icon svg { width: 18px; height: 18px; }
+
+/* recent applications: title + status only */
+.ap .ap-apps li { grid-template-columns: minmax(0, 1fr) auto; }
+
+/* account links */
+.ap-account { display: grid; margin: 0; padding: 0; list-style: none; }
+.ap-account li + li { border-top: 1px solid #f1f5f9; }
+.ap-account a { display: flex; justify-content: space-between; padding: 10px 0; color: var(--c-ink-2); font-size: 14px; font-weight: 600; text-decoration: none; }
+.ap-account a:hover { color: var(--c-brand); }
+.ap-account li:first-child a { padding-top: 0; }
+.ap-account li:last-child a { padding-bottom: 0; }
+
+@media (max-width: 700px) {
+  .ap-page .portal-main { padding: 20px 16px 40px; }
+  .ap-avatar { width: 72px; height: 72px; font-size: 24px; }
+  .ap-timeline-head { flex-direction: column; }
+}
+
+/* Let every column shrink to the phone width (grid tracks default to min-content). */
+.ap { grid-template-columns: minmax(0, 1fr); width: 100%; box-sizing: border-box; }
+.ap > *, .ap .cp-main > *, .ap .cp-side > * { min-width: 0; box-sizing: border-box; }
+@media (max-width: 1100px) { .ap .cp-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 700px) {
+  .ap .cp-head { flex-wrap: wrap; }
+  .ap .cp-actions .cp-btn { min-width: 0; }
+  .ap .cp-stat small { overflow-wrap: anywhere; }
+}

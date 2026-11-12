@@ -1,0 +1,20 @@
+{# Thin segmented bar (no text on it) above a list that gives every part's name, count and share. #}
+{% if split.total %}
+<div class="viz-seg" role="img" aria-label="{% for p in split.parts %}{{ p.label }} {{ p.count }} ({{ p.share }}%){% if not forloop.last %}, {% endif %}{% endfor %}">
+    {% for p in split.parts %}{% if p.count %}<span class="viz-seg-part viz-hit" style="flex:{{ p.count }} 1 0;background:{{ p.color }}" tabindex="0"
+        aria-label="{{ p.label }}: {{ p.count }} {{ noun }}, {{ p.share }} percent"
+        data-tip-title="{{ p.label }}" data-tip="{{ noun|capfirst }}|{{ p.count }}|{{ p.color }};Share|{{ p.share }}%|"></span>{% endif %}{% endfor %}
+</div>
+{% else %}
+<div class="viz-seg viz-seg-empty" aria-hidden="true"></div>
+{% endif %}
+<ul class="viz-list">
+    {% for p in split.parts %}
+    <li{% if not p.count %} class="is-zero"{% endif %}>
+        <span class="viz-key viz-key-bar" style="background:{{ p.color }}"></span>
+        <span class="viz-list-label">{{ p.label }}</span>
+        <span class="viz-list-count">{{ p.count }}</span>
+        <span class="viz-list-share">{{ p.share }}%</span>
+    </li>
+    {% endfor %}
+</ul>

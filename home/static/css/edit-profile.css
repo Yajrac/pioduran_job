@@ -1,0 +1,24 @@
+.portal-edit-profile .portal-main { padding:40px 24px 64px; background:#f6f7f9; }
+.portal-edit-profile .edit-page { width:100%; max-width:850px; margin:0 auto; padding:0; }
+.portal-edit-profile .edit-card { padding:32px; border:1px solid #e0e3e8; border-radius:5px; box-shadow:0 8px 28px #173e3106; }
+.portal-edit-profile .edit-card h1 { color:#15284b; font-size:28px; letter-spacing:-0.4px; }
+.portal-edit-profile .edit-description { color:#15284b; font-size:13px; line-height:1.8; margin-bottom:28px; }
+.portal-edit-profile .edit-grid { gap:20px 24px; }
+.portal-edit-profile .section-heading { display:flex; align-items:center; gap:10px; color:#15284b; font-size:16px; border-color:#e3e6eb; margin-top:8px; padding-bottom:14px; }
+.portal-edit-profile .section-heading img { flex-shrink:0; object-fit:contain; }
+.portal-edit-profile .edit-field label { color:#15284b; font-size:11px; letter-spacing:.4px; font-weight:500; }
+.portal-edit-profile .edit-field input,.portal-edit-profile .edit-field textarea { color:#15284b; font-family:inherit; font-size:13px; border:1px solid #d9dde4; border-radius:5px; background:#fff; padding:12px 14px; transition:border-color .18s,box-shadow .18s; }
+.portal-edit-profile .edit-field input { min-height:44px; }
+.portal-edit-profile .edit-field textarea { line-height:1.8; resize:vertical; }
+.portal-edit-profile .edit-field input:focus,.portal-edit-profile .edit-field textarea:focus { border-color:#2563eb; box-shadow:0 0 0 3px #05966912; }
+.portal-edit-profile .edit-field input[type=file] { padding:10px; background:#f9fafc; font-size:12px; }
+.portal-edit-profile input[type=file]::file-selector-button { background:#edf0f6; border:1px solid #dce1e9; color:#15284b; border-radius:4px; padding:7px 10px; margin-right:12px; cursor:pointer; font:inherit; }
+.portal-edit-profile .field-help,.portal-edit-profile .file-current { color:#15284b; font-size:11px; line-height:1.8; }
+.portal-edit-profile .file-current a { color:#15284b; }
+.portal-edit-profile .edit-actions { border-color:#e3e6eb; padding-top:22px; gap:10px; }
+.portal-edit-profile .edit-button { border-radius:5px; min-height:42px; padding:11px 18px; font-size:12px; border-color:#d9dde4; transition:background-color .18s,border-color .18s; }
+.portal-edit-profile .cancel-button { color:#15284b; }
+.portal-edit-profile .cancel-button:hover { background:#edf0f6; }
+.portal-edit-profile .save-button { background:#2563eb; border-color:#2563eb; }
+.portal-edit-profile .save-button:hover { background:#1d4ed8; border-color:#1d4ed8; }
+@media(max-width:600px) { .portal-edit-profile .portal-main { padding:28px 16px 40px; } .portal-edit-profile .edit-card { padding:24px 20px; } .portal-edit-profile .edit-card h1 { font-size:24px; } }

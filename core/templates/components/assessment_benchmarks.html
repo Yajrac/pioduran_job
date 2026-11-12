@@ -1,0 +1,116 @@
+{% load static %}
+{% for message in messages %}<p class="report-alert report-alert-info" role="status">{{ message }}</p>{% endfor %}
+
+<div class="ab">
+
+    <!-- ===== Assessment summary ===== -->
+    <section class="ab-section" aria-labelledby="ab-summary-title">
+        <header class="ab-section-head">
+            <div>
+                <h2 id="ab-summary-title">Assessment &amp; Employment Outcomes</h2>
+                <p>Recorded by employers on the Review Applicant page. Missing outcomes are never counted as failures.</p>
+            </div>
+        </header>
+
+        <div class="ab-tiles">
+            <div class="ab-tile">
+                <span class="ab-tile-label">Applicants assessed</span>
+                <strong class="ab-tile-value">{{ assessment_summary.assessed_count|default:0 }}</strong>
+                <span class="ab-tile-note">with a skills or interview score</span>
+            </div>
+            <div class="ab-tile">
+                <span class="ab-tile-label">Average skills test</span>
+                {% if assessment_summary.skills_average != None %}
+                <strong class="ab-tile-value">{{ assessment_summary.skills_average|floatformat:1 }}<small> / 5</small></strong>
+                <span class="ab-meter" role="img" aria-label="{{ assessment_summary.skills_average|floatformat:1 }} out of 5"><span style="width:{% widthratio assessment_summary.skills_average 5 100 %}%"></span></span>
+                {% else %}<strong class="ab-tile-value is-empty">&mdash;</strong><span class="ab-tile-note">not assessed yet</span>{% endif %}
+            </div>
+            <div class="ab-tile">
+                <span class="ab-tile-label">Average interview</span>
+                {% if assessment_summary.interview_average != None %}
+                <strong class="ab-tile-value">{{ assessment_summary.interview_average|floatformat:1 }}<small> / 5</small></strong>
+                <span class="ab-meter" role="img" aria-label="{{ assessment_summary.interview_average|floatformat:1 }} out of 5"><span style="width:{% widthratio assessment_summary.interview_average 5 100 %}%"></span></span>
+                {% else %}<strong class="ab-tile-value is-empty">&mdash;</strong><span class="ab-tile-note">not assessed yet</span>{% endif %}
+            </div>
+            <div class="ab-tile">
+                <span class="ab-tile-label">Hired applicants</span>
+                <strong class="ab-tile-value">{{ hired_total }}</strong>
+                <span class="ab-tile-note">tracked for probation outcome</span>
+            </div>
+        </div>
+
+        <div class="ab-outcomes viz">
+            <div class="ab-outcomes-head">
+                <h3>Probation outcomes of hired applicants</h3>
+                <span>{{ outcomes.total }} hired</span>
+            </div>
+            {% include 'components/viz_status_split.html' with split=outcomes noun='hired applicants' %}
+            <div class="viz-tooltip" role="status" aria-live="polite" hidden></div>
+        </div>
+    </section>
+
+    <!-- ===== Performance benchmarks ===== -->
+    <section class="ab-section" aria-labelledby="ab-bench-title">
+        <header class="ab-section-head">
+            <div>
+                <h2 id="ab-bench-title">Performance Benchmarks by Job Category</h2>
+                <p>The profile of employees who passed probation. New applicants in the same category are compared with it (Above, Near, or Below) on the employer's applicant list.</p>
+            </div>
+            {% if benchmarks %}<span class="ab-count">{{ benchmarks_active }} of {{ benchmarks|length }} active</span>{% endif %}
+        </header>
+
+        {% if benchmarks %}
+        <div class="ab-cards">
+            {% for row in benchmarks %}
+            <article class="ab-card" aria-labelledby="ab-card-{{ forloop.counter }}">
+                <header class="ab-card-head">
+                    <h3 id="ab-card-{{ forloop.counter }}">{{ row.label }}</h3>
+                    {% if row.ready %}
+                    <span class="report-status status-approved">Active benchmark</span>
+                    {% else %}
+                    <span class="report-status status-pending">Collecting data</span>
+                    {% endif %}
+                </header>
+
+                {% if not row.ready %}
+                <div class="ab-progress">
+                    <div class="ab-progress-text"><strong>{{ row.passed }} of {{ benchmark_min }}</strong> passed employees needed &middot; {{ row.needed }} more to activate</div>
+                    <span class="ab-meter" role="img" aria-label="{{ row.passed }} of {{ benchmark_min }} passed employees"><span style="width:{{ row.progress }}%"></span></span>
+                </div>
+                {% endif %}
+
+                <dl class="ab-stats">
+                    <div><dt>Pass rate</dt><dd>{% if row.pass_rate != None %}{{ row.pass_rate|floatformat:'-1' }}%{% else %}&mdash;{% endif %}<small>{{ row.passed }} passed &middot; {{ row.failed }} failed</small></dd></div>
+                    <div><dt>Skills test</dt><dd>{% if row.skills_average != None %}{{ row.skills_average }}<small>/ 5 average</small>{% else %}&mdash;{% endif %}</dd></div>
+                    <div><dt>Interview</dt><dd>{% if row.interview_average != None %}{{ row.interview_average }}<small>/ 5 average</small>{% else %}&mdash;{% endif %}</dd></div>
+                    <div><dt>Skill match</dt><dd>{% if row.match_average != None %}{{ row.match_average }}<small>/ 100 average</small>{% else %}&mdash;{% endif %}</dd></div>
+                    <div><dt>With experience</dt><dd>{% if row.experience_share != None %}{{ row.experience_share }}%{% else %}&mdash;{% endif %}<small>of passers</small></dd></div>
+                </dl>
+
+                <div class="ab-skills">
+                    <span class="ab-skills-label">Common skills of passers</span>
+                    {% if row.common_skills %}
+                    <ul>{% for name, share in row.common_skills %}<li>{{ name }} <span>{{ share }}%</span></li>{% endfor %}</ul>
+                    {% else %}<p>No skill shared by at least half of the passers yet.</p>{% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="ab-empty">
+            <div class="ab-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+            <h3>No benchmarks yet</h3>
+            <p>Benchmarks appear automatically once employers record probation results.</p>
+            <ol class="ab-steps">
+                <li><span>1</span><div><strong>Hire</strong>The applicant accepts the job offer.</div></li>
+                <li><span>2</span><div><strong>Assess</strong>The employer records skills and interview scores on Review Applicant.</div></li>
+                <li><span>3</span><div><strong>Record outcome</strong>After probation, the employer marks Passed or Did not pass.</div></li>
+                <li><span>4</span><div><strong>Benchmark</strong>With {{ benchmark_min }} passed employees, the category's benchmark becomes active.</div></li>
+            </ol>
+        </div>
+        {% endif %}
+
+        <p class="ab-note">Decision support only: benchmarks never shortlist or reject an applicant on their own.</p>
+    </section>
+</div>
+<script src="{% static 'js/dashboard-charts.js' %}" defer></script>

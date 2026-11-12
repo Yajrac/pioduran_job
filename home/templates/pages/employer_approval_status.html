@@ -1,0 +1,11 @@
+{% extends 'home_base.html' %}
+{% load static %}
+{% block main_class %}portal-main{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/certificates.css' %}">
+<main class="certificates-page"><header><h1>Employer Account Status</h1><p>{{ employer.company_name }}</p></header>
+<section class="certificate-card"><h2>{% if employer.approval_status == 'approved' and not employer.is_active %}Account Suspended{% else %}{{ employer.get_approval_status_display }}{% endif %}</h2>
+{% if employer.approval_status == 'pending' %}<p class="certificate-help">Your registration and phone number have been verified. PESO must approve your employer account before you can post jobs or manage applications.</p>{% elif employer.approval_status == 'rejected' %}<p class="certificate-help">PESO has rejected your registration. Review the remarks below and contact PESO for assistance.</p>{% elif not employer.is_active %}<p class="certificate-help">Your account is suspended. Contact PESO for assistance.</p>{% else %}<p class="certificate-help">Your account is approved.</p><a class="certificate-button certificate-primary" href="{% url 'employer-dashboard' %}">Open Dashboard</a>{% endif %}
+{% if employer.approval_remarks %}<h3>Review remarks</h3><p class="certificate-help">{{ employer.approval_remarks|linebreaksbr }}</p>{% endif %}
+<a class="certificate-button" href="{% url 'employer-company-profile' %}">View Company Profile</a></section></main>
+{% endblock %}

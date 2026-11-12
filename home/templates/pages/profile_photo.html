@@ -1,0 +1,10 @@
+{% extends 'home_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/certificates.css' %}">
+<main class="certificates-page"><a href="{% url 'applicant-profile' %}" class="certificate-button">&larr; Back to My Profile</a><header><h1>Profile Photo</h1><p>Choose a JPG, PNG, or WebP photo. Maximum 5 MB.</p></header>
+<section class="certificate-card">
+{% if applicant.profile_photo %}<img src="{{ applicant.profile_photo.url }}" alt="Your current profile photo" width="120" height="120" style="object-fit:cover;border-radius:12px;margin-bottom:20px">{% endif %}
+<form method="post" enctype="multipart/form-data">{% csrf_token %}<div class="certificate-fields"><div><label for="id_profile_photo">Choose profile photo</label>{{ photo_form.profile_photo }}{{ photo_form.profile_photo.errors }}</div></div><button type="submit" class="certificate-button certificate-primary">Save Photo</button></form>
+</section></main>
+{% endblock %}

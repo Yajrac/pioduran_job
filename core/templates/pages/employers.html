@@ -1,0 +1,831 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* =========================================================
+       SCOPED CLEAN LIGHT THEME EMPLOYER MANAGEMENT STYLES
+    ========================================================= */
+
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .page-title h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #15284b;
+        letter-spacing: -0.012em;
+    }
+
+    .admin-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #15284b;
+        font-size: 0.9rem;
+    }
+
+    .admin-profile strong {
+        color: #15284b;
+    }
+
+    .profile-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-badge svg {
+        width: 20px;
+        height: 20px;
+        stroke: #2563eb;
+        fill: none;
+    }
+
+    .dashboard-workspace {
+        padding: 32px;
+        background-color: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-height: calc(100vh - 87px);
+    }
+
+    /* =========================================================
+       CONTROLS
+    ========================================================= */
+
+    .control-panel {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .search-box-wrapper {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 16px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        color: #15284b;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
+    }
+
+    .search-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* =========================================================
+       DATA TABLE CARD
+    ========================================================= */
+
+    .data-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .data-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+    }
+
+    .data-card-header h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #15284b;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    th {
+        background: #f8fafc;
+        color: #15284b;
+        padding: 14px 24px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    td {
+        padding: 16px 24px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #15284b;
+        vertical-align: middle;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    .permit-code {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        font-size: 0.85rem;
+        background: #f1f5f9;
+        color: #15284b;
+        padding: 4px 8px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* =========================================================
+       ACTION BUTTONS
+    ========================================================= */
+
+    .action-group {
+        display: inline-flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .btn-action {
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.82rem;
+        padding: 6px 14px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        cursor: pointer;
+        background: transparent;
+        min-width: 80px;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .btn-action:disabled,
+    .btn-action.loading {
+        cursor: not-allowed;
+        opacity: 0.75;
+        pointer-events: none;
+    }
+
+    .btn-view {
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+    }
+
+    .btn-view:hover {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .btn-suspend {
+        color: #c2410c;
+        border: 1px solid #ffedd5;
+        background: #fff7ed;
+    }
+
+    .btn-suspend:hover {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .btn-activate {
+        color: #15284b;
+        border: 1px solid #dcfce7;
+        background: #f0fdf4;
+    }
+
+    .btn-activate:hover {
+        background: #dcfce7;
+        color: #15284b;
+    }
+
+    .btn-delete {
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        background: #fef2f2;
+    }
+
+    .btn-delete:hover {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* =========================================================
+       LOADING SPINNER
+    ========================================================= */
+
+    .button-spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        animation: buttonSpin 0.7s linear infinite;
+        flex-shrink: 0;
+    }
+
+    @keyframes buttonSpin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Hidden loading content */
+    .loading-content {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+    }
+
+    .btn-action.loading .normal-content {
+        display: none;
+    }
+
+    .btn-action.loading .loading-content {
+        display: inline-flex;
+    }
+
+    /* =========================================================
+       SEARCH LOADING
+    ========================================================= */
+
+    .search-input.searching {
+        background-image: linear-gradient(
+            90deg,
+            #ffffff 0%,
+            #f8fafc 50%,
+            #ffffff 100%
+        );
+        background-size: 200% 100%;
+        animation: searchLoading 1.2s linear infinite;
+    }
+
+    @keyframes searchLoading {
+        from {
+            background-position: 200% 0;
+        }
+
+        to {
+            background-position: -200% 0;
+        }
+    }
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    @media (max-width: 768px) {
+
+        .content-header {
+            padding: 20px;
+        }
+
+        .dashboard-workspace {
+            padding: 20px;
+        }
+
+        .admin-profile {
+            display: none;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+        }
+
+        .action-group {
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            min-width: 75px;
+        }
+    }
+</style>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="content-header">
+
+    <div class="page-title">
+        <h2>Employer Profiles</h2>
+    </div>
+
+    <div class="admin-profile">
+
+        <span>
+            Welcome, <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+        </span>
+
+        <div class="profile-badge">
+
+            <svg
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     WORKSPACE
+========================================================= -->
+
+<div class="dashboard-workspace employer-list-workspace">
+
+
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
+
+    <div class="control-panel">
+
+        <div class="search-box-wrapper">
+
+            <input
+                type="text"
+                class="search-input"
+                id="employerSearch" aria-label="Search employers"
+                placeholder="Search company name or permit number..."
+                autocomplete="off"
+            >
+
+        </div>
+
+        <select id="employerStatusFilter" class="search-input employer-status-filter" aria-label="Filter employers by status">
+            <option value="">All statuses</option>
+            <option value="pending">Pending Approval</option><option value="rejected">Rejected</option><option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+        </select>
+    </div>
+
+
+    <!-- =====================================================
+         DATA TABLE
+    ====================================================== -->
+
+    <div class="data-card">
+
+        <div class="data-card-header">
+
+            <h3>
+                Registered Institutional Employers
+            </h3>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table id="employerTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Company Name</th>
+
+                        <th>Business Permit No.</th>
+
+                        <th>Contact No.</th>
+
+                        <th>Status</th>
+                        <th style="text-align: right;">
+                            System Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for i in employer %}
+
+                    <tr class="employer-row" data-status="{% if i.approval_status == 'pending' %}pending{% elif i.approval_status == 'rejected' %}rejected{% elif i.is_active %}active{% else %}suspended{% endif %}">
+
+                        <!-- COMPANY -->
+
+                        <td>
+
+                            <div
+                                style="
+                                    font-weight: 700;
+                                    color: #15284b;
+                                "
+                            >
+                                {{ i.company_name }}
+                            </div>
+
+                            <div
+                                style="
+                                    font-size: 0.78rem;
+                                    color: #15284b;
+                                    margin-top: 2px;
+                                "
+                            >
+                                Registered:
+                                {{ i.created_at|date:"M d, Y" }}
+                            </div>
+
+                        </td>
+
+
+                        <!-- PERMIT -->
+
+                        <td>
+
+                            <code class="permit-code">
+                                {{ i.business_permit_no }}
+                            </code>
+
+                        </td>
+
+
+                        <!-- CONTACT -->
+
+                        <td style="color: #15284b;">
+
+                            {{ i.contact_no }}
+
+                        </td>
+
+
+                        <td><span class="employer-approval-label approval-{{ i.approval_status }}{% if i.approval_status == 'approved' %}{% if i.is_active %} is-active{% else %} is-suspended{% endif %}{% endif %}">{% if i.approval_status != 'approved' %}{{ i.get_approval_status_display }}{% elif i.is_active %}Active{% else %}Suspended{% endif %}</span></td>
+                        <!-- ACTIONS -->
+
+                        <td style="text-align: right;">
+
+                            <button type="button" class="employer-actions-toggle" aria-label="Actions for {{ i.company_name }}" aria-expanded="false" aria-controls="employer-actions-{{ i.id }}">&#8942;</button>
+                            <div class="action-group employer-actions-menu" id="employer-actions-{{ i.id }}">
+
+
+                                <!-- VIEW -->
+
+                                <a
+                                    href="{% url 'employer_detail' i.id %}"
+                                    title="View Profile"
+                                    class="btn-action btn-view"
+                                    onclick="return handleLinkLoading(this, event, 'Loading...');"
+                                >
+
+                                    <span class="normal-content action-icon-content"><img src="{% static 'images/nav/action-view.png' %}" alt="" width="18" height="18"><span class="action-button-label">View</span></span>
+
+                                    <span class="loading-content">
+
+                                        <span class="button-spinner"></span>
+                                        Loading...
+
+                                    </span>
+
+                                </a>
+
+
+                                <!-- SUSPEND / ACTIVATE -->
+
+                                {% if i.approval_status == 'pending' %}
+                                <a href="{% url 'employer_detail' i.id %}#employerReviewForm" class="btn-action btn-review" title="Review registration (approve or reject)">
+                                    <span class="normal-content action-icon-content"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="action-button-label">Review</span></span>
+                                </a>
+                                {% elif i.approval_status != 'approved' %}
+                                {% elif i.is_active %}
+
+                                <a
+                                    href="{% url 'suspend_employer' i.id %}"
+                                    title="Suspend Account"
+                                    class="btn-action btn-suspend"
+                                    onclick="return handleConfirmAction(
+                                        this,
+                                        event,
+                                        'Are you sure you want to suspend this employer?',
+                                        'Suspending...'
+                                    );"
+                                >
+
+                                    <span class="normal-content action-icon-content"><img src="{% static 'images/nav/action-suspend.png' %}" alt="" width="18" height="18"><span class="action-button-label">Suspend</span></span>
+
+                                    <span class="loading-content">
+
+                                        <span class="button-spinner"></span>
+                                        Suspending...
+
+                                    </span>
+
+                                </a>
+
+                                {% else %}
+
+                                <a
+                                    href="{% url 'suspend_employer' i.id %}"
+                                    title="Activate Account"
+                                    class="btn-action btn-activate"
+                                    onclick="return handleConfirmAction(
+                                        this,
+                                        event,
+                                        'Are you sure you want to activate this employer?',
+                                        'Activating...'
+                                    );"
+                                >
+
+                                    <span class="normal-content action-icon-content"><img src="{% static 'images/nav/action-approve.png' %}" alt="" width="18" height="18"><span class="action-button-label">Activate</span></span>
+
+                                    <span class="loading-content">
+
+                                        <span class="button-spinner"></span>
+                                        Activating...
+
+                                    </span>
+
+                                </a>
+
+                                {% endif %}
+
+
+                                <!-- DELETE -->
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'delete_employer' i.id %}"
+                                    style="display:inline;"
+                                    onsubmit="return handleDeleteForm(this, event);"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        title="Delete Permanently"
+                                        class="btn-action btn-delete"
+                                    >
+
+                                        <span class="normal-content action-icon-content"><img src="{% static 'images/nav/action-delete.png' %}" alt="" width="18" height="18"><span class="action-button-label">Delete</span></span>
+
+                                        <span class="loading-content">
+
+                                            <span class="button-spinner"></span>
+                                            Deleting...
+
+                                        </span>
+
+                                    </button>
+
+                                </form>
+
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            style="
+                                text-align: center;
+                                color: #15284b;
+                                padding: 40px 0;
+                            "
+                        >
+                            No registered employers found in the system.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+                    <tr id="employerNoMatches" hidden>
+                        <td colspan="5" style="text-align:center;padding:36px;" role="status">No employers match your search and status filter.</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<dialog id="employerStatusDialog" class="job-delete-dialog employer-status-dialog" aria-labelledby="employerStatusTitle" aria-describedby="employerStatusDescription">
+    <div class="job-delete-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7l-9-4Z"/><path d="M9 9v6m6-6v6"/></svg></div>
+    <h2 id="employerStatusTitle">Update employer status?</h2>
+    <p id="employerStatusDescription"><strong id="employerStatusName"></strong><br><span id="employerStatusMessage"></span></p>
+    <div class="job-delete-dialog-actions"><button type="button" id="cancelEmployerStatus" autofocus>Cancel</button><button type="button" id="confirmEmployerStatus">Confirm</button></div>
+</dialog>
+
+<dialog id="deleteEmployerDialog" class="job-delete-dialog" aria-labelledby="deleteEmployerTitle" aria-describedby="deleteEmployerDescription">
+    <div class="job-delete-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg></div>
+    <h2 id="deleteEmployerTitle">Delete employer?</h2>
+    <p id="deleteEmployerDescription">You are about to permanently delete <strong id="deleteEmployerName"></strong>. This action cannot be undone.</p>
+    <div class="job-delete-dialog-actions"><button type="button" id="cancelEmployerDelete" autofocus>Cancel</button><button type="button" id="confirmEmployerDelete" class="confirm-danger-delete">Delete Employer</button></div>
+</dialog>
+
+<script>
+
+    /* =========================================================
+       PREVENT DOUBLE ACTIONS
+    ========================================================= */
+
+    let actionInProgress = false;
+
+
+    /* =========================================================
+       VIEW BUTTON
+    ========================================================= */
+
+    function handleLinkLoading(button, event, loadingText) {
+
+        if (actionInProgress) {
+
+            event.preventDefault();
+
+            return false;
+        }
+
+        actionInProgress = true;
+
+        button.classList.add("loading");
+
+        button.style.pointerEvents = "none";
+
+        return true;
+    }
+
+
+    /* =========================================================
+       SUSPEND / ACTIVATE
+    ========================================================= */
+
+    const statusDialog = document.getElementById("employerStatusDialog");
+    const statusConfirm = document.getElementById("confirmEmployerStatus");
+    const statusCancel = document.getElementById("cancelEmployerStatus");
+    let pendingStatusLink = null;
+    function handleConfirmAction(button, event, confirmationMessage, loadingText) {
+        event.preventDefault();
+        if (actionInProgress || statusDialog.open) return false;
+        pendingStatusLink = button;
+        const suspend = button.classList.contains("btn-suspend");
+        const company = button.closest("tr").querySelector("td:first-child > div").textContent.trim();
+        document.getElementById("employerStatusTitle").textContent = suspend ? "Suspend employer?" : "Activate employer?";
+        document.getElementById("employerStatusName").textContent = company;
+        document.getElementById("employerStatusMessage").textContent = suspend ? "Suspend this employer account?" : "Restore this employer account to active status?";
+        statusConfirm.textContent = suspend ? "Suspend Employer" : "Activate Employer";
+        statusConfirm.classList.toggle("confirm-suspend", suspend);
+        statusDialog.classList.toggle("status-suspending", suspend);
+        statusDialog.showModal();
+        return false;
+    }
+    statusCancel.addEventListener("click", () => statusDialog.close());
+    statusDialog.addEventListener("click", function (event) {
+        if (event.target !== statusDialog) return;
+        const box = statusDialog.getBoundingClientRect();
+        if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) statusDialog.close();
+    });
+    statusDialog.addEventListener("close", () => { if (!actionInProgress) pendingStatusLink = null; });
+    statusDialog.addEventListener("cancel", event => { if (actionInProgress) event.preventDefault(); });
+    statusConfirm.addEventListener("click", function () {
+        if (!pendingStatusLink || actionInProgress) return;
+        actionInProgress = true;
+        statusConfirm.disabled = true;
+        statusCancel.disabled = true;
+        statusConfirm.textContent = pendingStatusLink.classList.contains("btn-suspend") ? "Suspending..." : "Activating...";
+        statusDialog.setAttribute("aria-busy", "true");
+        // Status changes must be POST requests with a CSRF token.
+        const statusForm = document.createElement("form");
+        statusForm.method = "post";
+        statusForm.action = pendingStatusLink.href;
+        const token = document.querySelector("input[name=csrfmiddlewaretoken]");
+        if (token) statusForm.appendChild(token.cloneNode());
+        document.body.appendChild(statusForm);
+        statusForm.submit();
+    });
+
+    /* =========================================================
+       DELETE
+    ========================================================= */
+
+    const deleteDialog = document.getElementById("deleteEmployerDialog");
+    const confirmDelete = document.getElementById("confirmEmployerDelete");
+    let pendingDeleteForm = null;
+    function handleDeleteForm(form, event) {
+        event.preventDefault();
+        if (actionInProgress || deleteDialog.open) return false;
+        pendingDeleteForm = form;
+        document.getElementById("deleteEmployerName").textContent = form.closest("tr").querySelector("td:first-child > div").textContent.trim();
+        deleteDialog.showModal();
+        return false;
+    }
+    document.getElementById("cancelEmployerDelete").addEventListener("click", () => deleteDialog.close());
+    deleteDialog.addEventListener("click", function (event) {
+        if (event.target !== deleteDialog) return;
+        const box = deleteDialog.getBoundingClientRect();
+        if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) deleteDialog.close();
+    });
+    deleteDialog.addEventListener("close", () => { if (!actionInProgress) pendingDeleteForm = null; });
+    deleteDialog.addEventListener("cancel", event => { if (actionInProgress) event.preventDefault(); });
+    confirmDelete.addEventListener("click", function () {
+        if (!pendingDeleteForm || actionInProgress) return;
+        actionInProgress = true;
+        confirmDelete.disabled = true;
+        document.getElementById("cancelEmployerDelete").disabled = true;
+        confirmDelete.textContent = "Deleting...";
+        deleteDialog.setAttribute("aria-busy", "true");
+        HTMLFormElement.prototype.submit.call(pendingDeleteForm);
+    });
+
+    /* =========================================================
+       SEARCH
+    ========================================================= */
+
+    const searchInput =
+        document.getElementById("employerSearch");
+
+    const statusFilter = document.getElementById("employerStatusFilter");
+    const rows = Array.from(document.querySelectorAll(".employer-row"));
+    const noMatches = document.getElementById("employerNoMatches");
+    function filterEmployers() {
+        const query = searchInput.value.toLowerCase().trim();
+        const status = statusFilter.value;
+        let visible = 0;
+        rows.forEach(function (row) {
+            const matches = row.textContent.toLowerCase().includes(query)
+                && (!status || row.dataset.status === status);
+            row.dataset.filterHidden = String(!matches);
+            row.hidden = !matches;
+            if (matches) visible += 1;
+        });
+        noMatches.hidden = rows.length === 0 || visible > 0;
+        document.getElementById("employerTable").dispatchEvent(new Event("table-filter-change"));
+    }
+    searchInput.addEventListener("input", filterEmployers);
+    statusFilter.addEventListener("change", filterEmployers);
+    filterEmployers();
+
+</script>
+<script src="{% static 'js/employer-actions-menu.js' %}"></script>
+
+{% endblock %}

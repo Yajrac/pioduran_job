@@ -1,0 +1,31 @@
+body.peso-login-page { background:#f6f7f9; color:#15284b; }
+.peso-login-page .gov-top-bar { background:#2563eb; border:0; color:#fff; padding:14px 20px; font-size:12px; letter-spacing:.2px; }
+.peso-login-page .gov-top-bar span { color:#d8e0ee; font-weight:400; }
+.peso-login-page .main-wrapper { padding:36px 20px 48px; }
+.peso-login-page .login-card { max-width:440px; width:100%; padding:32px 34px; border:1px solid #e0e3e8; border-radius:6px; background:#fff; box-shadow:0 8px 28px #173e3108; }
+.peso-login-page .login-card::before { display:none; }
+.peso-login-page .portal-header { margin-bottom:22px; }
+.peso-login-page .logo-container { gap:18px; margin-bottom:22px; }
+.peso-login-page .logo-slot img { height:52px; max-width:65px; object-fit:contain; }
+.peso-login-page .logo-divider { height:34px; background:#dcdfe5; }
+.peso-login-page .portal-header h2 { color:#15284b; font-size:27px; letter-spacing:-0.4px; margin-bottom:10px; }
+.peso-login-page .portal-header .subtitle { color:#616772; font-size:12px; line-height:1.8; }
+.peso-login-page .privacy-notice { background:#f4f6f9; border:1px solid #e3e6eb; border-radius:5px; padding:13px 15px; margin-bottom:24px; font-size:11px; line-height:1.7; color:#616772; }
+.peso-login-page .privacy-notice strong { font-size:10px; color:#15284b; letter-spacing:.7px; margin-bottom:4px; }
+.peso-login-page .form-group { gap:20px; }
+.peso-login-page .field-label { color:#15284b; font-size:11px; font-weight:500; margin-bottom:8px; }
+.peso-login-page .input-wrapper input { min-height:46px; padding:12px 14px; background:#fff; border:1px solid #d9dde4; border-radius:5px; color:#15284b; font-size:13px; }
+.peso-login-page .input-wrapper input:focus { border-color:#2563eb; box-shadow:0 0 0 3px #05966912; }
+.peso-login-page .password-container input { padding-right:48px; }
+.peso-login-page .toggle-password-btn { right:9px; color:#616772; }
+.peso-login-page .btn-gov { min-height:46px; padding:12px 18px; background:#2563eb; border-radius:5px; font-size:13px; box-shadow:none; margin-top:24px; }
+.peso-login-page .btn-gov:hover,.peso-login-page .btn-gov.loading { background:#1d4ed8; box-shadow:none; transform:none; }
+@media(max-width:480px) { .peso-login-page .main-wrapper { padding:24px 16px 36px; } .peso-login-page .login-card { padding:26px 22px; } .peso-login-page .portal-header h2 { font-size:24px; } }
+.peso-login-page .login-field-error { color:#b42318; margin-top:6px; font-size:11px; line-height:1.7; }
+.peso-login-page .login-field-error:empty { display:none; }
+.peso-login-page .input-wrapper input[aria-invalid="true"] { border-color:#c94336; }
+.peso-login-page .btn-gov { display:flex; align-items:center; justify-content:center; gap:9px; }
+.peso-login-page .btn-gov:disabled { opacity:.75; cursor:wait; }
+.peso-login-page .login-spinner { width:16px; height:16px; border:2px solid #ffffff50; border-top-color:#fff; border-radius:50%; animation:peso-spin .7s linear infinite; }
+@keyframes peso-spin { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .peso-login-page .login-spinner { animation:none; } }

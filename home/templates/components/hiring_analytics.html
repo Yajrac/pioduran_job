@@ -1,0 +1,5 @@
+<section class="hiring-analytics" aria-label="Time-to-hire analytics">
+    <div class="hiring-analytics-heading"><h3>Time to Hire</h3><span>{% if hiring_stats.average_days != None %}{{ hiring_stats.average_days }} days average{% else %}No measured hires yet{% endif %}</span></div>
+    <p>Elapsed time from application to offer acceptance (Hired). Based on {{ hiring_stats.measured_count }} hire{{ hiring_stats.measured_count|pluralize }}.{% if hiring_stats.excluded_count %} {{ hiring_stats.excluded_count }} record{{ hiring_stats.excluded_count|pluralize }} excluded because dates are missing or invalid.{% endif %}</p>
+    {% if hiring_stats.breakdown %}<div class="hiring-analytics-table-wrap"><table class="hiring-analytics-table"><thead><tr><th>Employer</th><th>Job</th><th>Measured Hires</th><th>Average Days</th></tr></thead><tbody>{% for group in hiring_stats.breakdown %}<tr><td>{{ group.employer }}</td><td>{{ group.job }}</td><td>{{ group.count }}</td><td>{{ group.average_days }}</td></tr>{% endfor %}</tbody></table></div>{% endif %}
+</section>

@@ -1,0 +1,2596 @@
+{% extends 'home_base.html' %}
+{% load static %}
+
+{% block body_class %}portal-home portal-registration registration-applicant{% endblock %}
+{% block main_class %}portal-main{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   REGISTRATION PAGE
+========================================================= */
+
+.job-page-wrapper {
+    width: 100%;
+    min-height: calc(100vh - 140px);
+
+    padding: 50px 20px 80px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    background: #ffffff;
+
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   MAIN FORM CARD
+========================================================= */
+
+.form-workspace-card {
+    width: 100%;
+    max-width: 1050px;
+
+    display: flex;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 15px 40px rgba(15, 23, 42, 0.07);
+
+    text-align: left;
+}
+
+
+/* =========================================================
+   LEFT SIDEBAR
+========================================================= */
+
+.form-sidebar-panel {
+    width: 310px;
+    flex-shrink: 0;
+
+    background: #ffffff;
+
+    padding: 40px 30px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    border-right: 1px solid #e5e7eb;
+
+    color: #15284b;
+}
+
+
+/* =========================================================
+   SIDEBAR BRAND
+========================================================= */
+
+.sidebar-brand {
+    position: relative;
+}
+
+.sidebar-brand::before {
+    content: "";
+
+    display: block;
+
+    width: 42px;
+    height: 4px;
+
+    margin-bottom: 22px;
+
+    background: #2563eb;
+
+    border-radius: 2px;
+}
+
+
+.sidebar-brand h2 {
+    margin: 0 0 12px;
+
+    color: #15284b;
+
+    font-size: 1.65rem;
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    letter-spacing: -0.25px;
+}
+
+
+.sidebar-brand p {
+    margin: 0;
+
+    color: #15284b;
+
+    font-size: 0.88rem;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   STEP INDICATOR
+========================================================= */
+
+.step-indicator-bar {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+
+    margin: 45px 0;
+
+    position: relative;
+}
+
+
+.step-indicator-bar::before {
+    content: "";
+
+    position: absolute;
+
+    left: 22px;
+
+    top: 22px;
+    bottom: 22px;
+
+    width: 2px;
+
+    background: #e5e7eb;
+
+    z-index: 1;
+}
+
+
+.step-node {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    font-size: 0.88rem;
+
+    font-weight: 600;
+
+    color: #9ca3af;
+
+    transition: all 0.25s ease;
+}
+
+
+.step-node-dot {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    border: 2px solid #d1d5db;
+
+    color: #9ca3af;
+
+    font-size: 0.85rem;
+
+    font-weight: 800;
+
+    transition: all 0.25s ease;
+}
+
+
+.step-node.active {
+    color: #15284b;
+}
+
+
+.step-node.active .step-node-dot {
+    background: #2563eb;
+
+    border-color: #2563eb;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 0 5px rgba(37, 99, 235, 0.10);
+}
+
+
+.step-node.completed {
+    color: #15284b;
+}
+
+
+.step-node.completed .step-node-dot {
+    background: #eff6ff;
+
+    border-color: #2563eb;
+
+    color: #15284b;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+========================================================= */
+
+.sidebar-footer {
+    padding-top: 20px;
+
+    border-top: 1px solid #e5e7eb;
+
+    color: #9ca3af !important;
+
+    font-size: 0.72rem !important;
+}
+
+
+/* =========================================================
+   RIGHT FORM PANEL
+========================================================= */
+
+.form-body-panel {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 42px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   FORM STEPS
+========================================================= */
+
+.form-step-panel {
+    display: none;
+}
+
+.form-step-panel.active {
+    display: block;
+}
+
+
+/* =========================================================
+   FIELD LAYOUT
+========================================================= */
+
+.field-row {
+    display: flex;
+
+    gap: 20px;
+}
+
+
+.field-group {
+    flex: 1;
+
+    margin-bottom: 24px;
+}
+
+
+.field-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #15284b;
+
+    font-size: 0.78rem;
+
+    font-weight: 750;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.field-group input[type="text"],
+.field-group input[type="email"],
+.field-group input[type="password"],
+.field-group textarea {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 6px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #15284b;
+
+    font-family: inherit;
+
+    font-size: 0.94rem;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+
+    box-sizing: border-box;
+}
+
+
+.field-group input:hover,
+.field-group textarea:hover {
+    border-color: #9ca3af;
+}
+
+
+.field-group input:focus,
+.field-group textarea:focus {
+    border-color: #2563eb;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+
+.field-group textarea {
+    min-height: 120px;
+
+    resize: vertical;
+
+    line-height: 1.6;
+}
+
+
+.field-group textarea::placeholder,
+.field-group input::placeholder {
+    color: #9ca3af;
+}
+
+
+/* =========================================================
+   SKILLS HELP
+========================================================= */
+
+.skills-help {
+    margin-top: 8px;
+
+    color: #15284b;
+
+    font-size: 0.75rem;
+
+    line-height: 1.5;
+}
+
+
+.skills-help strong {
+    color: #15284b;
+}
+
+
+.skills-example {
+    margin-top: 8px;
+
+    padding: 10px 12px;
+
+    background: #eff6ff;
+
+    border-left: 3px solid #2563eb;
+
+    color: #1d4ed8;
+
+    font-size: 0.75rem;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   PASSWORD
+========================================================= */
+
+.password-wrapper {
+    position: relative;
+
+    width: 100%;
+}
+
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    width: 100%;
+
+    padding: 13px 48px 13px 15px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 6px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #15284b;
+
+    font-size: 0.94rem;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.password-wrapper input:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+.password-toggle {
+    position: absolute;
+
+    right: 7px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 37px;
+    height: 37px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 5px;
+
+    background: transparent;
+
+    color: #15284b;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.password-toggle:hover {
+    color: #15284b;
+
+    background: #eff6ff;
+}
+
+
+.password-toggle:focus {
+    outline: 2px solid rgba(37, 99, 235, 0.20);
+
+    outline-offset: 1px;
+}
+
+
+/* Centred without transform so global button hover/active transforms cannot move it */
+.password-toggle,
+.password-toggle:hover,
+.password-toggle:active,
+.password-toggle:focus {
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    transform: none;
+    translate: none;
+}
+
+.password-toggle svg {
+    width: 19px;
+    height: 19px;
+}
+
+
+/* =========================================================
+   PASSWORD REQUIREMENTS
+========================================================= */
+
+.password-requirements {
+    margin-top: 10px;
+
+    padding: 14px;
+
+    background: #f9fafb;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 7px;
+}
+
+
+.password-requirements-title {
+    margin-bottom: 9px;
+
+    color: #15284b;
+
+    font-size: 0.75rem;
+
+    font-weight: 750;
+}
+
+
+.password-rule {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin: 6px 0;
+
+    color: #15284b;
+
+    font-size: 0.74rem;
+}
+
+
+.password-rule .rule-icon {
+    width: 17px;
+    height: 17px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #d1d5db;
+
+    color: #ffffff;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    transition: all 0.2s ease;
+}
+
+
+.password-rule.valid {
+    color: #15284b;
+}
+
+
+.password-rule.valid .rule-icon {
+    background: #2563eb;
+}
+
+
+.password-rule.invalid {
+    color: #15284b;
+}
+
+
+/* =========================================================
+   PASSWORD ERROR
+========================================================= */
+
+.password-error {
+    display: none;
+
+    margin-top: 8px;
+
+    padding: 9px 11px;
+
+    background: #fef2f2;
+
+    border: 1px solid #fecaca;
+
+    border-radius: 6px;
+
+    color: #b91c1c;
+
+    font-size: 0.75rem;
+
+    font-weight: 600;
+}
+
+
+.password-error.show {
+    display: block;
+}
+
+
+/* =========================================================
+   FILE DROPZONE
+========================================================= */
+
+.file-dropzone-wrapper {
+    position: relative;
+
+    min-height: 145px;
+
+    padding: 25px 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 2px dashed #d1d5db;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.file-dropzone-wrapper:hover {
+    border-color: #2563eb;
+
+    background: #eff6ff;
+}
+
+
+.file-dropzone-wrapper > svg {
+    color: #15284b;
+
+    transition: color 0.2s ease;
+}
+
+
+.file-dropzone-wrapper:hover > svg {
+    color: #15284b;
+}
+
+
+.file-dropzone-wrapper input[type="file"] {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0;
+
+    cursor: pointer;
+}
+
+
+.file-upload-text {
+    color: #15284b;
+
+    font-size: 0.88rem;
+}
+
+
+.file-upload-text strong {
+    color: #15284b;
+}
+
+
+.file-upload-tip {
+    color: #9ca3af;
+
+    font-size: 0.73rem;
+}
+
+
+.file-selected-name {
+    display: none;
+
+    margin-top: 4px;
+
+    color: #15284b;
+
+    font-size: 0.82rem;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   NAVIGATION FOOTER
+========================================================= */
+
+.flow-control-footer {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 16px;
+
+    margin-top: auto;
+
+    padding-top: 30px;
+
+    border-top: 1px solid #e5e7eb;
+}
+
+
+.btn-flow {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 44px;
+
+    padding: 0 22px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    font-family: inherit;
+
+    font-size: 0.88rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.btn-flow-back {
+    background: #f3f4f6;
+
+    color: #15284b;
+
+    border: 1px solid #e5e7eb;
+}
+
+
+.btn-flow-back:hover {
+    background: #e5e7eb;
+
+    color: #15284b;
+}
+
+
+/* =========================================================
+   NEXT BUTTON
+========================================================= */
+
+.btn-flow-next {
+    margin-left: auto;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 5px 14px rgba(37, 99, 235, 0.18);
+}
+
+
+.btn-flow-next:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 18px rgba(37, 99, 235, 0.22);
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.btn-flow-submit {
+    margin-left: auto;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 5px 14px rgba(37, 99, 235, 0.18);
+}
+
+
+.btn-flow-submit:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 18px rgba(37, 99, 235, 0.22);
+}
+
+
+.btn-flow:disabled {
+    opacity: 0.65;
+
+    cursor: not-allowed;
+
+    transform: none !important;
+
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   SERVER ERROR
+========================================================= */
+
+.form-error {
+    margin-bottom: 22px;
+
+    padding: 12px 15px;
+
+    background: #fef2f2;
+
+    border: 1px solid #fecaca;
+
+    border-left: 3px solid #dc2626;
+
+    border-radius: 6px;
+
+    color: #b91c1c;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   FORM STEP HEADER
+========================================================= */
+
+.form-step-panel::before {
+    display: block;
+
+    margin-bottom: 28px;
+
+    color: #15284b;
+
+    font-size: 1.35rem;
+
+    font-weight: 800;
+}
+
+
+#step-panel-1::before {
+    content: "Create Your Account";
+}
+
+
+#step-panel-2::before {
+    content: "Personal & Professional Details";
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .job-page-wrapper {
+        padding-top: 25px;
+    }
+
+
+    .form-workspace-card {
+        flex-direction: column;
+    }
+
+
+    .form-sidebar-panel {
+        width: 100%;
+
+        padding: 30px;
+
+        border-right: none;
+
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+
+    .sidebar-brand::before {
+        margin-bottom: 16px;
+    }
+
+
+    .step-indicator-bar {
+        flex-direction: row;
+
+        justify-content: space-between;
+
+        margin: 28px 0 0;
+
+        gap: 12px;
+    }
+
+
+    .step-indicator-bar::before {
+        display: block;
+
+        left: 23px;
+        right: 23px;
+
+        top: 22px;
+        bottom: auto;
+
+        width: auto;
+        height: 2px;
+    }
+
+
+    .step-node {
+        flex-direction: column;
+
+        gap: 7px;
+
+        text-align: center;
+    }
+
+
+    .step-node span {
+        display: block;
+
+        font-size: 0.72rem;
+    }
+
+
+    .sidebar-footer {
+        display: none;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .job-page-wrapper {
+        padding: 15px 10px 50px;
+    }
+
+
+    .form-workspace-card {
+        border-radius: 7px;
+
+        box-shadow:
+            0 8px 25px rgba(15, 23, 42, 0.06);
+    }
+
+
+    .form-sidebar-panel {
+        padding: 25px 20px;
+    }
+
+
+    .sidebar-brand h2 {
+        font-size: 1.4rem;
+    }
+
+
+    .sidebar-brand p {
+        font-size: 0.82rem;
+    }
+
+
+    .step-indicator-bar {
+        margin-top: 25px;
+    }
+
+
+    .step-node span {
+        display: none;
+    }
+
+
+    .form-body-panel {
+        padding: 28px 20px;
+    }
+
+
+    .field-row {
+        flex-direction: column;
+
+        gap: 0;
+    }
+
+
+    .flow-control-footer {
+        flex-wrap: wrap;
+    }
+
+
+    .btn-flow {
+        min-height: 42px;
+
+        padding: 0 17px;
+    }
+}
+
+
+@media (max-width: 400px) {
+
+    .form-body-panel {
+        padding: 25px 16px;
+    }
+
+
+    .form-sidebar-panel {
+        padding: 24px 17px;
+    }
+
+
+    .form-step-panel::before {
+        font-size: 1.2rem;
+    }
+}
+
+</style>
+
+
+<!-- =========================================================
+     REGISTRATION PAGE
+========================================================= -->
+
+<div class="job-page-wrapper">
+
+    <div class="form-workspace-card">
+
+
+        <!-- =================================================
+             LEFT SIDEBAR
+        ================================================== -->
+
+        <div class="form-sidebar-panel">
+
+            <div>
+
+                <div class="sidebar-brand">
+
+                    <h2>
+                        Applicant Registration
+                    </h2>
+
+                    <p>
+                        Create your account to browse available
+                        jobs, submit applications, and manage your
+                        employment profile.
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     STEP INDICATOR
+                ================================================== -->
+
+                <div class="step-indicator-bar">
+
+                    <div
+                        class="step-node active"
+                        id="indicator-1"
+                    >
+
+                        <div class="step-node-dot">
+                            1
+                        </div>
+
+                        <span>
+                            Account Setup
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="step-node"
+                        id="indicator-2"
+                    >
+
+                        <div class="step-node-dot">
+                            2
+                        </div>
+
+                        <span>
+                            Personal Profile
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="sidebar-footer">
+                PESO Pio Duran © 2026
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             RIGHT FORM PANEL
+        ================================================== -->
+
+        <div class="form-body-panel">
+
+
+            <!-- =================================================
+                 SERVER ERROR
+            ================================================== -->
+
+            {% if error %}
+
+                <div class="form-error">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <form
+                id="registrationForm"
+                method="POST"
+                enctype="multipart/form-data"
+                action=""
+            >
+
+                {% csrf_token %}
+
+
+                <!-- =================================================
+                     STEP 1
+                ================================================== -->
+
+                <div
+                    class="form-step-panel active"
+                    id="step-panel-1"
+                >
+
+
+                    <!-- USERNAME -->
+
+                    <div class="field-group">
+
+                        <label for="username">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username" value="{{ form_values.username|default:'' }}" aria-describedby="username-feedback" maxlength="150"
+                            placeholder="Choose a unique username"
+                            autocomplete="username"
+                            required
+                        >
+<p class="field-feedback" id="username-feedback" aria-live="polite">{{ field_errors.username }}</p>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="field-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Create a secure password"
+                                autocomplete="new-password"
+                                minlength="8"
+                                required
+                            >
+
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="passwordToggle"
+                                onclick="togglePassword()"
+                                aria-label="Show password"
+                                title="Show password"
+                            >
+
+                                <svg
+                                    id="eyeIcon"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+
+                                    <path
+                                        d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"
+                                    />
+
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="3"
+                                    />
+
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- PASSWORD REQUIREMENTS -->
+
+                        <div class="password-requirements">
+
+                            <div class="password-requirements-title">
+                                Password must contain:
+                            </div>
+
+
+                            <div
+                                class="password-rule invalid"
+                                id="rule-length"
+                            >
+
+                                <span class="rule-icon">
+                                    ✓
+                                </span>
+
+                                <span>
+                                    At least 8 characters
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="password-rule invalid"
+                                id="rule-uppercase"
+                            >
+
+                                <span class="rule-icon">
+                                    ✓
+                                </span>
+
+                                <span>
+                                    At least 1 uppercase letter (A-Z)
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="password-rule invalid"
+                                id="rule-lowercase"
+                            >
+
+                                <span class="rule-icon">
+                                    ✓
+                                </span>
+
+                                <span>
+                                    At least 1 lowercase letter (a-z)
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="password-rule invalid"
+                                id="rule-number"
+                            >
+
+                                <span class="rule-icon">
+                                    ✓
+                                </span>
+
+                                <span>
+                                    At least 1 number (0-9)
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="password-rule invalid"
+                                id="rule-special"
+                            >
+
+                                <span class="rule-icon">
+                                    ✓
+                                </span>
+
+                                <span>
+                                    At least 1 special character
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="password-error"
+                            id="passwordError"
+                        >
+                            Password does not meet the required
+                            security rules.
+                        </div>
+
+                    </div>
+
+                    <div class="field-group">
+                        <label for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" placeholder="Retype your password" aria-describedby="confirm_password-feedback" required>
+                        <p class="field-feedback" id="confirm_password-feedback" aria-live="polite">{{ field_errors.confirm_password }}</p>
+                    </div>
+                </div>
+
+
+                <!-- =================================================
+                     STEP 2
+                ================================================== -->
+
+                <div
+                    class="form-step-panel"
+                    id="step-panel-2"
+                >
+
+
+                    <!-- NAME -->
+
+                    <div class="field-row">
+
+                        <div class="field-group">
+
+                            <label for="first_name">
+                                First Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="first_name"
+                                name="first_name"
+                                value="{{ form_values.first_name|default:'' }}"
+                                aria-describedby="first_name-feedback"
+                                placeholder="First Name"
+                                required
+                            >
+                            <p class="field-feedback" id="first_name-feedback" aria-live="polite">{{ field_errors.first_name }}</p>
+
+                        </div>
+
+
+                        <div class="field-group">
+
+                            <label for="last_name">
+                                Last Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="last_name"
+                                name="last_name"
+                                value="{{ form_values.last_name|default:'' }}"
+                                aria-describedby="last_name-feedback"
+                                placeholder="Last Name"
+                                required
+                            >
+                            <p class="field-feedback" id="last_name-feedback" aria-live="polite">{{ field_errors.last_name }}</p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MIDDLE NAME -->
+
+                    <div class="field-group">
+
+                        <label for="middle_name">
+                            Middle Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="middle_name"
+                            name="middle_name"
+                                value="{{ form_values.middle_name|default:'' }}"
+                                aria-describedby="middle_name-feedback"
+                            placeholder="Middle Name (Optional)"
+                        >
+                            <p class="field-feedback" id="middle_name-feedback" aria-live="polite">{{ field_errors.middle_name }}</p>
+
+                    </div>
+
+
+                    <!-- CONTACT -->
+
+                    <div class="field-row">
+
+                        <div class="field-group">
+
+                            <label for="email">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email" aria-describedby="email-feedback"
+                                placeholder="e.g. juandelacruz@email.com"
+                                required
+                            >
+<p class="field-feedback" id="email-feedback" aria-live="polite"></p>
+
+                        </div>
+
+
+                        <div class="field-group">
+
+                            <label for="phone_number">
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="text"
+                                id="phone_number"
+                                name="phone_number"
+                                value="{{ form_values.phone_number|default:'' }}"
+                                aria-describedby="phone_number-feedback"
+                                placeholder="e.g. 09123456789"
+                                maxlength="11"
+                                minlength="11"
+                                inputmode="numeric"
+                                required
+                            >
+                            <p class="field-feedback" id="phone_number-feedback" aria-live="polite">{{ field_errors.phone_number }}</p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SKILLS -->
+
+                    <div class="field-group">
+
+                        <label for="skills">
+                            Skills
+                        </label>
+
+                        <textarea id="skills" name="skills" placeholder="Enter your skills separated by commas" required>{{ form_values.skills|default:'' }}</textarea>
+                        <div id="skills-editor" class="skills-editor" hidden>
+                            <ul id="skill-tags" class="skill-tags" aria-label="Added skills"></ul>
+                            <div class="skill-entry-row">
+                                <input type="text" id="skill-entry" maxlength="60" placeholder="e.g. Customer Service" aria-describedby="skills-help skills-feedback" autocomplete="off">
+                                <button type="button" id="skill-add">Add</button>
+                            </div>
+                        </div>
+                        <p class="skills-help" id="skills-help">Add skills relevant to the jobs you want. Press Enter or comma after each skill.</p>
+                        <p class="field-feedback" id="skills-feedback" aria-live="polite">{{ field_errors.skills }}</p>
+                        <div class="skill-suggestions" id="skill-suggestions" hidden>
+                            <span>Suggestions</span>
+                            <button type="button">Customer Service</button><button type="button">Sales</button><button type="button">Cooking</button><button type="button">Driving</button><button type="button">Computer Literacy</button>
+                        </div>
+                    </div>
+
+
+                    <!-- RESUME -->
+
+                    <div class="field-group">
+
+                        <label>
+                            Upload Resume
+                        </label>
+
+
+                        <div class="file-dropzone-wrapper">
+
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="36"
+                                height="36"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+
+                                <path
+                                    d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"
+                                />
+
+                                <path
+                                    d="M12 12v9"
+                                />
+
+                                <path
+                                    d="m15 15-3-3-3 3"
+                                />
+
+                            </svg>
+
+
+                            <div class="file-upload-text">
+
+                                Drop your resume here or
+                                <strong>browse files</strong>
+
+                            </div>
+
+
+                            <div class="file-upload-tip">
+                                Supports PDF, DOC, DOCX up to 5MB
+                            </div>
+
+
+                            <input
+                                type="file"
+                                id="resume"
+                                name="resume"
+                                accept=".pdf,.doc,.docx"
+                                onchange="handleFileSelection(this, 'resumeSelectedName')"
+                            >
+{% if field_errors.resume %}<p style="color:#b83f39;font-size:12px;margin-top:8px" role="alert">{{ field_errors.resume }}</p>{% endif %}
+
+
+                            <div
+                                class="file-selected-name"
+                                id="resumeSelectedName"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- COVER LETTER -->
+
+                    <div class="field-group">
+
+                        <label>
+                            Upload Cover Letter
+                        </label>
+
+
+                        <div class="file-dropzone-wrapper">
+
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="36"
+                                height="36"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+
+                                <path
+                                    d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+                                />
+
+                                <polyline
+                                    points="14 2 14 8 20 8"
+                                />
+
+                                <line
+                                    x1="12"
+                                    y1="18"
+                                    x2="12"
+                                    y2="12"
+                                />
+
+                                <line
+                                    x1="9"
+                                    y1="15"
+                                    x2="15"
+                                    y2="15"
+                                />
+
+                            </svg>
+
+
+                            <div class="file-upload-text">
+
+                                Drop your cover letter here or
+                                <strong>browse files</strong>
+
+                            </div>
+
+
+                            <div class="file-upload-tip">
+                                Supports PDF, DOC, DOCX up to 5MB
+                            </div>
+
+
+                            <input
+                                type="file"
+                                id="cover_letter"
+                                name="cover_letter"
+                                accept=".pdf,.doc,.docx"
+                                onchange="handleFileSelection(this, 'coverLetterSelectedName')"
+                            >
+
+
+                            <div
+                                class="file-selected-name"
+                                id="coverLetterSelectedName"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     NAVIGATION
+                ================================================== -->
+
+                <div class="flow-control-footer">
+
+
+                    <!-- BACK -->
+
+                    <button
+                        type="button"
+                        class="btn-flow btn-flow-back"
+                        id="btnBack"
+                        style="display: none;"
+                        onclick="navigateStep(-1)"
+                    >
+
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+
+                            <line
+                                x1="19"
+                                y1="12"
+                                x2="5"
+                                y2="12"
+                            />
+
+                            <polyline
+                                points="12 19 5 12 12 5"
+                            />
+
+                        </svg>
+
+                        Back
+
+                    </button>
+
+
+                    <!-- NEXT -->
+
+                    <button
+                        type="button"
+                        class="btn-flow btn-flow-next"
+                        id="btnNext"
+                        onclick="navigateStep(1)"
+                    >
+
+                        Next Step
+
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+
+                            <line
+                                x1="5"
+                                y1="12"
+                                x2="19"
+                                y2="12"
+                            />
+
+                            <polyline
+                                points="12 5 19 12 12 19"
+                            />
+
+                        </svg>
+
+                    </button>
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        type="submit"
+                        class="btn-flow btn-flow-submit"
+                        id="btnSubmit"
+                        style="display: none;"
+                    >
+
+                        Complete Registration
+
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+
+                            <polyline
+                                points="20 6 9 17 4 12"
+                            />
+
+                        </svg>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   STEP SYSTEM
+========================================================= */
+
+let activeStep = {% if field_errors and not account_errors %}2{% else %}1{% endif %};
+
+const totalSteps = 2;
+
+
+/* =========================================================
+   NAVIGATE
+========================================================= */
+
+function navigateStep(direction) {
+
+    if (direction === 1 && !validateCurrentStep()) {
+        return;
+    }
+
+    activeStep += direction;
+
+    if (activeStep < 1) {
+        activeStep = 1;
+    }
+
+    if (activeStep > totalSteps) {
+        activeStep = totalSteps;
+    }
+
+    renderStepUI();
+}
+
+
+/* =========================================================
+   VALIDATE CURRENT STEP
+========================================================= */
+
+function validateCurrentStep() {
+    if (activeStep === 1 && window.validateRegistrationAccount && !window.validateRegistrationAccount()) return false;
+
+    const currentPanel =
+        document.getElementById(`step-panel-${activeStep}`);
+
+
+    const fields =
+        currentPanel.querySelectorAll(
+            'input[required], textarea[required], select[required]'
+        );
+
+
+    for (let field of fields) {
+
+        if (!field.value.trim()) {
+
+            field.focus();
+
+            alert(
+                "Please fill out all required fields before proceeding."
+            );
+
+            return false;
+        }
+    }
+
+
+    if (activeStep === 1) {
+
+        const passwordInput =
+            document.getElementById("password");
+
+        const password =
+            passwordInput.value;
+
+
+        if (!validatePassword(password)) {
+
+            passwordInput.focus();
+
+            alert(
+                "Please create a stronger password.\n\n" +
+                "Your password must contain:\n\n" +
+                "• At least 8 characters\n" +
+                "• At least 1 uppercase letter\n" +
+                "• At least 1 lowercase letter\n" +
+                "• At least 1 number\n" +
+                "• At least 1 special character"
+            );
+
+            return false;
+        }
+    }
+
+
+    return true;
+}
+
+
+/* =========================================================
+   RENDER STEP UI
+========================================================= */
+
+function renderStepUI() {
+
+    for (let i = 1; i <= totalSteps; i++) {
+
+        document
+            .getElementById(`step-panel-${i}`)
+            .classList
+            .toggle(
+                "active",
+                i === activeStep
+            );
+    }
+
+
+    const node =
+        document.getElementById("indicator-1");
+
+    const node2 =
+        document.getElementById("indicator-2");
+
+
+    if (activeStep === 1) {
+
+        node.className =
+            "step-node active";
+
+        node2.className =
+            "step-node";
+    }
+
+    else {
+
+        node.className =
+            "step-node completed";
+
+        node2.className =
+            "step-node active";
+    }
+
+
+    document
+        .getElementById("btnBack")
+        .style.display =
+        activeStep === 1
+            ? "none"
+            : "inline-flex";
+
+
+    document
+        .getElementById("btnNext")
+        .style.display =
+        activeStep === totalSteps
+            ? "none"
+            : "inline-flex";
+
+
+    document
+        .getElementById("btnSubmit")
+        .style.display =
+        activeStep === totalSteps
+            ? "inline-flex"
+            : "none";
+}
+
+
+/* =========================================================
+   PASSWORD SHOW / HIDE
+========================================================= */
+
+function togglePassword() {
+
+    const passwordInput =
+        document.getElementById("password");
+
+    const passwordToggle =
+        document.getElementById("passwordToggle");
+
+    const eyeIcon =
+        document.getElementById("eyeIcon");
+
+
+    if (passwordInput.type === "password") {
+
+        passwordInput.type = "text";
+
+
+        passwordToggle.setAttribute(
+            "aria-label",
+            "Hide password"
+        );
+
+
+        passwordToggle.setAttribute(
+            "title",
+            "Hide password"
+        );
+
+
+        eyeIcon.innerHTML = `
+
+            <path
+                d="M3 3l18 18"
+            />
+
+            <path
+                d="M10.6 10.6a2 2 0 0 0 2.8 2.8"
+            />
+
+            <path
+                d="M9.9 4.2A10.8 10.8 0 0 1 12 4c7 0 10 8 10 8a17.5 17.5 0 0 1-3.2 4.5"
+            />
+
+            <path
+                d="M6.6 6.6C3.7 8.4 2 12 2 12s3.5 8 10 8a10.7 10.7 0 0 0 4.4-.9"
+            />
+
+        `;
+
+    }
+
+    else {
+
+        passwordInput.type = "password";
+
+
+        passwordToggle.setAttribute(
+            "aria-label",
+            "Show password"
+        );
+
+
+        passwordToggle.setAttribute(
+            "title",
+            "Show password"
+        );
+
+
+        eyeIcon.innerHTML = `
+
+            <path
+                d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"
+            />
+
+            <circle
+                cx="12"
+                cy="12"
+                r="3"
+            />
+
+        `;
+    }
+}
+
+
+/* =========================================================
+   PASSWORD VALIDATION
+========================================================= */
+
+function validatePassword(password) {
+
+    const rules = {
+
+        length:
+            password.length >= 8,
+
+        uppercase:
+            /[A-Z]/.test(password),
+
+        lowercase:
+            /[a-z]/.test(password),
+
+        number:
+            /[0-9]/.test(password),
+
+        special:
+            /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/;'`~]/.test(password)
+
+    };
+
+
+    updatePasswordRule(
+        "rule-length",
+        rules.length
+    );
+
+
+    updatePasswordRule(
+        "rule-uppercase",
+        rules.uppercase
+    );
+
+
+    updatePasswordRule(
+        "rule-lowercase",
+        rules.lowercase
+    );
+
+
+    updatePasswordRule(
+        "rule-number",
+        rules.number
+    );
+
+
+    updatePasswordRule(
+        "rule-special",
+        rules.special
+    );
+
+
+    const isValid =
+        rules.length &&
+        rules.uppercase &&
+        rules.lowercase &&
+        rules.number &&
+        rules.special;
+
+
+    const error =
+        document.getElementById("passwordError");
+
+
+    if (
+        password.length > 0 &&
+        !isValid
+    ) {
+
+        error.classList.add("show");
+
+    }
+
+    else {
+
+        error.classList.remove("show");
+
+    }
+
+
+    return isValid;
+}
+
+
+/* =========================================================
+   UPDATE PASSWORD RULE
+========================================================= */
+
+function updatePasswordRule(
+    ruleId,
+    valid
+) {
+
+    const rule =
+        document.getElementById(ruleId);
+
+
+    if (valid) {
+
+        rule.classList.add("valid");
+
+        rule.classList.remove("invalid");
+
+    }
+
+    else {
+
+        rule.classList.remove("valid");
+
+        rule.classList.add("invalid");
+
+    }
+}
+
+
+/* =========================================================
+   DOM READY
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const passwordInput =
+            document.getElementById("password");
+
+
+        if (passwordInput) {
+
+            passwordInput.addEventListener(
+                "input",
+                function () {
+
+                    validatePassword(
+                        this.value
+                    );
+
+                }
+            );
+        }
+
+
+        /* =====================================================
+           PHONE NUMBER
+        ===================================================== */
+
+        const phoneInput =
+            document.getElementById("phone_number");
+
+
+        if (phoneInput) {
+
+            phoneInput.addEventListener(
+                "input",
+                function () {
+
+                    this.value =
+                        this.value
+                            .replace(/\D/g, "")
+                            .slice(0, 11);
+
+                }
+            );
+        }
+
+
+        /* =====================================================
+           FORM SUBMISSION
+        ===================================================== */
+
+        const registrationForm =
+            document.getElementById(
+                "registrationForm"
+            );
+
+
+        if (registrationForm) {
+
+            registrationForm.addEventListener(
+                "submit",
+                function (event) {
+
+                    const password =
+                        document.getElementById(
+                            "password"
+                        ).value;
+
+
+                    if (!validatePassword(password)) {
+
+                        event.preventDefault();
+
+
+                        activeStep = 1;
+
+                        renderStepUI();
+
+
+                        document
+                            .getElementById("password")
+                            .focus();
+
+
+                        alert(
+                            "Registration cannot be submitted.\n\n" +
+                            "Please create a password that meets all security requirements."
+                        );
+
+                        return false;
+                    }
+
+
+                    /* =============================================
+                       VALIDATE STEP 2
+                    ============================================== */
+
+                    const stepTwo =
+                        document.getElementById(
+                            "step-panel-2"
+                        );
+
+
+                    const requiredFields =
+                        stepTwo.querySelectorAll(
+                            'input[required], textarea[required], select[required]'
+                        );
+
+
+                    for (let field of requiredFields) {
+
+                        if (!field.value.trim()) {
+
+                            event.preventDefault();
+
+
+                            activeStep = 2;
+
+                            renderStepUI();
+
+
+                            field.focus();
+
+
+                            alert(
+                                "Please complete all required fields before submitting your registration."
+                            );
+
+                            return false;
+                        }
+                    }
+
+
+                    /* =============================================
+                       PHONE VALIDATION
+                    ============================================== */
+
+                    const phone =
+                        document.getElementById(
+                            "phone_number"
+                        ).value;
+
+
+                    if (!/^09\d{9}$/.test(phone)) {
+
+                        event.preventDefault();
+
+
+                        activeStep = 2;
+
+                        renderStepUI();
+
+
+                        document
+                            .getElementById("phone_number")
+                            .focus();
+
+
+                        alert(
+                            "Please enter a valid Philippine mobile number starting with 09 and containing 11 digits."
+                        );
+
+                        return false;
+                    }
+
+
+                    /* =============================================
+                       PREVENT DOUBLE SUBMISSION
+                    ============================================== */
+
+                    const submitButton =
+                        document.getElementById(
+                            "btnSubmit"
+                        );
+
+
+                    if (submitButton) {
+
+                        submitButton.disabled = true;
+
+                        submitButton.setAttribute('aria-busy', 'true');
+                        submitButton.innerHTML = '<span class="registration-submit-spinner" aria-hidden="true"></span><span role="status">Submitting...</span>';
+                    }
+
+                }
+            );
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FILE SELECTION
+========================================================= */
+
+function handleFileSelection(
+    input,
+    outputElementId
+) {
+
+    const targetOutput =
+        document.getElementById(
+            outputElementId
+        );
+
+
+    if (
+        input.files &&
+        input.files[0]
+    ) {
+
+        const file =
+            input.files[0];
+
+
+        /* =====================================================
+           5 MB LIMIT
+        ===================================================== */
+
+        const maxSize =
+            5 * 1024 * 1024;
+
+
+        if (file.size > maxSize) {
+
+            alert(
+                "The selected file is larger than 5MB. Please choose a smaller file."
+            );
+
+
+            input.value = "";
+
+            targetOutput.innerText = "";
+
+            targetOutput.style.display =
+                "none";
+
+            return;
+        }
+
+
+        targetOutput.innerText =
+            "Selected: " +
+            file.name;
+
+
+        targetOutput.style.display =
+            "block";
+
+    }
+
+    else {
+
+        targetOutput.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+renderStepUI();
+
+</script>
+
+{{ field_errors|json_script:"registration-field-errors" }}
+<script>
+(function () {
+    const form = document.getElementById('registrationForm');
+    const ids = ['first_name', 'last_name', 'middle_name', 'phone_number'];
+    const serverErrors = JSON.parse(document.getElementById('registration-field-errors').textContent) || {};
+    function validate(field) {
+        const value = field.value.trim();
+        let message = '';
+        if (field.id === 'phone_number') {
+            if (!/^09[0-9]{9}$/.test(value)) message = 'Enter an 11-digit mobile number starting with 09.';
+        } else if (!value && field.id !== 'middle_name') {
+            message = 'This name is required.';
+        } else if (value && (!/\p{L}/u.test(value) || !/^[\p{L}\p{M} .?'\-]+$/u.test(value))) {
+            message = 'Use letters, spaces, apostrophes, hyphens or periods only. Numbers are not allowed.';
+        }
+        field.setCustomValidity(message);
+        field.classList.toggle('field-invalid', Boolean(message));
+        field.classList.toggle('field-valid', !message && Boolean(value));
+        field.setAttribute('aria-invalid', String(Boolean(message)));
+        document.getElementById(field.id + '-feedback').textContent = message;
+        return !message;
+    }
+    ids.forEach(id => {
+        const field = document.getElementById(id);
+        ['input', 'blur'].forEach(event => field.addEventListener(event, () => validate(field)));
+        field.addEventListener('invalid', event => { event.preventDefault(); validate(field); });
+        if (serverErrors[id]) validate(field);
+    });
+    form.addEventListener('submit', event => {
+        const invalid = ids.map(id => document.getElementById(id)).filter(field => !validate(field));
+        if (invalid.length) {
+            event.preventDefault(); event.stopImmediatePropagation();
+            activeStep = 2; renderStepUI(); invalid[0].focus();
+        }
+    }, true);
+})();
+</script>
+<script>
+(function () {
+ const username = document.getElementById('username');
+ const password = document.getElementById('password');
+ const confirm = document.getElementById('confirm_password');
+ const form = document.getElementById('registrationForm');
+ let timer, revision = 0, checked = '', available = false;
+ function paint(field, message, valid) {
+  field.setCustomValidity(message);
+  field.classList.toggle('field-invalid', Boolean(message));
+  field.classList.toggle('field-valid', Boolean(valid));
+  field.setAttribute('aria-invalid', String(Boolean(message)));
+  document.getElementById(field.id + '-feedback').textContent = message;
+ }
+ function match(show = true) {
+  const valid = Boolean(confirm.value) && confirm.value === password.value;
+  paint(confirm, valid ? '' : (show ? 'Passwords do not match.' : ''), valid);
+  return valid;
+ }
+ async function check() {
+  const value = username.value.trim(), current = ++revision;
+  if (!value) { paint(username, 'Username is required.', false); return; }
+  try {
+   const response = await fetch("{% url 'check-registration-username' %}?username=" + encodeURIComponent(value), {cache:'no-store'});
+   if (!response.ok) throw new Error();
+   const data = await response.json();
+   if (current !== revision || username.value.trim() !== value) return;
+   checked = value; available = data.available;
+   paint(username, data.error, available);
+  } catch (_) {
+   if (current === revision) paint(username, 'Unable to check username. Please try again.', false);
+  }
+ }
+ username.addEventListener('input', () => {
+  clearTimeout(timer); ++revision; available = false; checked = '';
+  paint(username, '', false);
+  username.setCustomValidity('Please wait for the username check.');
+  timer = setTimeout(check, 350);
+ });
+ username.addEventListener('blur', () => { clearTimeout(timer); check(); });
+ confirm.addEventListener('input', () => match());
+ confirm.addEventListener('blur', () => match());
+ password.addEventListener('input', () => { if (confirm.value) match(); });
+ [username,confirm].forEach(field => field.addEventListener('invalid', event => event.preventDefault()));
+ window.validateRegistrationAccount = () => {
+  const matches = match();
+  if (checked !== username.value.trim() || !available) { check(); username.focus(); return false; }
+  if (!matches) { confirm.focus(); return false; }
+  return true;
+ };
+ form.addEventListener('submit', event => {
+  if (!window.validateRegistrationAccount()) {
+   event.preventDefault(); event.stopImmediatePropagation(); activeStep = 1; renderStepUI();
+  }
+ }, true);
+ if (username.value) check();
+})();
+</script>
+<script src="{% static 'js/skills-input.js' %}"></script>
+<script src="{% static 'js/email-availability.js' %}" data-email-url="{% url 'check-registration-email' %}"></script>
+{% endblock %}

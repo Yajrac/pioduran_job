@@ -1,0 +1,139 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include "components/favicon.html" %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Page not found | PESO Pio Duran</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: #f2f4f7;
+        color: #15284b;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+      main {
+        width: 100%;
+        max-width: 580px;
+        padding: 48px 36px;
+        border: 1px solid #dfe2e8;
+        border-radius: 24px;
+        background: #fff;
+        text-align: center;
+        box-shadow: 0 18px 60px #19332d08;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #15284b;
+      }
+      .brand img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+      }
+      .code {
+        margin: 30px 0 8px;
+        color: #15284b;
+        font-size: clamp(90px, 22vw, 136px);
+        font-weight: 800;
+        letter-spacing: -8px;
+        line-height: 1;
+      }
+      h1 {
+        margin: 20px 0 12px;
+        font-size: 28px;
+        letter-spacing: -0.35px;
+      }
+      p {
+        margin: 0 auto;
+        max-width: 390px;
+        font-size: 15px;
+        line-height: 1.8;
+        color: #15284b;
+      }
+      .actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 28px;
+      }
+      a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 12px 20px;
+        border: 1px solid #d9dde5;
+        border-radius: 9px;
+        text-decoration: none;
+        color: #15284b;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      a.primary {
+        background: #2563eb;
+        color: #fff;
+        border-color: #2563eb;
+      }
+      a:hover {
+        background: #edf0f5;
+      }
+      a.primary:hover {
+        background: #2563eb;
+      }
+      a:focus-visible {
+        outline: 3px solid #7d99c9;
+        outline-offset: 3px;
+      }
+      @media (max-width: 480px) {
+        main {
+          padding: 36px 22px;
+        }
+        h1 {
+          font-size: 24px;
+        }
+        .actions a {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="brand">
+        <img src="{% static 'images/PESO.png' %}" alt="PESO" /><span
+          >{{ portal_name }}</span
+        >
+      </div>
+      <div class="code" aria-hidden="true">404</div>
+      <h1>Page not found</h1>
+      <p>
+        The link may have a typo, or this page may have moved. Check the address
+        or return to your portal.
+      </p>
+      <div class="actions">
+        <a class="primary" href="{{ return_url }}">{{ return_label }}</a>
+        {% if return_url != '/' %}<a href="{% url 'home' %}">Visit Home</a>{% endif %}
+      </div>
+    </main>
+  </body>
+</html>

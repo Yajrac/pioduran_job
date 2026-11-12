@@ -1,0 +1,19 @@
+# /etc/systemd/system/pioduran-job.service
+# PESO Pio Duran Job Portal (Django + gunicorn on 127.0.0.1:8002).
+# Comelec uses 8001 and Water System uses 3000, so 8002 does not clash.
+[Unit]
+Description=PESO Pio Duran Job Portal (gunicorn)
+After=network.target mysql.service
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/pioduran_job
+ExecStart=/var/www/pioduran_job/.venv/bin/gunicorn job_portal.wsgi:application \
+    --bind 127.0.0.1:8002 --workers 3 --timeout 60 \
+    --access-logfile - --error-logfile -
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+{% extends 'employer_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/hiring-analytics.css' %}">
+<header class="dashboard-header"><h1>Reports</h1><p>Filter hiring dates and download your hiring report.</p></header>
+<form method="get" class="hiring-date-controls"><div><label for="hired_from">Hiring Date From</label><input type="date" id="hired_from" name="hired_from" value="{{ hired_from }}"></div><div><label for="hired_to">Hiring Date To</label><input type="date" id="hired_to" name="hired_to" value="{{ hired_to }}"></div><button type="submit">Apply Dates</button><button type="submit" name="export" value="time-to-hire">Download PDF</button><a href="{% url 'employer-reports' %}">Reset</a></form>
+{% if hiring_error %}<p role="alert">{{ hiring_error }}</p>{% endif %}
+{% include 'components/hiring_analytics.html' %}
+{% endblock %}

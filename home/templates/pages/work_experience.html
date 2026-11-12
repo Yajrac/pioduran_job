@@ -1,0 +1,18 @@
+{% extends 'home_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/certificates.css' %}">
+<main class="certificates-page">
+    <a class="certificate-button" href="{% url 'applicant-profile' %}">&larr; Back to My Profile</a>
+    <header><h1>{% if experience %}Edit{% else %}Add{% endif %} Work Experience</h1><p>Include employment, internships, or relevant volunteer work. This section is optional for fresh graduates.</p></header>
+    <section class="certificate-card"><form method="post" id="workExperienceForm">{% csrf_token %}
+        {{ experience_form.non_field_errors }}
+        <div class="certificate-fields">
+            {% for field in experience_form %}<div{% if field.name == 'description' %} style="grid-column:1/-1"{% endif %}><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+        </div>
+        <button type="submit" class="certificate-button certificate-primary">Save Experience</button>
+        <a class="certificate-button" href="{% url 'applicant-profile' %}">Cancel</a>
+    </form></section>
+</main>
+<script src="{% static 'js/work-experience.js' %}"></script>
+{% endblock %}

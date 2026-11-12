@@ -1,0 +1,287 @@
+{% extends "home_base.html" %}
+{% load static %}
+
+{% block body_class %}portal-home portal-job-flow job-flow-details{% endblock %}
+{% block main_class %}portal-main{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+<link rel="stylesheet" href="{% static 'css/job-flow.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Fixed Layout Wrapper: Integrates naturally into home_base flex flow */
+    .job-page-wrapper {
+        width: 100%;
+        max-width: 850px;
+        margin: 20px auto 40px auto; /* Centered with vertical breathing room */
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        position: relative;
+        z-index: 5;
+    }
+
+    .job-container {
+        width: 100%;
+        background: #ffffff;
+        border-radius: 0;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: left;
+    }
+
+    /* Typography Hierarchy */
+    .job-title {
+        color: #15284b;
+        font-size: 2.2rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 6px;
+        letter-spacing: -0.012em;
+    }
+
+    .company {
+        color: #15284b;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 24px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .company-link {
+        color: #15284b;
+        text-decoration: none;
+        font-weight: 700;
+        transition: color 0.2s ease;
+    }
+
+    .company-link:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+
+    /* Meta Badges */
+    .meta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 20px;
+    }
+
+    .meta span {
+        background: #f0fdf4;
+        color: #15284b;
+        border: 1px solid #bfdbfe;
+        padding: 6px 14px;
+        border-radius: 0;
+        font-size: 0.88rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .meta span svg {
+        color: #15284b;
+        flex-shrink: 0;
+    }
+
+    /* Body Sections */
+    .section {
+        margin-top: 24px;
+    }
+
+    .section h3 {
+        color: #1d4ed8;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .section p {
+        color: #15284b;
+        font-size: 0.98rem;
+        line-height: 1.6;
+    }
+
+    /* Action Footer Styling */
+    .action-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 25px;
+        margin-top: 40px;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: #64748b;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 0;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+        background: #475569;
+        transform: translateY(-1px);
+    }
+
+    .apply-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 36px;
+        background: #2563eb;
+        color: #ffffff;
+        text-decoration: none;
+        border: none;
+        border-radius: 0;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .apply-btn:hover:not([disabled]) {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+</style>
+
+<div class="job-page-wrapper">
+    <div class="job-container">
+
+        <h1 class="job-title">{{ job.title }}</h1>
+
+        <div class="company">
+{% if job.employer.company_logo %}
+                    <img class="job-employer-logo" src="{{ job.employer.company_logo.url }}" alt="{{ job.employer.company_name }} logo" width="48" height="48">
+                {% else %}
+                    <span class="job-employer-initial" aria-hidden="true">{{ job.employer.company_name|first|upper }}</span>
+                {% endif %}
+            <a href="{% url 'company_profile' job.employer.id %}" class="company-link">
+                {{ job.employer.company_name }}
+            </a>
+        </div>
+
+        <div class="meta">
+            <!-- Location SVG Icon -->
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ job.location }}
+            </span>
+            
+            <!-- Job Type SVG Icon -->
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                {{ job.get_job_type_display }}
+            </span>
+
+            <!-- Job Category -->
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+                {{ job.get_category_display }}
+            </span>
+            
+            <!-- Salary SVG Icon -->
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="12" x2="12" y1="2" y2="22"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+
+                {% if job.salary %}
+                    {{ job.salary_display }}/month
+                {% else %}
+                    Salary not specified
+                {% endif %}
+            </span>
+            
+            <!-- Calendar SVG Icon -->
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                {{ job.created_at|date:"F d, Y" }}
+            </span>
+        </div>
+
+        <div class="section">
+            <h3>Job Description</h3>
+            <p>{{ job.description }}</p>
+        </div>
+
+        {% if job.requirements %}
+        <div class="section">
+            <h3>Requirements</h3>
+            <p>{{ job.requirements|linebreaksbr }}</p>
+        </div>
+        {% endif %}
+
+        {% if job.qualifications %}
+        <div class="section">
+            <h3>Qualifications</h3>
+            <p>{{ job.qualifications|linebreaksbr }}</p>
+        </div>
+        {% endif %}
+
+        {% if job.benefits %}
+        <div class="section">
+            <h3>Benefits</h3>
+            <p>{{ job.benefits|linebreaksbr }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Persistent Action Buttons Footer -->
+        <div class="action-footer">
+            <a href="{% url 'browse-job' %}" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="12" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Back to Browse
+            </a>
+
+            {% if request.user.is_authenticated %}
+
+                {% if request.user.role == "applicant" %}
+                    <a href="{% url 'apply-job' job.id %}" class="apply-btn">
+                        Apply Now
+                    </a>
+                {% else %}
+                    <button class="apply-btn" disabled style="opacity:.6; cursor:not-allowed; background-color: #64748b; box-shadow: none;">
+                        Employers cannot apply
+                    </button>
+                {% endif %}
+
+            {% else %}
+
+                <a href="{% url 'login-user' %}?next={{ request.path }}" class="apply-btn">
+                    Login to Apply
+                </a>
+
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

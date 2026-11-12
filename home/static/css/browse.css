@@ -1,0 +1,105 @@
+.portal-browse .browse-container { padding:44px 24px 64px; background:#f5f6f9; color:#15284b; }
+.portal-browse .browse-breadcrumb { max-width:1200px; margin:0 auto 28px; display:flex; align-items:center; gap:12px; font-size:12px; color:#15284b; }
+.portal-browse .browse-container:has(.recommendations-card) .browse-breadcrumb { max-width:1400px; }
+.portal-browse .browse-breadcrumb a { color:#15284b; text-decoration:none; padding:4px 0; }
+.portal-browse .browse-breadcrumb a:hover { text-decoration:underline; text-underline-offset:4px; }
+.portal-browse .browse-breadcrumb > span[aria-hidden] { color:#b7bec9; }
+.portal-browse .main-search-column { animation:browse-arrive .3s ease-out both; }
+.portal-browse .job-card,.portal-browse .company-filter-btn,.portal-browse .view-job-button,.portal-browse .search-input { transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease; }
+@keyframes browse-arrive { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+@media(prefers-reduced-motion:reduce) { .portal-browse .main-search-column { animation:none; } }
+.portal-browse .browse-grid { max-width:1200px; grid-template-columns:240px minmax(0,1fr); gap:28px; }
+.portal-browse .browse-grid:has(.recommendations-card) { max-width:1400px; grid-template-columns:220px minmax(0,1fr) 280px; }
+.portal-browse .browse-page-title { color:#15284b; font-size:32px; letter-spacing:-0.6px; }
+.portal-browse .browse-page-description { color:#15284b; font-size:14px; }
+.portal-browse .companies-card,.portal-browse .recommendations-card { border:1px solid #e1e4e9; border-radius:14px; box-shadow:none; padding:20px; top:110px; }
+.portal-browse .companies-title,.portal-browse .recommendations-title { color:#15284b; }
+.portal-browse .companies-subtitle { color:#15284b; }
+.portal-browse .company-filter-btn { border-color:#e3e6ec; border-radius:9px; color:#15284b; box-shadow:none; }
+.portal-browse .company-filter-btn.active { background:#2563eb; border-color:#2563eb; color:#fff; box-shadow:none; }
+.portal-browse .jobs-header { border-bottom:1px solid #e1e4e9; padding-bottom:14px; }
+.portal-browse .jobs-title { color:#15284b; font-size:18px; }
+.portal-browse .jobs-count { color:#15284b; background:#edf0f6; border-color:#dce1ea; font-size:10px; }
+.portal-browse .search-input { border:1px solid #dce0e6; border-radius:10px; min-height:52px; background:#fff; box-shadow:none; font-size:13px; }
+.portal-browse .search-input:focus { border-color:#2563eb; box-shadow:0 0 0 3px #05966912; }
+.portal-browse .job-list { gap:16px; }
+.portal-browse .job-card { padding:24px; border-radius:14px; box-shadow:none; }
+.portal-browse .job-company { display:flex; align-items:center; width:100%; gap:13px; }
+.portal-browse .job-title { margin:0; color:#15284b; font-size:18px; line-height:1.45; }
+.portal-browse .job-company-name { color:#15284b; font-size:12px; font-weight:600; margin-top:5px; }
+.portal-browse .job-logo,.portal-browse .job-logo-placeholder { border-radius:10px; border-color:#e1e4e9; }
+.portal-browse .job-top { margin-bottom:16px; }
+.portal-browse .job-meta { flex-direction:row; flex-wrap:wrap; gap:7px; margin:0 0 14px; }
+.portal-browse .job-meta span { background:#f3f5f8; border:1px solid #e5e8ee; color:#15284b; font-size:11px; border-radius:6px; }
+.portal-browse .job-description { color:#15284b; font-size:13px; line-height:1.75; margin:0 0 18px; }
+.portal-browse .job-footer { margin-top:auto; padding-top:15px; border-top:1px solid #e8eaee; justify-content:space-between; }
+.portal-browse .job-vacancies { color:#15284b; font-size:12px; }
+.portal-browse .view-job-button { margin-left:auto; background:#edf0f6; color:#15284b; border:1px solid #e2e6ee; border-radius:8px; padding:10px 16px; font-size:12px; box-shadow:none; }
+.portal-browse .view-job-button:hover { background:#2563eb; color:#fff; }
+.portal-browse .browse-container { background:#f7f8f9; }
+.portal-browse .browse-page-header { margin-bottom:22px; }
+.portal-browse .search-wrapper { margin-bottom:20px; }
+.portal-browse .jobs-header { border:0; margin-bottom:14px; padding:0; align-items:center; }
+.portal-browse .jobs-title { font-size:13px; font-weight:600; color:#15284b; }
+.portal-browse .jobs-count { border:0; padding:0; background:transparent; color:#15284b; font-size:11px; font-weight:500; }
+.portal-browse .companies-card { padding:18px 12px; }
+.portal-browse .companies-header { padding:0 8px 16px; margin-bottom:10px; }
+.portal-browse .company-filter { gap:4px; }
+.portal-browse .company-filter-btn { min-height:42px; padding:10px 12px; border:1px solid transparent; border-radius:7px; background:transparent; font-size:12px; font-weight:500; }
+.portal-browse .company-filter-btn:hover { background:#f3f4f7; border-color:transparent; box-shadow:none; }
+.portal-browse .company-filter-btn.active { background:#eaeef4; border-color:transparent; color:#15284b; font-weight:650; }
+.portal-browse .company-filter-btn.active .company-count { color:#15284b; }
+.portal-browse .job-card { min-height:0; height:auto; padding:20px 22px; gap:0; border-radius:12px; }
+.portal-browse .job-top { margin:0 0 12px; }
+.portal-browse .job-logo,.portal-browse .job-logo-placeholder { width:42px; height:42px; flex-basis:42px; }
+.portal-browse .job-title { font-size:17px; line-height:1.4; }
+.portal-browse .job-company-name { margin-top:3px; }
+.portal-browse .job-meta { margin:0 0 12px; padding:0; }
+.portal-browse .job-description { margin:0 0 16px; line-height:1.65; -webkit-line-clamp:2; line-clamp:2; }
+.portal-browse .job-footer { margin-top:0; padding-top:12px; }
+.portal-browse .view-job-button { min-height:36px; padding:8px 14px; background:#2563eb; border-color:#2563eb; color:#fff; }
+.portal-browse .view-job-button:hover { background:#1d4ed8; border-color:#1d4ed8; }
+.portal-browse .job-card.hidden-job { display:none; }
+@media(max-width:1100px) { .portal-browse .browse-grid:has(.recommendations-card) { grid-template-columns:220px minmax(0,1fr); } .portal-browse .recommendations-card { grid-column:2; position:static; } }
+@media(max-width:768px) {
+    .portal-browse .browse-container { padding:28px 20px 44px; }
+    .portal-browse .browse-grid,.portal-browse .browse-grid:has(.recommendations-card) { grid-template-columns:minmax(0,1fr); gap:24px; }
+    .portal-browse .companies-card { position:static; padding:16px; }
+    .portal-browse .company-filter { flex-direction:row; flex-wrap:nowrap; overflow-x:auto; padding-bottom:6px; }
+    .portal-browse .company-filter-btn { flex:0 0 auto; width:auto; white-space:nowrap; gap:12px; }
+    .portal-browse .companies-card { order:0; }
+    .portal-browse .main-search-column { order:1; }
+    .portal-browse .recommendations-card { grid-column:auto; order:2; position:static; width:100%; }
+    .portal-browse .browse-page-title { font-size:28px; }
+    .portal-browse .job-card { padding:20px; }
+    .portal-browse .job-title { font-size:16px; }
+}
+.portal-browse a.job-applied { background:#edf0f5; color:#15284b; border:1px solid #dce1e9; box-shadow:none; }
+.portal-browse a.job-applied:hover { background:#e4e8ef; color:#15284b; border-color:#c6cedc; }
+.job-meta-tag { display:inline-flex; align-items:center; gap:7px; }
+.job-tag-icon { width:16px; height:16px; flex-shrink:0; vertical-align:middle; }
+.job-tag-icon.tag-blue { color:#3978ab; }
+.job-tag-icon.tag-purple { color:#8057ab; }
+.job-tag-icon.tag-green { color:#15284b; }
+.portal-browse img.job-logo,.portal-browse img.recommendation-logo { padding:0; border:0; background:transparent; border-radius:0; box-shadow:none; object-fit:contain; }
+.recommendation-experience { margin:10px 0; color:#15284b; font-size:11px; line-height:1.7; }
+/* Desktop columns scroll independently; touch layouts use normal page flow. */
+@media(min-width:1101px) {
+ .portal-browse .browse-grid { align-items:start; height:calc(100dvh - 140px); }
+ .portal-browse .browse-grid>.main-search-column,
+ .portal-browse .browse-grid>.companies-card,
+ .portal-browse .browse-grid>.recommendations-card {
+  position:static; top:auto; max-height:100%; min-height:0;
+  overflow-y:auto; overscroll-behavior-y:contain; scrollbar-width:thin;
+  scrollbar-color:#b6becd transparent; scrollbar-gutter:stable;
+  scroll-behavior:smooth;
+ }
+ .portal-browse .browse-grid>.main-search-column { height:100%; padding-right:8px; }
+ .portal-browse .browse-grid>.recommendations-card { height:100%; }
+ .portal-browse .browse-grid>[tabindex]:focus-visible { outline:2px solid #2563eb; outline-offset:3px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .portal-browse .browse-grid>.main-search-column,
+ .portal-browse .browse-grid>.companies-card,
+ .portal-browse .browse-grid>.recommendations-card { scroll-behavior:auto; }
+}

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<header class="content-header st-header">
+    <div class="page-title"><h2>Settings</h2></div>
+    <div class="admin-profile"><span>Signed in as <strong>{{ request.user.get_full_name|default:request.user.username }}</strong></span></div>
+</header>
+
+<div class="st">
+    {% for message in messages %}<div class="st-alert" role="status">{{ message }}</div>{% endfor %}
+
+    <!-- Account profile -->
+    <section class="st-card" aria-labelledby="st-profile-title">
+        <header class="st-card-head">
+            <div class="st-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+            <div>
+                <h3 id="st-profile-title">Account details</h3>
+                <p>Your name appears in the admin header. Your email is used for account recovery.</p>
+            </div>
+        </header>
+        <form method="post" class="st-form" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="form" value="profile">
+            <div class="st-field">
+                <span class="st-label">Username</span>
+                <div class="st-static">{{ request.user.username }}</div>
+                <span class="st-help">Usernames cannot be changed.</span>
+            </div>
+            <div class="st-grid">
+                {% for field in profile_form %}
+                <div class="st-field{% if field.name == 'email' %} st-span-2{% endif %}">
+                    <label for="{{ field.id_for_label }}" class="st-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}<span class="st-error" role="alert">{{ error }}</span>{% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="st-actions"><button type="submit" class="st-btn st-btn-primary">Save changes</button></div>
+        </form>
+    </section>
+
+    <!-- Password -->
+    <section class="st-card" aria-labelledby="st-password-title">
+        <header class="st-card-head">
+            <div class="st-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+            <div>
+                <h3 id="st-password-title">Change password</h3>
+                <p>You will stay signed in on this device after changing it.</p>
+            </div>
+        </header>
+        <form method="post" class="st-form" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="form" value="password">
+            {% if password_form.non_field_errors %}<div class="st-error-box" role="alert">{% for error in password_form.non_field_errors %}{{ error }} {% endfor %}</div>{% endif %}
+            {% for field in password_form %}
+            <div class="st-field">
+                <label for="{{ field.id_for_label }}" class="st-label">{% if field.name == 'old_password' %}Current password{% elif field.name == 'new_password1' %}New password{% else %}Confirm new password{% endif %}</label>
+                <div class="st-password">
+                    {{ field }}
+                    <button type="button" class="st-reveal" aria-label="Show password" aria-pressed="false" data-target="{{ field.id_for_label }}">Show</button>
+                </div>
+                {% for error in field.errors %}<span class="st-error" role="alert">{{ error }}</span>{% endfor %}
+                {% if field.name == 'new_password1' %}
+                <ul class="st-rules" id="stRules" aria-label="Password requirements">
+                    <li data-rule="length">At least 8 characters</li>
+                    <li data-rule="upper">An uppercase letter</li>
+                    <li data-rule="lower">A lowercase letter</li>
+                    <li data-rule="number">A number</li>
+                    <li data-rule="special">A special character (e.g. @ # $ !)</li>
+                </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="st-actions"><button type="submit" class="st-btn st-btn-primary">Update password</button></div>
+        </form>
+    </section>
+</div>
+
+<script>
+(function () {
+  document.querySelectorAll('.st-reveal').forEach(function (button) {
+    button.addEventListener('click', function () {
+      const input = document.getElementById(button.dataset.target);
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      button.textContent = show ? 'Hide' : 'Show';
+      button.setAttribute('aria-pressed', String(show));
+      button.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    });
+  });
+  const input = document.getElementById('id_new_password1');
+  const rules = document.getElementById('stRules');
+  if (!input || !rules) return;
+  const checks = {
+    length: v => v.length >= 8, upper: v => /[A-Z]/.test(v), lower: v => /[a-z]/.test(v),
+    number: v => /[0-9]/.test(v), special: v => /[^A-Za-z0-9]/.test(v),
+  };
+  input.addEventListener('input', function () {
+    rules.querySelectorAll('li').forEach(li => li.classList.toggle('is-met', checks[li.dataset.rule](input.value)));
+  });
+})();
+</script>
+{% endblock %}

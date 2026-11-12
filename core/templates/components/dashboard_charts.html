@@ -1,0 +1,97 @@
+{% load static %}
+{% with t=charts.trend %}
+<section class="dashboard-visual-analytics viz" aria-labelledby="visual-analytics-title">
+    <h2 id="visual-analytics-title">Visual Analytics</h2>
+
+    <div class="viz-grid">
+
+        <!-- Applications & hires per month -->
+        <section class="viz-card viz-span-2" aria-labelledby="viz-trend-title">
+            <header class="viz-head">
+                <div>
+                    <h3 id="viz-trend-title">Applications &amp; Hires</h3>
+                    <p>Last 6 months &middot; {{ t.total_applications }} application{{ t.total_applications|pluralize }}, {{ t.total_hires }} hire{{ t.total_hires|pluralize }}</p>
+                </div>
+                <ul class="viz-legend" aria-label="Legend">
+                    <li><span class="viz-key viz-key-bar" style="background:{{ t.colors.applications }}"></span>Applications</li>
+                    <li><span class="viz-key viz-key-line" style="background:{{ t.colors.hires }}"></span>Hires</li>
+                </ul>
+            </header>
+            <svg class="viz-svg" viewBox="0 0 {{ t.width }} {{ t.height }}" role="img" aria-labelledby="viz-trend-title viz-trend-desc">
+                <desc id="viz-trend-desc">Applications and hires per month for the last six months. Exact values are in the table below the chart.</desc>
+                {% for tick in t.ticks %}
+                <line class="viz-gridline{% if forloop.first %} viz-baseline{% endif %}" x1="{{ t.left }}" x2="{{ t.right }}" y1="{{ tick.y }}" y2="{{ tick.y }}"></line>
+                <text class="viz-tick" x="{{ t.left|add:'-8' }}" y="{{ tick.y }}" dy="4" text-anchor="end">{{ tick.value }}</text>
+                {% endfor %}
+                {% for p in t.points %}
+                {% if p.bar_path %}<path class="viz-column" d="{{ p.bar_path }}" fill="{{ t.colors.applications }}"></path>{% endif %}
+                <text class="viz-tick" x="{{ p.cx }}" y="{{ t.label_y }}" text-anchor="middle">{{ p.label }}</text>
+                {% endfor %}
+                <polyline class="viz-line" points="{{ t.line }}" stroke="{{ t.colors.hires }}"></polyline>
+                {% for p in t.points %}
+                <circle class="viz-dot" cx="{{ p.cx }}" cy="{{ p.hire_y }}" r="4" fill="{{ t.colors.hires }}"></circle>
+                {% endfor %}
+                {% if t.last.applications %}<text class="viz-value" x="{{ t.last.cx }}" y="{{ t.last.bar_y }}" dy="-8" text-anchor="middle">{{ t.last.applications }}</text>{% endif %}
+                {% for p in t.points %}
+                <rect class="viz-hit viz-band" x="{{ p.band_x }}" y="0" width="{{ p.band_w }}" height="{{ t.baseline }}"
+                      tabindex="0" focusable="true"
+                      aria-label="{{ p.full_label }}: {{ p.applications }} applications, {{ p.hires }} hires"
+                      data-tip-title="{{ p.full_label }}"
+                      data-tip="Applications|{{ p.applications }}|{{ t.colors.applications }};Hires|{{ p.hires }}|{{ t.colors.hires }}"></rect>
+                {% endfor %}
+            </svg>
+            <details class="viz-table">
+                <summary>View as table</summary>
+                <table>
+                    <thead><tr><th scope="col">Month</th><th scope="col">Applications</th><th scope="col">Hires</th></tr></thead>
+                    <tbody>{% for p in t.points %}<tr><th scope="row">{{ p.full_label }}</th><td>{{ p.applications }}</td><td>{{ p.hires }}</td></tr>{% endfor %}</tbody>
+                </table>
+            </details>
+        </section>
+
+        <!-- Employer accounts: one whole split into states -->
+        {% with s=charts.employer_status %}
+        <section class="viz-card" aria-labelledby="viz-employer-title">
+            <header class="viz-head"><div><h3 id="viz-employer-title">Employer Accounts</h3><p>{{ s.total }} registered employer{{ s.total|pluralize }}</p></div></header>
+            {% include 'components/viz_status_split.html' with split=s noun='employers' %}
+            <a class="viz-link" href="{% url 'employer-list' %}">Manage employers &rarr;</a>
+        </section>
+        {% endwith %}
+
+        <!-- Job posts: one whole split into review states -->
+        {% with s=charts.job_status %}
+        <section class="viz-card" aria-labelledby="viz-job-title">
+            <header class="viz-head"><div><h3 id="viz-job-title">Job Post Status</h3><p>{{ s.total }} job post{{ s.total|pluralize }}</p></div></header>
+            {% include 'components/viz_status_split.html' with split=s noun='job posts' %}
+            <a class="viz-link" href="{% url 'job-post-list' %}">Review job posts &rarr;</a>
+        </section>
+        {% endwith %}
+
+        <!-- Most applied job categories: ranked bars, one hue -->
+        <section class="viz-card viz-span-2" aria-labelledby="viz-rank-title">
+            <header class="viz-head">
+                <div><h3 id="viz-rank-title">Most Applied Job Categories</h3><p>Share of all {{ charts.category_total }} application{{ charts.category_total|pluralize }}</p></div>
+                <a class="viz-link" href="{% url 'reports' %}?section=demand">View full ranking &rarr;</a>
+            </header>
+            {% if charts.top_categories %}
+            <ol class="viz-rank">
+                {% for row in charts.top_categories %}
+                <li class="viz-hit" tabindex="0"
+                    aria-label="Rank {{ row.rank }}, {{ row.label }}: {{ row.applications }} applications, {{ row.share }} percent, {{ row.hires }} hired"
+                    data-tip-title="#{{ row.rank }} {{ row.label }}"
+                    data-tip="Applications|{{ row.applications }}|{{ t.colors.applications }};Share|{{ row.share }}%|;Hired|{{ row.hires }}|">
+                    <span class="viz-rank-no">{{ row.rank }}</span>
+                    <span class="viz-rank-name">{{ row.label }}</span>
+                    <span class="viz-rank-track"><span class="viz-rank-bar" style="width:{{ row.percent }}%;background:{{ t.colors.applications }}"></span></span>
+                    <span class="viz-rank-value"><strong>{{ row.applications }}</strong> <span>{{ row.share }}%</span></span>
+                </li>
+                {% endfor %}
+            </ol>
+            {% else %}<p class="viz-empty">No applications yet.</p>{% endif %}
+        </section>
+
+    </div>
+    <div class="viz-tooltip" role="status" aria-live="polite" hidden></div>
+</section>
+{% endwith %}
+<script src="{% static 'js/dashboard-charts.js' %}" defer></script>

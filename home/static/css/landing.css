@@ -1,0 +1,111 @@
+/* Homepage only: keep shared account and application pages independent. */
+.portal-home .audience-section { margin-top:48px; }
+.portal-home .audience-intro { margin-bottom:28px; }
+.portal-home .audience-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
+.portal-home .audience-panel { display:flex; flex-direction:column; padding:32px; border:1px solid #dfe3e9; border-radius:16px; background:#fff; }
+.portal-home .audience-panel-heading>span { font-size:10px; letter-spacing:1.5px; color:#15284b; font-weight:600; }
+.portal-home .audience-panel-heading h4 { font-size:25px; letter-spacing:-0.4px; color:#15284b; margin:10px 0 8px; }
+.portal-home .audience-panel-heading p { font-size:13px; color:#15284b; line-height:1.7; }
+.portal-home .audience-features { list-style:none; padding:0; margin:24px 0; }
+.portal-home .audience-features li { display:flex; align-items:flex-start; gap:14px; padding:17px 0; }
+.portal-home .audience-features li+li { border-top:1px solid #ebedf1; }
+.portal-home .audience-features img { width:24px; height:24px; flex-shrink:0; margin-top:2px; }
+.portal-home .audience-features h5 { font-size:14px; color:#15284b; margin:0 0 5px; font-weight:600; }
+.portal-home .audience-features p { font-size:12px; line-height:1.75; color:#15284b; margin:0; }
+.portal-home .audience-cta { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:auto; padding:13px 16px; border-radius:8px; background:#edf0f6; color:#15284b; text-decoration:none; font-size:12px; font-weight:600; transition:background-color .18s,color .18s; }
+.portal-home .audience-cta:hover { background:#2563eb; color:#fff; }
+.portal-home .community-vision { max-width:740px; margin:48px auto 0; padding:32px 16px 0; text-align:center; border-top:1px solid #dce0e7; }
+.portal-home .community-vision h4 { margin:0 0 12px; font-size:20px; color:#15284b; letter-spacing:-0.25px; }
+.portal-home .community-vision p { margin:0; font-size:14px; line-height:1.9; color:#15284b; }
+@media(max-width:768px) { .portal-home .audience-grid { grid-template-columns:1fr; gap:18px; } .portal-home .audience-panel { padding:24px; } .portal-home .community-vision { margin-top:32px; } }
+body.portal-home { background:#fff; color:#15284b; font-family:'Plus Jakarta Sans',system-ui,sans-serif; }
+.portal-home .portal-main { display:block; flex:1; width:100%; }
+.portal-home .site-header { background:#2563eb; border-bottom:1px solid #ffffff1f; box-shadow:none; padding:16px max(24px,calc((100% - 1200px)/2)); gap:24px; }
+.portal-home .brand-link { color:#fff; }
+.portal-home .brand-logo { width:48px; height:48px; }
+.portal-home .brand-text h1 { color:#fff; font-size:19px; letter-spacing:-0.3px; }
+.portal-home .brand-text span { color:#c5cedd; font-size:11px; }
+.portal-home .navigation-menu { gap:8px; }
+.portal-home .navigation-menu a { color:#e2e6ee; font-size:13px; border-radius:8px; padding:11px 14px; }
+.portal-home .navigation-menu a:hover,.portal-home .navigation-menu a.active { background:#edf1f7; color:#15284b; }
+.portal-home .navigation-menu .nav-auth-btn { background:#2563eb; color:#fff; border:1px solid #2563eb; padding-inline:24px; }
+.portal-home .navigation-menu .nav-auth-btn:hover { background:#1d4ed8; color:#fff; }
+.portal-home .mobile-nav-toggle { color:#fff; border-color:#ffffff40; }
+.portal-home .section-container { width:min(1200px,calc(100% - 48px)); }
+.portal-home .hero-section { display:block; min-height:0; padding:86px 0 80px; background:linear-gradient(115deg,#f6f7fa 0%,#f6f7fa 52%,#edf0f6 100%); border-bottom:1px solid #e0e4eb; }
+.portal-home .hero-section::before { width:570px; height:570px; top:-120px; right:-190px; background:#e1e6ee; opacity:.55; }
+.portal-home .hero-section::after { display:none; }
+.portal-home .hero-layout { grid-template-columns:1.12fr 1fr; gap:56px; }
+.portal-home .hero-eyebrow { background:transparent; padding:0; color:#15284b; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:24px; }
+.portal-home .hero-eyebrow-dot { width:7px; height:7px; background:#2563eb; box-shadow:0 0 0 5px #e0e6f0; margin-right:6px; }
+.portal-home .hero-title { font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-size:clamp(42px,4.5vw,64px); line-height:1.12; letter-spacing:-1.5px; font-weight:800; color:#15284b; }
+.portal-home .hero-title span { display:block; color:#15284b; }
+.portal-home .hero-description { font-size:16px; line-height:1.85; max-width:490px; color:#15284b; margin-top:22px; }
+.portal-home .hero-actions { gap:12px; margin-top:30px; }
+.portal-home .btn-primary-custom,.portal-home .btn-secondary-custom { min-height:50px; padding:0 23px; border-radius:9px; font-family:inherit; font-size:13px; }
+.portal-home .btn-primary-custom { background:#2563eb; border-color:#2563eb; box-shadow:0 5px 12px #0596691a; }
+.portal-home .btn-secondary-custom { background:transparent; border-color:#ccd2dc; color:#15284b; }
+.portal-home .hero-trust { display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin-top:26px; color:#15284b; font-size:11px; }
+.portal-home .hero-trust>span:first-child { color:#15284b; background:#e1e6ee; border-radius:50%; width:18px; height:18px; display:inline-grid; place-items:center; }
+.portal-home .trust-divider { margin:0 4px; color:#bcc1ca; }
+.portal-home .hero-visual { min-height:390px; padding:40px 0 34px; isolation:isolate; }
+.portal-home .hero-visual::before { width:340px; height:340px; background:#dce2ec; border:1px solid #d0d7e3; }
+.portal-home .hero-visual::after { width:390px; height:390px; border:1px dashed #bcc6d6; right:auto; bottom:auto; }
+.portal-home .hero-image { max-height:310px; max-width:390px; width:90%; }
+.portal-home .visual-caption { position:absolute; top:0; left:8px; display:flex; align-items:center; gap:11px; padding:14px 18px; border:1px solid #dfe3e9; border-radius:12px; background:#ffffffed; box-shadow:0 12px 32px #234a3010; transform:rotate(-3deg); }
+.portal-home .caption-icon { display:grid; place-items:center; width:35px; height:35px; border-radius:9px; background:#dde6f5; color:#15284b; font-size:24px; }
+.portal-home .visual-caption strong { display:block; font-size:12px; color:#15284b; }
+.portal-home .visual-caption div>span { display:block; font-size:10px; color:#7a8089; margin-top:5px; }
+.portal-home .vacancy-note { position:absolute; right:2px; bottom:0; display:flex; align-items:center; gap:7px; padding:16px 20px; background:#fff; border:1px solid #dfe3e9; border-radius:12px; color:#15284b; font-size:12px; box-shadow:0 12px 32px #234a3010; }
+.portal-home .vacancy-note strong { color:#15284b; }
+.portal-home .vacancy-dot { width:8px; height:8px; border-radius:50%; background:#2563eb; box-shadow:0 0 0 4px #eaeef6; margin-right:5px; }
+.portal-home .featured-section { background:#fff; border:0; padding:64px 0; }
+.portal-home .section-label { font-size:10px; letter-spacing:1.8px; color:#15284b; }
+.portal-home .section-title { font-family:inherit; font-size:clamp(26px,3vw,34px); letter-spacing:-0.6px; color:#15284b; }
+.portal-home .section-description { font-size:14px; color:#15284b; }
+.portal-home .job-card { border-radius:14px; border-color:#e1e4e9; padding:26px; }
+.portal-home .job-icon,.portal-home .stat-icon,.portal-home .info-icon,.portal-home .feature-number,.portal-home .vision-icon { border-radius:12px; }
+.portal-home .job-title { font-size:18px; letter-spacing:-.4px; }
+.portal-home .job-company { font-size:12px; }
+.portal-home .job-view-btn { border-radius:7px; padding:9px 12px; background:#edf0f6; }
+.portal-home .stats-section { padding:20px 0 64px; }
+.portal-home .stat-card { border-radius:12px; background:#f7f8fa; border-color:#e3e6ec; }
+.portal-home .stat-number { color:#15284b; }
+.portal-home .learn-more-section { background:#f4f5f8; padding:72px 0; }
+.portal-home .info-card,.portal-home .feature-box,.portal-home .vision-section,.portal-home .empty-jobs { border-radius:14px; border-color:#dfe3e9; }
+.portal-home .site-footer { background:#2563eb; }
+@media(max-width:768px) { .portal-home .navigation-menu a { color:#15284b; } .portal-home .navigation-menu .nav-auth-btn { color:#fff; } }
+.portal-home a:focus-visible,.portal-home button:focus-visible { outline:3px solid #c49b38; outline-offset:4px; }
+@media(max-width:1100px) { .portal-home .site-header { gap:12px; } .portal-home .brand-text h1 { font-size:16px; } .portal-home .navigation-menu a { padding:10px; font-size:12px; } .portal-home .hero-layout { gap:25px; } }
+@media(max-width:992px) { .portal-home .hero-layout { grid-template-columns:1fr 1fr; text-align:left; } .portal-home .hero-visual { order:0; } .portal-home .hero-actions { justify-content:flex-start; } .portal-home .hero-title { font-size:46px; } .portal-home .hero-visual::after { width:310px; height:310px; } .portal-home .hero-visual::before { width:270px; height:270px; } .portal-home .hero-visual { min-height:350px; } }
+@media(max-width:768px) { .portal-home .site-header { padding:14px 20px; } .portal-home .navigation-menu { background:#fff; border:1px solid #e1e4e9; box-shadow:0 12px 24px #173e3115; } .portal-home .hero-section { padding:48px 0; } .portal-home .hero-layout { grid-template-columns:1fr; gap:45px; } .portal-home .hero-content { margin:0; } .portal-home .hero-eyebrow { font-size:9px; letter-spacing:1px; } .portal-home .hero-title { font-size:clamp(40px,9vw,56px); letter-spacing:-1px; } .portal-home .hero-visual { width:min(440px,100%); margin:auto; min-height:340px; } .portal-home .hero-trust { margin-top:23px; } .portal-home .hero-actions { flex-direction:row; } .portal-home .hero-actions a { width:auto; } .portal-home .section-container { width:calc(100% - 40px); } .portal-home .featured-section { padding:45px 0; } .portal-home .visual-caption { left:0; } .portal-home .vacancy-note { right:0; } }
+.portal-home .job-card::before { display:none; }
+.portal-home .jobs-grid { align-items:stretch; gap:20px; }
+.portal-home .job-card { display:flex; flex-direction:column; min-height:0; padding:24px; }
+.portal-home .job-card:hover { transform:translateY(-2px); border-color:#d5dae4; box-shadow:0 8px 24px #173e310a; }
+.portal-home .job-card-header { align-items:center; justify-content:flex-start; gap:12px; }
+.portal-home .job-icon { width:42px; height:42px; border-radius:10px; }
+.portal-home .job-icon svg { width:20px; height:20px; }
+.portal-home .job-company { margin:0; color:#15284b; font-size:12px; font-weight:600; overflow-wrap:anywhere; }
+.portal-home .job-title { margin:20px 0 16px; font-size:18px; line-height:1.45; font-weight:750; overflow-wrap:anywhere; }
+.portal-home .job-meta { margin:0 0 22px; padding:0; border:0; gap:9px; }
+.portal-home .job-meta-item { font-size:12px; line-height:1.5; }
+.portal-home .job-footer { margin-top:auto; padding-top:16px; border-top:1px solid #e8eaee; gap:10px; width:100%; }
+.portal-home .applicant-count { font-size:10px; }
+.portal-home .job-view-btn { flex-shrink:0; margin-left:auto; font-size:12px; padding:9px 12px; }
+.portal-home .stats-section { padding:0; background:#fff; border-bottom:1px solid #e3e6ec; }
+.portal-home .stats-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; padding:30px 0; }
+.portal-home .stat-card { justify-content:center; gap:16px; padding:4px 24px; border:0; border-radius:0; background:transparent; }
+.portal-home .stat-card + .stat-card { border-left:1px solid #e3e6ec; }
+.portal-home .stat-card:hover { transform:none; box-shadow:none; }
+.portal-home .stat-icon { width:42px; height:42px; background:#eff2f7; border-radius:10px; }
+.portal-home .stat-icon svg { width:21px; height:21px; }
+.portal-home .stat-number { font-family:inherit; font-size:28px; letter-spacing:-0.5px; }
+.portal-home .stat-label { margin-top:6px; font-size:12px; }
+@media(max-width:768px) {
+    .portal-home .stats-grid { grid-template-columns:1fr; padding:8px 0; }
+    .portal-home .stat-card { justify-content:flex-start; padding:20px 12px; }
+    .portal-home .stat-card + .stat-card { border-left:0; border-top:1px solid #e3e6ec; }
+    .portal-home .stat-number { font-size:25px; }
+}
+@media(prefers-reduced-motion:reduce) { .portal-home * { scroll-behavior:auto!important; transition:none!important; } }

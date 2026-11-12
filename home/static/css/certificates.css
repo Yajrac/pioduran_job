@@ -1,0 +1,74 @@
+.certificates-page { max-width:1100px; margin:auto; padding:32px 24px 48px; color:#15284b; }
+.certificates-page header { margin:26px 0; }
+.certificates-page h1 { font-size:28px; margin-bottom:10px; }
+.certificates-page header p,.certificate-help,.certificate-row p { color:#15284b; font-size:12px; line-height:1.8; }
+.certificate-card { padding:24px; margin-bottom:24px; background:#fff; border:1px solid #dfe2e8; border-radius:12px; }
+.certificate-card h2 { font-size:17px; margin:0 0 22px; }.certificate-card h2 span { color:#727883; }
+.certificate-fields { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
+.certificate-fields label { display:block; font-size:12px; font-weight:600; margin-bottom:8px; }
+.certificate-fields input { box-sizing:border-box; width:100%; min-height:44px; padding:11px; border:1px solid #d9dde4; border-radius:7px; font-family:inherit; background:#fff; }
+.certificate-help { margin:8px 0; }.certificate-button { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:10px 16px; background:#fff; color:#15284b; border:1px solid #cdd4df; border-radius:8px; font:600 12px inherit; font-family:inherit; font-size:12px; text-decoration:none; cursor:pointer; }
+.certificate-primary { background:#2563eb; border-color:#2563eb; color:#fff; }.certificate-danger { background:#fbecea; border-color:#ebc5c1; color:#a43630; }.certificate-button:disabled { opacity:.6; cursor:wait; }.certificate-button:focus-visible,.certificate-fields input:focus-visible { outline:2px solid #2563eb; outline-offset:3px; }
+.certificate-row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding:18px 0; border-bottom:1px solid #ebedf1; }.certificate-row:last-child { border:0; }.certificate-row h3 { font-size:14px; overflow-wrap:anywhere; }.certificate-actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }.certificate-actions form { margin:0; }
+.certificates-page .errorlist { list-style:none; padding:0; color:#b83f39; font-size:12px; margin:8px 0; }.certificate-notice { padding:12px; background:#e7ecf4; color:#15284b; border-radius:8px; }
+.certificate-dialog { margin:auto; padding:28px; width:calc(100% - 32px); max-width:420px; box-sizing:border-box; border:1px solid #dfe2e8; border-radius:16px; color:#15284b; }.certificate-dialog::backdrop { background:#102a2266; backdrop-filter:blur(3px); }.certificate-dialog h2 { font-size:20px; }.certificate-dialog p { margin:16px 0 24px; line-height:1.8; font-size:13px; overflow-wrap:anywhere; }
+@media(max-width:650px) { .certificate-fields { grid-template-columns:1fr; }.certificate-card { padding:20px; } }
+.certificate-fields textarea { width:100%; box-sizing:border-box; padding:12px; border:1px solid #d9dde4; border-radius:7px; font:inherit; font-size:13px; resize:vertical; }
+.certificate-fields input[type=checkbox] { width:20px; min-height:20px; accent-color:#2563eb; }
+.skill-review-options { margin-bottom:24px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+.skill-review-options label { display:flex; gap:9px; align-items:center; font-size:13px; color:#15284b; padding:10px; background:#f1f3f7; border-radius:7px; }
+.skill-review-options input { accent-color:#2563eb; }
+
+.skill-review-page .skills-editor { border:1px solid #d9dde4; border-radius:9px; padding:12px; background:#fff; }
+.skill-review-page .skills-editor[hidden],.skill-review-page .skill-suggestions[hidden] { display:none; }
+.skill-review-page .skills-editor:focus-within { box-shadow:0 0 0 3px #05966912; border-color:#2563eb; }
+.skill-review-page .skill-tags { display:flex; flex-wrap:wrap; gap:7px; list-style:none; margin:0; padding:0; }
+.skill-review-page .skill-tags li { display:flex; align-items:center; gap:7px; border-radius:6px; background:#edf0f6; color:#15284b; padding:5px 7px 5px 10px; font-size:12px; overflow-wrap:anywhere; max-width:100%; }
+.skill-review-page .skill-tags button { background:transparent; border:0; color:#15284b; font-size:18px; cursor:pointer; min-width:28px; min-height:28px; }
+.skill-review-page .skill-entry-row { display:flex; align-items:center; gap:10px; }
+.skill-review-page .skill-entry-row input { flex:1; min-width:0; border:0; box-shadow:none; padding-left:0; }
+.skill-review-page #skill-add { border:1px solid #dadee6; border-radius:7px; padding:8px 14px; background:#f2f4f7; color:#15284b; font-size:12px; cursor:pointer; }
+.skill-review-page .skill-suggestions { display:flex; flex-wrap:wrap; gap:7px; align-items:center; margin-top:12px; }
+.skill-review-page .skill-suggestions span { font-size:10px; color:#15284b; margin-right:3px; }
+.skill-review-page .skill-suggestions button { background:#fff; border:1px solid #e0e3e8; border-radius:20px; padding:7px 10px; color:#15284b; font-size:10px; cursor:pointer; }
+.skill-review-page .skill-suggestions button:disabled { opacity:.45; cursor:default; }
+.skill-review-page .skills-valid { border-color:#2563eb; }
+.skill-review-page .skills-invalid { border-color:#c94336; }
+
+.skill-review-page #skills-feedback { color:#b83f39; font-size:12px; margin-top:8px; }
+.skill-review-page { max-width:980px; padding-top:28px; }
+.skill-review-page header { margin:24px 0; }
+.skill-review-page header p { max-width:680px; }
+.skill-review-page .certificate-card { padding:28px; }
+.skill-review-page .certificate-card h2 { margin-bottom:12px; }
+.skill-review-page .certificate-fields { margin-top:24px; }
+.skill-review-page .skill-tags { gap:8px; margin-bottom:12px; }
+.skill-review-page .skill-tags:empty { margin-bottom:0; }
+.skill-review-page .skill-tags li { padding:4px 6px 4px 12px; border:1px solid #dce2eb; border-radius:7px; font-size:12px; }
+.skill-review-page .skill-tags button { display:grid; place-items:center; padding:0; line-height:1; }
+.skill-review-page .skill-tags button:hover { background:#dbe1ec; border-radius:4px; color:#15284b; }
+.skill-review-page .skill-entry-row { border-top:1px solid #edeff2; padding-top:8px; }
+.skill-review-page .skill-tags:empty+.skill-entry-row { border-top:0; padding-top:0; }
+.skill-review-page #skills-editor #skill-entry { width:auto; flex:1; min-width:0; min-height:40px; padding:8px 4px; border:0; outline:0; border-radius:0; background:transparent; box-shadow:none; font-size:13px; }
+.skill-review-page #skills-editor #skill-entry:focus-visible { outline:none; box-shadow:none; }
+.skill-review-page #skill-add { min-height:36px; padding:8px 16px; font-weight:600; }
+.skill-review-page .skills-editor:focus-within { border-color:#2563eb; box-shadow:0 0 0 3px #27845f12; }
+.skill-review-page .skill-suggestions { gap:8px; margin-top:14px; }
+.skill-review-page .skill-suggestions button:disabled { display:none; }
+.skill-review-page .skill-suggestions span { color:#727883; font-size:11px; }
+.skill-review-page #skills-help { margin-top:14px; font-size:11px; }
+@media(max-width:600px) { .skill-review-page .certificate-card { padding:20px; } .skill-review-page .skill-tags li { font-size:11px; } }
+.certificate-fields select { width:100%; min-height:44px; padding:10px; border:1px solid #d9dde4; border-radius:7px; background:#fff; color:#15284b; font:inherit; font-size:13px; }
+.assessment-rubric { margin:16px 0 24px; padding:14px; border-radius:8px; background:#f2f4f7; color:#15284b; font-size:12px; line-height:1.9; }.assessment-rubric summary { cursor:pointer; font-weight:600; color:#15284b; }.assessment-rubric ul { padding-left:20px; }.assessment-snapshot { font-size:13px; line-height:1.8; }.assessment-snapshot dt { color:#15284b; font-size:11px; margin-top:14px; }.assessment-snapshot dd { margin:4px 0 0; overflow-wrap:anywhere; }
+.applicant-review-page { max-width:1400px; padding:12px 0 32px; }
+.applicant-review-layout { display:flex; align-items:flex-start; gap:24px; }
+.applicant-review-forms { flex:1 1 58%; min-width:0; }
+.applicant-review-snapshot { flex:1 1 38%; min-width:0; position:sticky; top:100px; }
+.applicant-review-page .certificate-card { padding:24px; }
+.applicant-review-page .certificate-help { font-size:12px; }
+.applicant-review-page .assessment-rubric { margin:16px 0 20px; }
+.applicant-review-page .certificate-fields { gap:16px; }
+.applicant-review-snapshot .assessment-snapshot dd { padding-bottom:12px; border-bottom:1px solid #edeff2; }
+@media(max-width:1050px) { .applicant-review-layout { flex-direction:column; }.applicant-review-forms,.applicant-review-snapshot { width:100%; flex:auto; }.applicant-review-snapshot { position:static; } }
+.assessment-field-feedback { color:#b83f39; font-size:12px; line-height:1.6; margin-top:7px; }
+.certificate-fields input.assessment-score-invalid { border-color:#b83f39; }

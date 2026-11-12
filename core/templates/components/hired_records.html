@@ -1,0 +1,119 @@
+{% load admin_format %}
+<div class="hr report-panel" id="report-hired">
+
+    <!-- Filters: presets first, custom range after -->
+    <section class="hr-panel hr-filters" aria-label="Hiring period">
+        <div class="hr-presets" role="group" aria-label="Quick date ranges">
+            <span class="hr-filter-label">Hiring period</span>
+            {% for preset in hired_presets %}
+            <a class="hr-chip{% if preset.active %} is-active{% endif %}" href="?section=hired&amp;generate=hired&amp;hired_from={{ preset.from }}&amp;hired_to={{ preset.to }}"{% if preset.active %} aria-current="true"{% endif %}>{{ preset.label }}</a>
+            {% endfor %}
+        </div>
+        <form method="get" action="{% url 'reports' %}#report-hired" class="report-filter report-table-controls hr-form">
+            <input type="hidden" name="section" value="hired"><input type="hidden" name="generate" value="hired">
+            <div class="report-filter-group"><label for="hired_from">From</label><input type="date" id="hired_from" name="hired_from" value="{{ hired_from|default:'' }}"></div>
+            <div class="report-filter-group"><label for="hired_to">To</label><input type="date" id="hired_to" name="hired_to" value="{{ hired_to|default:'' }}"></div>
+            <div class="report-filter-actions">
+                <button type="submit" class="report-btn">Apply</button>
+                <button type="submit" name="export" value="hired" class="report-btn report-btn-primary">Generate PDF</button>
+                <button type="button" class="report-btn report-print">Print</button>
+                <button type="button" class="report-btn report-reset">Reset</button>
+            </div>
+        </form>
+        {% if hired_error %}<div class="report-alert report-alert-error">{{ hired_error }}</div>{% endif %}
+    </section>
+
+    <!-- KPI tiles -->
+    <section class="hr-kpis" aria-label="Hiring summary">
+        <div class="hr-kpi">
+            <span class="hr-kpi-label">Total hired</span>
+            <strong class="hr-kpi-value">{{ hired_kpis.total }}</strong>
+            <span class="hr-kpi-note">{% if hired_from or hired_to %}{{ hired_from|default:'Start' }} to {{ hired_to|default:'today' }}{% else %}all time{% endif %}</span>
+        </div>
+        <div class="hr-kpi">
+            <span class="hr-kpi-label">Average time to hire
+                <span class="hr-info" tabindex="0" role="img" aria-label="Time from application to offer acceptance. Records with missing or invalid dates are excluded." title="Time from application to offer acceptance. Records with missing or invalid dates are excluded.">i</span>
+            </span>
+            <strong class="hr-kpi-value">{{ hiring_stats.average_days|days_label }}</strong>
+            <span class="hr-kpi-note">based on {{ hiring_stats.measured_count }} hire{{ hiring_stats.measured_count|pluralize }}{% if hiring_stats.excluded_count %} &middot; {{ hiring_stats.excluded_count }} excluded{% endif %}</span>
+        </div>
+        <div class="hr-kpi">
+            <span class="hr-kpi-label">Fastest hire</span>
+            {% if hired_kpis.fastest %}
+            <strong class="hr-kpi-value">{{ hired_kpis.fastest.time_to_hire_days|days_label }}</strong>
+            <span class="hr-kpi-note">{{ hired_kpis.fastest.job.employer.company_name }}</span>
+            {% else %}<strong class="hr-kpi-value is-empty">&mdash;</strong><span class="hr-kpi-note">no measured hires</span>{% endif %}
+        </div>
+        <div class="hr-kpi">
+            <span class="hr-kpi-label">Longest hire</span>
+            {% if hired_kpis.slowest %}
+            <strong class="hr-kpi-value">{{ hired_kpis.slowest.time_to_hire_days|days_label }}</strong>
+            <span class="hr-kpi-note">{{ hired_kpis.slowest.job.employer.company_name }}</span>
+            {% else %}<strong class="hr-kpi-value is-empty">&mdash;</strong><span class="hr-kpi-note">no measured hires</span>{% endif %}
+        </div>
+    </section>
+
+    <!-- Breakdown bars -->
+    {% if hired_breakdown %}
+    <section class="hr-panel" aria-labelledby="hr-breakdown-title">
+        <header class="hr-head"><h2 id="hr-breakdown-title">Average time to hire by position</h2><span class="hr-head-note">Shorter is faster</span></header>
+        <ol class="hr-bars">
+            {% for row in hired_breakdown %}
+            <li>
+                <div class="hr-bar-name"><strong>{{ row.job }}</strong><span>{{ row.employer }}</span></div>
+                <div class="hr-bar-track" aria-hidden="true"><span style="width:{{ row.percent }}%"></span></div>
+                <div class="hr-bar-value"><strong>{{ row.average_days|days_label }}</strong><span>{{ row.count }} hire{{ row.count|pluralize }}</span></div>
+            </li>
+            {% endfor %}
+        </ol>
+    </section>
+    {% endif %}
+
+    <!-- Records -->
+    <section class="hr-panel hr-records" aria-labelledby="hr-records-title">
+        <header class="hr-head">
+            <h2 id="hr-records-title">Hired applicants</h2>
+            <label class="hr-search"><span class="visually-hidden">Search hired applicants</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input type="search" id="hrSearch" placeholder="Search name, position, or employer" autocomplete="off">
+            </label>
+        </header>
+        <div class="report-table-wrap">
+            <table class="report-table hr-table">
+                <thead><tr><th scope="col">Applicant</th><th scope="col">Position</th><th scope="col">Applied</th><th scope="col">Hired</th><th scope="col">Time to hire</th></tr></thead>
+                <tbody>
+                {% for application in hired %}
+                <tr class="hr-row">
+                    <td><div class="hr-person"><span class="hr-avatar" aria-hidden="true">{{ application.applicant|initials }}</span><span>{{ application.applicant.first_name }} {% if application.applicant.middle_name %}{{ application.applicant.middle_name }} {% endif %}{{ application.applicant.last_name }}</span></div></td>
+                    <td><div class="hr-position"><strong>{{ application.job.title }}</strong><span>{{ application.job.employer.company_name }}</span></div></td>
+                    <td class="report-date">{{ application.applied_at|date:'M d, Y' }}</td>
+                    <td class="report-date">{{ application.hired_at|date:'M d, Y'|default:'Not recorded' }}</td>
+                    <td><span class="hr-time">{{ application.time_to_hire_days|days_label }}</span></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="report-empty">No hired applicants for this period.</td></tr>
+                {% endfor %}
+                <tr class="hr-no-match" hidden><td colspan="5" class="report-empty">No hired applicants match your search.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+<script>
+(function () {
+  const input = document.getElementById('hrSearch');
+  if (!input) return;
+  const rows = Array.from(document.querySelectorAll('.hr-row'));
+  const empty = document.querySelector('.hr-no-match');
+  input.addEventListener('input', function () {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    rows.forEach(function (row) {
+      const match = !q || row.textContent.toLowerCase().includes(q);
+      row.hidden = !match;
+      if (match) shown++;
+    });
+    empty.hidden = shown > 0 || rows.length === 0;
+  });
+})();
+</script>

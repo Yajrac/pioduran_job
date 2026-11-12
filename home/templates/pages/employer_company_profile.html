@@ -1,0 +1,132 @@
+{% extends 'employer_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/company-profile-v2.css' %}">
+<div class="cp">
+
+    <!-- Identity -->
+    <section class="cp-card cp-identity" aria-label="Company">
+        {% if employer.company_logo %}
+        <img class="cp-logo" src="{{ employer.company_logo.url }}" alt="{{ employer.company_name }} logo" width="88" height="88">
+        {% else %}
+        <span class="cp-logo cp-logo-text" aria-hidden="true">{{ employer.company_name|first|upper }}</span>
+        {% endif %}
+        <div class="cp-identity-text">
+            <p class="cp-eyebrow">Company profile</p>
+            <h1>{{ employer.company_name }}</h1>
+            <div class="cp-meta">
+                {% if employer.approval_status == 'approved' and employer.is_active %}
+                <span class="cp-badge is-good">Approved &middot; Active</span>
+                {% elif employer.approval_status == 'approved' %}
+                <span class="cp-badge is-bad">Suspended</span>
+                {% elif employer.approval_status == 'pending' %}
+                <span class="cp-badge is-warn">Pending PESO approval</span>
+                {% else %}
+                <span class="cp-badge is-bad">Registration rejected</span>
+                {% endif %}
+                <span>Member since {{ employer.created_at|date:'F Y' }}</span>
+            </div>
+        </div>
+        <div class="cp-actions">
+            <a class="cp-btn cp-btn-ghost" href="{% url 'company_profile' employer.id %}" target="_blank" rel="noopener">View public page</a>
+            <a class="cp-btn cp-btn-primary" href="{% url 'edit-employer-company-profile' %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                Edit profile
+            </a>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="cp-stats" aria-label="Hiring summary">
+        <a class="cp-stat" href="{% url 'job-list' %}"><span>Active jobs</span><strong>{{ stats.active_jobs }}</strong><small>open for applications</small></a>
+        <a class="cp-stat" href="{% url 'applicants' %}"><span>Applicants</span><strong>{{ stats.applicants }}</strong><small>across all job posts</small></a>
+        <a class="cp-stat" href="{% url 'applicants' %}?status=hired"><span>Hired</span><strong>{{ stats.hired }}</strong><small>accepted job offers</small></a>
+        <a class="cp-stat" href="{% url 'applicants' %}?status=pending"><span>Awaiting review</span><strong>{{ stats.awaiting }}</strong><small>pending or reviewing</small></a>
+    </section>
+
+    <div class="cp-grid">
+        <div class="cp-main">
+            <!-- About -->
+            <section class="cp-card" aria-labelledby="cp-about-title">
+                <header class="cp-head"><h2 id="cp-about-title">About the company</h2></header>
+                {% if employer.description %}
+                <p class="cp-about">{{ employer.description|linebreaksbr }}</p>
+                {% else %}
+                <p class="cp-about cp-muted">No description yet.</p>
+                {% endif %}
+                {% if about_too_short %}
+                <div class="cp-tip" role="note">
+                    <strong>Tip:</strong> Add at least 100 characters about what your company does, so applicants know who they are applying to.
+                    <a href="{% url 'edit-employer-company-profile' %}">Write a description &rarr;</a>
+                </div>
+                {% endif %}
+            </section>
+
+            <!-- Recent jobs -->
+            <section class="cp-card" aria-labelledby="cp-jobs-title">
+                <header class="cp-head">
+                    <h2 id="cp-jobs-title">Recent job posts</h2>
+                    <a class="cp-link" href="{% url 'job-list' %}">Manage jobs &rarr;</a>
+                </header>
+                {% if recent_jobs %}
+                <ul class="cp-jobs">
+                    {% for job in recent_jobs %}
+                    <li>
+                        <div><strong>{{ job.title }}</strong><span>Posted {{ job.created_at|date:'M j, Y' }} &middot; closes {{ job.deadline|date:'M j' }}</span></div>
+                        <span class="cp-badge {% if job.status == 'approved' %}is-good{% elif job.status == 'pending' %}is-warn{% else %}is-bad{% endif %}">{{ job.get_status_display }}</span>
+                        <span class="cp-count">{{ job.application_count }} applicant{{ job.application_count|pluralize }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="cp-empty">
+                    <p>You have not posted a job yet.</p>
+                    <a class="cp-btn cp-btn-primary" href="{% url 'job-post' %}">Post your first job</a>
+                </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <aside class="cp-side">
+            <!-- Contact -->
+            <section class="cp-card" aria-labelledby="cp-contact-title">
+                <header class="cp-head"><h2 id="cp-contact-title">Contact information</h2></header>
+                <dl class="cp-contact">
+                    <div>
+                        <dt>Email</dt>
+                        <dd><span>{{ employer.employer.email|default:'Not provided' }}</span>{% if employer.employer.email %}<button type="button" class="cp-copy" data-copy="{{ employer.employer.email }}">Copy</button>{% endif %}</dd>
+                    </div>
+                    <div>
+                        <dt>Mobile number</dt>
+                        <dd><span>{{ employer.contact_no }}</span><button type="button" class="cp-copy" data-copy="{{ employer.contact_no }}">Copy</button></dd>
+                    </div>
+                    <div>
+                        <dt>Business permit no.</dt>
+                        <dd><span>{{ employer.business_permit_no }}</span></dd>
+                    </div>
+                </dl>
+            </section>
+
+            <!-- Completeness -->
+            <section class="cp-card" aria-labelledby="cp-complete-title">
+                <header class="cp-head"><h2 id="cp-complete-title">Profile completeness</h2><strong class="cp-percent">{{ completeness }}%</strong></header>
+                <span class="cp-meter" role="img" aria-label="{{ completeness }} percent complete"><span style="width:{{ completeness }}%"></span></span>
+                <ul class="cp-checklist">
+                    {% for label, done in checklist %}
+                    <li class="{% if done %}is-done{% endif %}">{{ label }}<span class="visually-hidden">{% if done %} (done){% else %} (missing){% endif %}</span></li>
+                    {% endfor %}
+                </ul>
+                {% if completeness < 100 %}<a class="cp-link" href="{% url 'edit-employer-company-profile' %}">Complete your profile &rarr;</a>{% endif %}
+            </section>
+        </aside>
+    </div>
+</div>
+<script>
+document.querySelectorAll('.cp-copy').forEach(function (button) {
+    button.addEventListener('click', function () {
+        const done = () => { button.textContent = 'Copied'; setTimeout(() => { button.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(button.dataset.copy).then(done);
+    });
+});
+</script>
+{% endblock %}

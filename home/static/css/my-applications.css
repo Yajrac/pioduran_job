@@ -1,0 +1,62 @@
+.portal-applications .applications-wrapper { padding:40px 24px 64px; min-height:0; background:#f6f7f9; }
+.portal-applications .applications-container { max-width:1200px; padding:0; background:transparent; border:0; box-shadow:none; border-radius:0; }
+.portal-applications .page-title { color:#15284b; font-size:30px; letter-spacing:-0.5px; margin:0 0 10px; }
+.portal-applications .applications-intro { color:#15284b; font-size:13px; line-height:1.8; margin:0 0 26px; }
+.portal-applications .empty { padding:48px 24px; background:#fff; border:1px solid #e0e3e8; border-radius:5px; }
+.portal-applications .applications-empty-icon { display:grid; place-items:center; width:64px; height:64px; background:#edf0f5; border-radius:8px; margin:0 auto 20px; }
+.portal-applications .empty h3 { font-size:20px; line-height:1.4; letter-spacing:-0.25px; color:#15284b; margin:0 0 12px; }
+.portal-applications .empty p { max-width:390px; margin:0 auto; color:#15284b; font-size:13px; line-height:1.85; }
+.portal-applications .empty .btn { margin-top:24px; border-radius:5px; padding:12px 20px; font-size:12px; background:#2563eb; }
+.portal-applications .empty .btn:hover { background:#1d4ed8; }
+.portal-applications .table-responsive { border-color:#e0e3e8; border-radius:5px; background:#fff; }
+.portal-applications .app-table { font-size:12px; }
+.portal-applications .app-table th { background:#edf0f5; color:#15284b; font-size:10px; padding:16px; }
+.portal-applications .app-table td { padding:18px 16px; border-color:#e4e7ec; color:#15284b; }
+.portal-applications .company-sub { color:#15284b; font-size:11px; margin-top:6px; }
+.portal-applications .status { font-size:10px; padding:6px 10px; border-radius:4px; }
+.portal-applications .pending { background:#fff4da; color:#8b6015; }
+.portal-applications .reviewing { background:#eaf1ff; color:#345b9b; }
+.portal-applications .shortlisted,.portal-applications .accepted { background:#e7ecf4; color:#15284b; }
+.portal-applications .rejected { background:#fcebea; color:#a53730; }
+.portal-applications .btn-toggle { border:1px solid #dce1e9; background:#edf0f6; color:#15284b; border-radius:5px; font-size:11px; padding:9px 12px; }
+.portal-applications .btn-toggle:hover { background:#2563eb; color:#fff; }
+.portal-applications .details-dropdown-content { padding:22px; background:#f7f8fb; border-left:2px solid #8797b2; }
+.portal-applications .details-section h4 { font-size:13px; color:#15284b; border-color:#e0e3e8; }
+.portal-applications .details-section p { font-size:12px; color:#15284b; line-height:1.8; }
+@media(max-width:768px) {
+ .portal-applications .applications-wrapper { padding:28px 16px 40px; }
+ .portal-applications .page-title { font-size:25px; }
+ .portal-applications .empty { padding:36px 22px; }
+ .portal-applications .empty h3 { font-size:18px; }
+ .portal-applications .table-responsive { border:0; background:transparent; overflow:visible; }
+ .portal-applications .app-table,.portal-applications .app-table tbody { display:block; width:100%; }
+ .portal-applications .app-table thead { display:none; }
+ .portal-applications .main-row { display:grid; grid-template-columns:1fr 1fr; background:#fff; border:1px solid #e0e3e8; border-radius:5px; padding:18px; gap:14px; }
+ .portal-applications .app-table .main-row td { display:block; padding:0; border:0; min-width:0; }
+ .portal-applications .main-row td:first-child { grid-column:1 / -1; }
+ .portal-applications .cell-flex { white-space:normal; line-height:1.6; }
+ .portal-applications .detail-row { display:block; margin-bottom:16px; background:transparent; }
+ .portal-applications .detail-row td { display:block; border:0; padding:0; }
+ .portal-applications .details-grid { grid-template-columns:1fr; }
+}
+
+
+.portal-applications .details-dropdown-content { display:grid; grid-template-rows:0fr; padding:0; border:0; opacity:0; transition:grid-template-rows .32s ease,opacity .25s ease; }
+.portal-applications .details-dropdown-content.details-open { grid-template-rows:1fr; opacity:1; }
+.portal-applications .details-clip { overflow:hidden; min-height:0; }
+.portal-applications .details-inner { padding:22px; }
+@media(prefers-reduced-motion:reduce) { .portal-applications .details-dropdown-content { transition:none; } }
+.portal-applications .application-employer { display:flex; align-items:center; gap:12px; }
+.portal-applications .application-logo { width:44px; height:44px; flex-shrink:0; object-fit:contain; padding:4px; background:#fff; border:1px solid #e0e3e8; border-radius:5px; }
+.portal-applications .application-initial { display:grid; place-items:center; background:#edf0f5; color:#15284b; font-size:18px; font-weight:600; }
+.portal-applications .application-job-name { min-width:0; }
+.portal-applications .application-job-name strong { color:#15284b; font-size:14px; line-height:1.5; overflow-wrap:anywhere; }
+.portal-applications img.application-logo { padding:0; background:transparent; border:0; border-radius:0; box-shadow:none; }
+.application-response-form { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.application-response-button { min-height:34px; padding:7px 10px; border:1px solid #d9dde4; border-radius:6px; font-family:inherit; font-size:11px; font-weight:600; cursor:pointer; }
+.response-danger { background:#fbecea; color:#a43630; border-color:#ebc5c1; }
+.response-accept { background:#e7ecf4; color:#15284b; border-color:#bdc8dc; }
+.application-response-notice { margin:20px auto; max-width:1200px; padding:14px; background:#edf0f5; color:#15284b; border-radius:8px; }
+.portal-applications .status.offered { background:#eee9f7; color:#6b518c; }
+.portal-applications .status.hired { background:#e7ecf4; color:#15284b; }
+.portal-applications .status.withdrawn,.portal-applications .status.declined { background:#f7e9e7; color:#a24e47; }

@@ -1,0 +1,359 @@
+{% extends 'employer_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* --- Form Card Container --- */
+    .form-card {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        overflow: hidden;
+    }
+
+    /* --- Form Header Accent --- */
+    .form-header {
+        background-color: var(--gov-green);
+        color: #ffffff;
+        padding: 28px 36px;
+        border-bottom: 3px solid var(--gov-green-light);
+    }
+
+    .form-header h1 {
+        font-size: 1.65rem;
+        font-weight: 800;
+        letter-spacing: -0.012em;
+    }
+
+    .form-header p {
+        margin-top: 6px;
+        color: var(--gov-green-surface);
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+
+    /* --- Form Layout & Grid --- */
+    .form-body {
+        padding: 36px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+
+    /* --- Form Controls & Focus States --- */
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        background-color: #ffffff;
+        transition: all 0.2s ease-in-out;
+        font-family: inherit;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 130px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--gov-green-light);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+    }
+
+    .required {
+        color: var(--gov-red);
+        font-weight: 700;
+    }
+
+    /* --- Action Controls --- */
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 16px;
+        margin-top: 36px;
+        padding-top: 24px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .btn {
+        text-decoration: none;
+        padding: 12px 28px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: var(--gov-green);
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--gov-green-light);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-secondary {
+        background-color: #f1f5f9;
+        color: #15284b;
+        border: 1px solid #cbd5e1;
+    }
+
+    .btn-secondary:hover {
+        background-color: #e2e8f0;
+        color: var(--text-dark);
+    }
+
+    /* --- Mobile Responsiveness --- */
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-body {
+            padding: 24px 20px;
+        }
+
+        .form-header {
+            padding: 20px;
+        }
+
+        .form-footer {
+            flex-direction: column-reverse;
+            gap: 12px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+    .job-form-errors { border: 1px solid #fecaca; background: #fef2f2; color: #991b1b; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; }
+    .job-form-errors ul { margin: 6px 0 0 18px; padding: 0; }
+</style>
+
+<div class="job-editor-layout">
+<div class="form-card">
+
+    <div class="form-header">
+        {% if job %}
+            <h1>Edit Job Post</h1>
+            <p>Update the details and requirements of this posting.</p>
+        {% else %}
+            <h1>Create Job Post</h1>
+            <p>Fill in the details below to publish a new job opportunity.</p>
+        {% endif %}
+    </div>
+
+    <div class="form-body">
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if job_errors %}
+            <div class="job-form-errors" role="alert">
+                <strong>Please fix the following:</strong>
+                <ul>{% for error in job_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+            </div>
+            {% endif %}
+
+            <div class="form-grid">
+
+                <div class="form-group full">
+                    <label for="title">Job Title <span class="required">*</span></label>
+                    <input type="text"
+                           id="title"
+                           name="title"
+                           value="{% firstof form_values.title job.title '' %}"
+                           placeholder="e.g. Administrative Officer"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="salary">Salary (PHP) <span>Optional</span></label>
+
+                    <input
+                        type="number"
+                        id="salary"
+                        name="salary"
+                        value="{% firstof form_values.salary job.salary '' %}"
+                        placeholder="25000"
+                        min="0"
+                        step="0.01"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location <span class="required">*</span></label>
+                    <input type="text"
+                           id="location"
+                           name="location"
+                           list="pio-duran-locations"
+                           autocomplete="off"
+                           aria-describedby="location-help"
+                           value="{% firstof form_values.location job.location '' %}"
+                           placeholder="Purok, Brgy, Pioduran, Albay"
+                           required>
+                    <datalist id="pio-duran-locations"></datalist>
+                    <span class="location-help" id="location-help">Type a barangay to see suggestions. You can add your purok or street before the barangay.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="job_type">Job Type <span class="required">*</span></label>
+                    <select id="job_type" name="job_type" required>
+                        <option value="">Select Job Type</option>
+                        {% firstof form_values.job_type job.job_type as current_type %}
+                        <option value="full_time" {% if current_type == "full_time" %}selected{% endif %}>Full Time</option>
+                        <option value="part_time" {% if current_type == "part_time" %}selected{% endif %}>Part Time</option>
+                        <option value="contract" {% if current_type == "contract" %}selected{% endif %}>Contract</option>
+                        <option value="internship" {% if current_type == "internship" %}selected{% endif %}>Internship</option>
+                        <option value="temporary" {% if current_type == "temporary" %}selected{% endif %}>Temporary</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Job Category <span class="required">*</span></label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        {% firstof form_values.category job.category as current_category %}
+                        {% for key, label in category_choices %}
+                        <option value="{{ key }}" {% if current_category == key %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="vacancies">Vacancies <span class="required">*</span></label>
+                    <input type="number"
+                           id="vacancies"
+                           name="vacancies"
+                           min="1" step="1" max="2147483647"
+                           aria-describedby="vacancies-error"
+                           value="{% if form_values %}{{ form_values.vacancies }}{% else %}{{ job.vacancies|default:'' }}{% endif %}"
+                           placeholder="5"
+                           required>
+                    <span id="vacancies-error" class="vacancies-error" aria-live="polite">{{ vacancies_error }}</span>
+                </div>
+
+                <div class="form-group full">
+                    <label for="deadline">Application Deadline <span class="required">*</span></label>
+                    <input type="date"
+                           id="deadline"
+                           name="deadline"
+                           value="{% if form_values %}{{ form_values.deadline }}{% else %}{{ job.deadline|date:'Y-m-d' }}{% endif %}"
+                           required>
+                </div>
+
+                <div class="form-group full">
+                    <label for="description">Job Description <span class="required">*</span></label>
+                    <textarea id="description"
+                              name="description"
+                              placeholder="Provide a overview of the position..."
+                              required>{% firstof form_values.description job.description '' %}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="required_skills">Required Skills for Matching</label>
+                    <textarea id="required_skills" name="required_skills" rows="2" placeholder="Customer Service, Inventory Management, Cashiering">{% if form_values %}{{ form_values.required_skills }}{% else %}{{ job.required_skills|default:'' }}{% endif %}</textarea>
+                    <p style="font-size:12px;color:#15284b">Separate skills with commas. Confirm the actual skills required for this job. Up to 20 skills. Leave blank if not yet defined; applicants will not receive a match score.</p>
+                    {% if ranking_error %}<p role="alert" style="color:#b83f39">{{ ranking_error }}</p>{% endif %}
+                    <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="experience_required" style="width:18px" {% if form_values %}{% if form_values.experience_required %}checked{% endif %}{% elif job.experience_required %}checked{% endif %}> Relevant work experience is required</label>
+                </div>
+                <div class="form-group full">
+                    <label for="qualifications">Qualifications <span class="required">*</span></label>
+                    <textarea id="qualifications"
+                              name="qualifications"
+                              placeholder="List key requirements, education, and skills..."
+                              required>{% firstof form_values.qualifications job.qualifications '' %}</textarea>
+                </div>
+
+                <div class="form-group full">
+                    <label for="responsibilities">Responsibilities</label>
+                    <textarea id="responsibilities"
+                              name="responsibilities"
+                              placeholder="List primary duties and key functions...">{% firstof form_values.responsibilities job.responsibilities '' %}</textarea>
+                </div>
+
+            </div>
+
+            <div class="form-footer">
+                <a href="{% url 'job-list' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {% if job %}
+                        Update Job
+                    {% else %}
+                        Publish Job
+                    {% endif %}
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<aside class="matching-inputs-guide" aria-labelledby="matching-guide-title">
+    <h2 id="matching-guide-title"><img src="{% static 'images/nav/skills.png' %}" alt="" width="22" height="22">Matching inputs</h2>
+    <p>Enter specific skills, experience, and keywords in the job description and qualifications so job seekers can understand what you need.</p>
+    <p class="matching-guide-example"><strong>Example</strong>Customer service, cash handling, Microsoft Excel, and one year of retail experience.</p>
+    <p>Job seekers may apply to more than one employer. Review only applications submitted to your company.</p>
+</aside>
+</div>
+<script src="{% static 'js/job-location.js' %}"></script>
+<script>
+(() => {
+ const field = document.getElementById('vacancies');
+ const error = document.getElementById('vacancies-error');
+ function validate() {
+  const valid = /^[0-9]+$/.test(field.value) && Number(field.value) >= 1 && Number(field.value) <= 2147483647;
+  const message = valid ? '' : 'Enter a whole number of vacancies, at least 1.';
+  field.setCustomValidity(message);
+  field.setAttribute('aria-invalid', String(!valid));
+  error.textContent = message;
+ }
+ field.addEventListener('input',validate);
+ field.addEventListener('blur',validate);
+ field.addEventListener('invalid',event => { event.preventDefault(); validate(); field.focus(); });
+})();
+</script>
+{% endblock %}

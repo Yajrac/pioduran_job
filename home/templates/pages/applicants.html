@@ -1,0 +1,385 @@
+{% extends 'employer_base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/job-match.css' %}?v=1">
+<style>
+    /* --- Container & Layout --- */
+    .applicants-container {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* --- Page Header Block --- */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        letter-spacing: -0.012em;
+    }
+
+    .company-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: var(--gov-green-surface);
+        color: var(--gov-green);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+
+    .company-badge svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+    }
+
+    /* --- Data Table Styling --- */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.03);
+    }
+
+    .applicants-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.95rem;
+    }
+
+    .applicants-table th {
+        background-color: #f8fafc;
+        color: #15284b;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 16px 24px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .applicants-table td {
+        padding: 18px 24px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .applicants-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .applicants-table tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    /* --- Applicant Profile Details --- */
+    .applicant-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .applicant-name {
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 0.975rem;
+    }
+
+    .applicant-email {
+        font-size: 0.85rem;
+        color: #15284b;
+    }
+
+    .job-title-tag {
+        font-weight: 600;
+        color: var(--gov-green);
+        background-color: var(--gov-green-surface);
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        display: inline-block;
+        border: 1px solid rgba(37, 99, 235, 0.15);
+    }
+
+    /* --- Status Badges --- */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+
+    .status-reviewing { background-color: #fef3c7; color: #b45309; }
+    .status-shortlisted { background-color: #e0f2fe; color: #0369a1; }
+    .status-accepted { background-color: var(--gov-green-surface); color: var(--gov-green); }
+    .status-rejected { background-color: #fee2e2; color: var(--gov-red); }
+
+    /* --- Action Workflow Controls --- */
+    .action-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .action-form {
+        display: inline-flex;
+        gap: 6px;
+        margin: 0;
+    }
+
+    .btn-action {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        background: transparent;
+    }
+
+    .btn-review { border-color: #f59e0b; color: #b45309; }
+    .btn-review:hover { background-color: #fffbeb; }
+
+    .btn-shortlist { border-color: #0284c7; color: #0284c7; }
+    .btn-shortlist:hover { background-color: #f0f9ff; }
+
+    .btn-accept { background-color: var(--gov-green); color: #ffffff; }
+    .btn-accept:hover { background-color: var(--gov-green-light); }
+
+    .btn-reject { background-color: var(--gov-red); color: #ffffff; }
+    .btn-reject:hover { background-color: #991b1b; }
+
+    .btn-resume {
+        border-color: #cbd5e1;
+        color: #15284b;
+    }
+    .btn-resume:hover {
+        background-color: #f1f5f9;
+        border-color: #94a3b8;
+        color: var(--text-dark);
+    }
+
+    /* --- Empty State Design --- */
+    .empty-state {
+        text-align: center;
+        padding: 56px 24px;
+        color: #15284b;
+    }
+</style>
+
+<div class="applicants-container candidate-management">
+    {% for message in messages %}<p class="application-status-notice" role="status">{{ message }}</p>{% endfor %}
+    
+    <!-- HEADER BLOCK -->
+    <div class="dashboard-header">
+        <div>
+            <h1>Manage Applicants</h1>
+            <p style="color: #15284b; margin-top: 4px;">Review profiles, shortlist candidates, and update recruitment statuses.</p>
+        </div>
+        
+        <div class="company-badge">
+            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span>Active Candidates</span>
+        </div>
+    </div>
+
+    <form method="get" class="candidate-filters">
+        <div><label for="candidateSkill">Confirmed skill</label><input type="search" id="candidateSkill" name="skill" maxlength="60" value="{{ filter_skill }}" placeholder="e.g. Customer Service"></div>
+        <div><label for="candidateJob">Job position</label><select id="candidateJob" name="job"><option value="">All positions</option>{% for job in filter_jobs %}<option value="{{ job.pk }}" {% if filter_job == job.pk|stringformat:'s' %}selected{% endif %}>{{ job.title }}</option>{% endfor %}</select></div>
+        <div><label for="candidateStatus">Status</label><select id="candidateStatus" name="status"><option value="">All statuses</option>{% for value,label in status_choices %}<option value="{{ value }}" {% if filter_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+        <div><label for="candidateExperience">Work experience</label><select id="candidateExperience" name="experience"><option value="">All applicants</option><option value="relevant" {% if filter_experience == 'relevant' %}selected{% endif %}>Relevant experience</option><option value="any" {% if filter_experience == 'any' %}selected{% endif %}>Has experience</option><option value="none" {% if filter_experience == 'none' %}selected{% endif %}>No experience added</option></select></div>
+        <div><label for="candidateSort">Sort by</label><select id="candidateSort" name="sort"><option value="match" {% if filter_sort == 'match' %}selected{% endif %}>Highest Match</option><option value="likelihood" {% if filter_sort == 'likelihood' %}selected{% endif %}>Likelihood of Success</option><option value="recent" {% if filter_sort == 'recent' %}selected{% endif %}>Newest Application</option></select></div>
+        <button type="submit">Apply Filters</button><a href="{% url 'applicants' %}">Reset</a>
+    </form>
+    <div class="candidate-results-bar"><strong role="status">{{ result_count }} application{{ result_count|pluralize }} found</strong><details><summary>How matching works</summary><p>Matches use confirmed skills against the job's required skills. Experience contributes 20 points only when required. Compare applicants for the same position. Scores do not predict hiring success.</p></details></div>
+    <!-- MAIN DATA INTERFACE PANEL -->
+    <div class="table-responsive">
+        <table class="applicants-table">
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Target Position</th>
+                    <th>Job Match</th>
+                    <th>Applied Date</th>
+                    <th>Current Status</th>
+                    <th>Actions & Status Updates</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if applications %}
+                    {% for application in applications %}
+                    <tr>
+                        <!-- Candidate Identity Details -->
+                        <td>
+                            <div class="applicant-info">
+                                <span class="applicant-name">{{ application.applicant.first_name }} {{ application.applicant.last_name }}</span>
+                                <span class="applicant-email">{{ application.applicant.email }}</span>
+
+                            </div>
+                        </td>
+
+                        <!-- Targeted Job Role -->
+                        <td>
+                            <span class="job-title-tag">
+                                {{ application.job.title }}
+                            </span>
+                        </td>
+
+                        <td class="candidate-score-cell">
+                            <div class="jm">
+                                {% if application.match.score != None %}
+                                <div class="jm-score {% if application.match.score >= 70 %}is-high{% elif application.match.score >= 40 %}is-mid{% else %}is-low{% endif %}">
+                                    <strong>{{ application.match.score|floatformat:'-1' }}</strong><span>/100 match</span>
+                                </div>
+                                <span class="jm-meter" aria-hidden="true"><span style="width:{{ application.match.score|floatformat:'0' }}%"></span></span>
+                                <p class="jm-cov">{{ application.match.matched|length }} of {{ application.match.required|length }} required skill{{ application.match.required|length|pluralize }}</p>
+                                {% else %}
+                                <div class="jm-score is-none"><strong>Not scored</strong></div>
+                                <p class="jm-cov">Add required skills to this job to score applicants.</p>
+                                {% endif %}
+
+                                <ul class="jm-tags">
+                                    {% if application.success_likelihood %}
+                                    <li class="jm-tag is-info" title="Hire rate of {{ application.success_likelihood.basis }}. Historical rate, not a guarantee.">{{ application.success_likelihood.percent|floatformat:"-1" }}% likelihood</li>
+                                    {% else %}
+                                    <li class="jm-tag is-muted" title="Needs at least 5 finished applications in this job category.">Likelihood of success: not enough data yet</li>
+                                    {% endif %}
+                                    {% if application.benchmark %}
+                                    <li class="jm-tag is-{{ application.benchmark.overall }}" title="Compared with {{ application.benchmark.basis }}.">{{ application.benchmark.label }}</li>
+                                    {% else %}
+                                    <li class="jm-tag is-muted" title="Needs at least 3 employees who passed probation in this job category.">Benchmark: not enough data yet</li>
+                                    {% endif %}
+                                </ul>
+
+                                <details class="jm-details">
+                                    <summary>Details</summary>
+                                    <div class="jm-details-body">
+                                        {% if application.match.score != None %}
+                                        <p><strong>Matched skills:</strong> {{ application.match.matched|join:', '|default:'None' }}</p>
+                                        {% if application.match.missing %}<p><strong>Missing:</strong> {{ application.match.missing|join:', ' }}</p>{% endif %}
+                                        <p>Skills: {{ application.match.skills_points }} points{% if application.job.experience_required %} &middot; Experience: {{ application.match.experience_points }} points{% endif %}</p>
+                                        {% if application.match.experience %}<p><strong>Experience:</strong> {{ application.match.experience|join:', ' }}</p>{% endif %}
+                                        {% else %}
+                                        {% if application.matched_skills %}<p><strong>Matched skills:</strong> {{ application.matched_skills|join:', ' }}</p>{% endif %}
+                                        {% if application.matched_experience %}<p><strong>Relevant experience:</strong> {{ application.matched_experience|join:', ' }}</p>{% endif %}
+                                        {% endif %}
+                                        {% if application.success_likelihood %}
+                                        <p><strong>Likelihood:</strong> hire rate of {{ application.success_likelihood.basis }}. Historical rate, not a guarantee.</p>
+                                        {% else %}
+                                        <p><strong>Likelihood:</strong> needs at least 5 finished applications in this job category.</p>
+                                        {% endif %}
+                                        {% if application.benchmark %}
+                                        <p><strong>Benchmark:</strong> compared with {{ application.benchmark.basis }}.</p>
+                                        <ul class="jm-checks">{% for check in application.benchmark.checks %}<li class="is-{{ check.status }}"><strong>{{ check.name }}:</strong> {{ check.status|title }} &mdash; {{ check.detail }}</li>{% endfor %}</ul>
+                                        {% else %}
+                                        <p><strong>Benchmark:</strong> needs at least 3 employees who passed probation in this job category.</p>
+                                        {% endif %}
+                                    </div>
+                                </details>
+                            </div>
+                        </td>
+                        <!-- Submission Timestamp -->
+                        <td>
+                            {{ application.applied_at|date:"M d, Y" }}
+                        </td>
+
+                        <!-- Status Badges -->
+                        <td>
+                            {% if application.status == 'reviewing' %}
+                                <span class="status-badge status-reviewing">Reviewing</span>
+                            {% elif application.status == 'shortlisted' %}
+                                <span class="status-badge status-shortlisted">Shortlisted</span>
+                            {% elif application.status == 'accepted' %}
+                                <span class="status-badge status-accepted">Accepted</span>
+                            {% elif application.status == 'rejected' %}
+                                <span class="status-badge status-rejected">Rejected</span>
+                            {% else %}
+                                <span class="status-badge status-{{ application.status }}">{{ application.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Workflow Form Controls -->
+                        <td>
+                            <button type="button" class="candidate-actions-toggle" popovertarget="candidate-actions-{{ application.pk }}" aria-label="Actions for {{ application.applicant.first_name }} {{ application.applicant.last_name }}" aria-controls="candidate-actions-{{ application.pk }}" title="Applicant actions">&#8942;</button>
+                            <div class="action-group candidate-action-menu" id="candidate-actions-{{ application.pk }}" popover><a href="{% url 'review-applicant' application.pk %}" class="btn-action btn-review">Review Applicant</a>
+                                <!-- View Resume Action -->
+                                {% for certificate in application.applicant.certificates.all %}
+                                    <a href="{% url 'certificate-file' certificate.pk %}" target="_blank" rel="noopener" class="btn-action btn-resume" title="View certificate: {{ certificate.title }}">{{ certificate.title }}</a>
+                                {% endfor %}
+                                {% if application.applicant.resume %}
+                                    <a href="{% url 'application-document' application.pk 'resume' %}" target="_blank" class="btn-action btn-resume" title="View Resume File">
+                                        Resume
+                                    </a>
+                                {% endif %}
+
+                                <!-- Status Alteration Form -->
+{% if application.status != 'withdrawn' and application.status != 'declined' and application.status != 'hired' %}
+                                <form action="{% url 'update-applicant-status' application.id %}" method="POST" class="action-form">
+                                    {% csrf_token %}
+                                    
+                                    {% if application.status != 'reviewing' %}
+                                        <button type="submit" name="status" value="reviewing" class="btn-action btn-review">Review</button>
+                                    {% endif %}
+                                    
+                                    {% if application.status != 'shortlisted' %}
+                                        <button type="submit" name="status" value="shortlisted" class="btn-action btn-shortlist">Shortlist</button>
+                                    {% endif %}
+                                    
+                                    {% if application.status != 'offered' %}
+                                        <button type="submit" name="status" value="offered" class="btn-action btn-accept">Send Offer</button>
+                                    {% endif %}
+                                    
+                                    {% if application.status != 'rejected' %}
+                                        <button type="submit" name="status" value="rejected" class="btn-action btn-reject">Reject</button>
+                                    {% endif %}
+                                </form>
+{% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; color: var(--text-dark);">No candidates found</p>
+                                <p style="font-size: 0.875rem;">No applications match these filters. Try adjusting or resetting them.</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<nav class="candidate-pagination" aria-label="Applicant list pages">{% if page_obj.has_previous %}<a href="?{{ page_query }}&amp;page={{ page_obj.previous_page_number }}">Previous</a>{% endif %}<span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>{% if page_obj.has_next %}<a href="?{{ page_query }}&amp;page={{ page_obj.next_page_number }}">Next</a>{% endif %}</nav>
+<script src="{% static 'js/candidate-actions.js' %}"></script>
+{% endblock %}

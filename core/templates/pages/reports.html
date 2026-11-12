@@ -1,0 +1,916 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/hiring-analytics.css' %}">
+<style>
+    :root {
+        --blue: #2563eb;
+        --blue-dark: #1e40af;
+        --border: #e2e8f0;
+        --text: #1e293b;
+        --muted: #64748b;
+        --background: #f8fafc;
+    }
+
+    .reports-page {
+        padding: 16px;
+        color: var(--text);
+        font-size: 13px;
+    }
+
+    .reports-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .reports-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+    }
+
+    .reports-subtitle {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .report-actions,
+    .report-filter-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .report-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 34px;
+        padding: 7px 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .report-btn:hover {
+        border-color: var(--blue);
+    }
+
+    .report-btn-primary {
+        color: #fff;
+        background: var(--blue);
+        border-color: var(--blue);
+    }
+
+    .report-btn-primary:hover {
+        color: #fff;
+        background: var(--blue-dark);
+    }
+
+    .report-filter {
+        display: flex;
+        align-items: end;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px;
+        margin-bottom: 16px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+    }
+
+    .report-date { white-space:nowrap; }
+
+    .report-table-controls {
+        margin: 0 0 16px;
+        padding: 14px 0;
+        border: 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        border-radius: 0;
+    }
+
+    .report-filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        min-width: 165px;
+    }
+
+    .report-filter-group label {
+        color: #15284b;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .report-filter-group input {
+        width: 100%;
+        min-height: 34px;
+        padding: 6px 9px;
+        border: 1px solid #cbd5e1;
+        border-radius: 5px;
+        background: #fff;
+        font-size: 12px;
+    }
+
+    .report-filter-help {
+        width: 100%;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .report-alert {
+        padding: 10px 12px;
+        margin-bottom: 14px;
+        border: 1px solid;
+        border-radius: 6px;
+        font-size: 12px;
+    }
+
+    .report-alert-error {
+        color: #991b1b;
+        background: #fef2f2;
+        border-color: #fecaca;
+    }
+
+    .report-alert-info {
+        color: #1e40af;
+        background: #eff6ff;
+        border-color: #bfdbfe;
+    }
+
+    .report-section-title {
+        margin: 0 0 10px;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .report-kpis {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .report-kpi {
+        min-width: 0;
+        padding: 12px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
+    }
+
+    .report-kpi-label {
+        margin-bottom: 6px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .report-kpi-value {
+        font-size: 23px;
+        line-height: 1.2;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .report-kpi-note {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 10px;
+    }
+
+    .blue { color: #2563eb; }
+    .green { color: #15284b; }
+    .orange { color: #c2410c; }
+    .red { color: #b91c1c; }
+
+    .report-charts {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .report-panel {
+        min-width: 0;
+        padding: 12px;
+        margin-bottom: 16px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        break-inside: avoid;
+    }
+
+    .report-chart-container {
+        position: relative;
+        width: 100%;
+        height: 230px;
+    }
+
+    .report-table-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .report-table-heading .report-section-title {
+        margin: 0;
+    }
+
+    .report-record-count {
+        padding: 4px 8px;
+        color: #1e40af;
+        background: #eff6ff;
+        border-radius: 5px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .report-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        font-size: 11px;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 8px 9px;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .report-table th {
+        color: #1e40af;
+        background: #eff6ff;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .report-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .report-status {
+        display: inline-block;
+        padding: 3px 7px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: capitalize;
+        white-space: nowrap;
+    }
+
+    .status-approved,
+    .status-active {
+        color: #15284b;
+        background: #dcfce7;
+    }
+
+    .status-pending {
+        color: #92400e;
+        background: #fef3c7;
+    }
+
+    .status-rejected,
+    .status-suspended {
+        color: #991b1b;
+        background: #fee2e2;
+    }
+
+    .status-default {
+        color: #15284b;
+        background: #e2e8f0;
+    }
+
+    .report-empty {
+        padding: 18px !important;
+        color: var(--muted);
+        text-align: center !important;
+    }
+
+    .report-footer {
+        padding: 10px 0;
+        color: var(--muted);
+        font-size: 10px;
+        text-align: right;
+    }
+
+    @media (max-width: 900px) {
+        .report-kpis {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .report-charts {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .reports-page {
+            padding: 10px;
+        }
+
+        .reports-title {
+            font-size: 19px;
+        }
+
+        .report-filter-group {
+            width: 100%;
+        }
+
+        .report-actions,
+        .report-filter-actions {
+            width: 100%;
+        }
+
+        .report-kpi {
+            padding: 10px;
+        }
+
+        .report-kpi-value {
+            font-size: 20px;
+        }
+    }
+
+    /* Excel-style print layout */
+    @page {
+        size: A4 landscape;
+        margin: 10mm;
+    }
+
+    @media print {
+        html,
+        body {
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #fff !important;
+            color: #000 !important;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-size: 9px !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        header,
+        nav,
+        aside,
+        footer,
+        .sidebar,
+        .navbar,
+        .topbar,
+        .report-filter,
+        .report-actions,
+        .report-filter-actions,
+        .no-print,
+        button {
+            display: none !important;
+        }
+
+        .reports-page {
+            width: 100% !important;
+            max-width: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            font-size: 9px !important;
+        }
+
+        .reports-header {
+            display: block !important;
+            padding-bottom: 8px !important;
+            margin-bottom: 8px !important;
+            border-bottom: 2px solid #1f4e78 !important;
+        }
+
+        .reports-title {
+            font-size: 19px !important;
+            color: #1f1f1f !important;
+        }
+
+        .reports-subtitle {
+            font-size: 9px !important;
+            color: #555 !important;
+        }
+
+        .report-alert {
+            padding: 6px 8px !important;
+            margin-bottom: 8px !important;
+            border-radius: 0 !important;
+            font-size: 9px !important;
+        }
+
+        .report-section-title {
+            padding: 5px 6px !important;
+            margin: 8px 0 5px !important;
+            color: #fff !important;
+            background: #1f4e78 !important;
+            border: 1px solid #17365d !important;
+            border-radius: 0 !important;
+            font-size: 10px !important;
+            break-after: avoid;
+        }
+
+        .report-kpis {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            gap: 0 !important;
+            margin-bottom: 10px !important;
+            border-top: 1px solid #7f7f7f !important;
+            border-left: 1px solid #7f7f7f !important;
+        }
+
+        .report-kpi {
+            padding: 7px !important;
+            background: #fff !important;
+            border: 0 !important;
+            border-right: 1px solid #7f7f7f !important;
+            border-bottom: 1px solid #7f7f7f !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            break-inside: avoid;
+        }
+
+        .report-kpi-label {
+            color: #333 !important;
+            font-size: 8px !important;
+        }
+
+        .report-kpi-value {
+            color: #000 !important;
+            font-size: 16px !important;
+        }
+
+        .report-kpi-note {
+            color: #555 !important;
+            font-size: 8px !important;
+        }
+
+        .blue,
+        .green,
+        .orange,
+        .red {
+            color: #000 !important;
+        }
+
+        .report-charts {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 8px !important;
+            margin-bottom: 10px !important;
+        }
+
+        .report-panel {
+            padding: 0 !important;
+            margin: 0 0 10px !important;
+            border: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background: #fff !important;
+            break-inside: auto;
+        }
+
+        .report-chart-container {
+            height: 150px !important;
+            max-height: 150px !important;
+        }
+
+        .report-table-heading {
+            margin-bottom: 5px !important;
+        }
+
+        .report-record-count {
+            padding: 0 !important;
+            color: #000 !important;
+            background: #fff !important;
+            font-size: 8px !important;
+        }
+
+        .report-table-wrap {
+            width: 100% !important;
+            overflow: visible !important;
+        }
+
+        .report-table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            table-layout: auto !important;
+            color: #000 !important;
+            background: #fff !important;
+            font-size: 8px !important;
+        }
+
+        .report-table thead {
+            display: table-header-group;
+        }
+
+        .report-table tr {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .report-table th,
+        .report-table td {
+            padding: 4px 5px !important;
+            border: 1px solid #7f7f7f !important;
+            border-radius: 0 !important;
+            text-align: left !important;
+            vertical-align: top !important;
+            color: #000 !important;
+            overflow-wrap: anywhere !important;
+        }
+
+        .report-table th {
+            background: #d9eaf7 !important;
+            font-weight: 700 !important;
+            white-space: normal !important;
+        }
+
+        .report-table tbody tr:nth-child(even) td {
+            background: #f2f2f2 !important;
+        }
+
+        .report-status {
+            padding: 0 !important;
+            border: 0 !important;
+            border-radius: 0 !important;
+            color: #000 !important;
+            background: transparent !important;
+            font-size: 8px !important;
+        }
+
+        .report-empty {
+            padding: 8px !important;
+            text-align: center !important;
+        }
+
+        .report-footer {
+            padding-top: 8px !important;
+            border-top: 1px solid #7f7f7f !important;
+            color: #333 !important;
+            font-size: 8px !important;
+        }
+
+        a {
+            color: #000 !important;
+            text-decoration: none !important;
+        }
+    }
+@media print {
+    body.printing-one-report .report-panel:not(.print-selected-report) { display:none !important; }
+    .report-table-controls { display:none !important; }
+}
+.assessment-layout { display:flex; align-items:flex-start; gap:24px; }
+.assessment-layout > section { flex:1 1 0; min-width:0; width:auto; margin:0; }
+.assessment-layout .employer-review-card { overflow-wrap:anywhere; }
+.assessment-layout .report-table { min-width:0; width:100%; }
+.assessment-layout .report-table th:first-child,
+.assessment-layout .report-table td:first-child { width:75%; }
+.assessment-layout .report-table th:last-child,
+.assessment-layout .report-table td:last-child { width:25%; }
+@media (max-width:1100px) {
+    .assessment-layout { flex-direction:column; }
+    .assessment-layout > section { flex:auto; width:100%; }
+}
+@media print { .assessment-layout { display:block; } }
+.demand-bar { height:6px; margin-top:6px; border-radius:999px; background:#e2e8f0; overflow:hidden; max-width:220px; }
+.demand-bar span { display:block; height:100%; background:#2563eb; border-radius:inherit; }
+.demand-trend { font-weight:600; font-size:12px; }
+.demand-trend-up { color:#15803d; }
+.demand-trend-down { color:#b91c1c; }
+.demand-trend-same { color:#64748b; }
+.report-muted { color:#64748b; font-size:12px; }
+</style>
+
+<div class="reports-page">
+
+    <div class="reports-header">
+        <div>
+            <h1 class="reports-title">Reports</h1>
+            <p class="reports-subtitle">
+                {% if report_section == "demand" %}Job categories ranked by number of applicants{% elif report_section == "assessments" %}Assessment summary and performance benchmarks by job category{% elif report_section == "hired" %}Successful applications and hiring records{% elif report_section == "applicants" %}Applicant records{% elif report_section == "jobs" %}Job post records{% else %}Employer records{% endif %}
+            </p>
+        </div>
+
+
+    </div>
+
+
+
+    {% if report_section == "employers" %}
+    <!-- EMPLOYER RECORDS -->
+    <div class="report-panel" id="report-employers">
+        <div class="report-table-heading">
+            <h2 class="report-section-title">Employer Records</h2>
+            <span class="report-record-count">
+                {{ employers|length }} records
+            </span>
+        </div>
+
+
+
+        <form method="GET" action="{% url 'reports' %}#report-employers" class="report-filter report-table-controls">
+            <input type="hidden" name="section" value="employers">
+            <input type="hidden" name="generate" value="employers">
+            <input type="hidden" name="applicants_from" value="{{ applicants_from|default:'' }}">
+            <input type="hidden" name="applicants_to" value="{{ applicants_to|default:'' }}">
+            <input type="hidden" name="jobs_from" value="{{ jobs_from|default:'' }}">
+            <input type="hidden" name="jobs_to" value="{{ jobs_to|default:'' }}">
+            <div class="report-filter-group"><label for="employers_from">Date From</label><input type="date" id="employers_from" name="employers_from" value="{{ employers_from|default:'' }}"></div>
+            <div class="report-filter-group"><label for="employers_to">Date To</label><input type="date" id="employers_to" name="employers_to" value="{{ employers_to|default:'' }}"></div>
+            <div class="report-filter-actions">
+                <button type="submit" name="export" value="employers" class="report-btn report-btn-primary">Generate Report (PDF)</button>
+                <button type="button" class="report-btn report-reset">Reset</button>
+                <button type="button" class="report-btn report-print">Print Report</button>
+            </div>
+        </form>
+        {% if employers_error %}<div class="report-alert report-alert-error">{{ employers_error }}</div>{% endif %}
+        {% if employers_generated and not employers_error %}
+        <div class="report-alert report-alert-info" role="status">
+            <strong>Report generated: {{ employers|length }} records</strong><br>
+            Date range: {{ employers_from|default:"Earliest available date" }} to {{ employers_to|default:"Latest available date" }}<br>
+            Generated: {{ report_date }}
+        </div>
+        {% endif %}
+
+        <div class="report-table-wrap">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Company Name</th>
+                        <th>Business Permit No.</th>
+                        <th>Contact No.</th>
+                        <th>Status</th>
+                        <th>Date Registered</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for employer in employers %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ employer.company_name|default:"—" }}</td>
+                            <td>{{ employer.business_permit_no|default:"—" }}</td>
+                            <td>{{ employer.contact_no|default:"—" }}</td>
+                            <td>
+                                {% if employer.is_active %}
+                                    <span class="report-status status-active">Active</span>
+                                {% else %}
+                                    <span class="report-status status-suspended">Suspended</span>
+                                {% endif %}
+                            </td>
+                            <td class="report-date">{{ employer.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="report-empty">
+                                No employer records found for the selected date range.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% endif %}
+
+    {% if report_section == "applicants" %}
+    <!-- APPLICANT RECORDS -->
+    <div class="report-panel" id="report-applicants">
+        <div class="report-table-heading">
+            <h2 class="report-section-title">Applicant Records</h2>
+            <span class="report-record-count">
+                {{ applicants|length }} records
+            </span>
+        </div>
+
+        <form method="GET" action="{% url 'reports' %}#report-applicants" class="report-filter report-table-controls">
+            <input type="hidden" name="section" value="applicants">
+            <input type="hidden" name="generate" value="applicants">
+            <input type="hidden" name="employers_from" value="{{ employers_from|default:'' }}">
+            <input type="hidden" name="employers_to" value="{{ employers_to|default:'' }}">
+            <input type="hidden" name="jobs_from" value="{{ jobs_from|default:'' }}">
+            <input type="hidden" name="jobs_to" value="{{ jobs_to|default:'' }}">
+            <div class="report-filter-group"><label for="applicants_from">Date From</label><input type="date" id="applicants_from" name="applicants_from" value="{{ applicants_from|default:'' }}"></div>
+            <div class="report-filter-group"><label for="applicants_to">Date To</label><input type="date" id="applicants_to" name="applicants_to" value="{{ applicants_to|default:'' }}"></div>
+            <div class="report-filter-actions">
+                <button type="submit" name="export" value="applicants" class="report-btn report-btn-primary">Generate Report (PDF)</button>
+                <button type="button" class="report-btn report-reset">Reset</button>
+                <button type="button" class="report-btn report-print">Print Report</button>
+            </div>
+        </form>
+        {% if applicants_error %}<div class="report-alert report-alert-error">{{ applicants_error }}</div>{% endif %}
+        {% if applicants_generated and not applicants_error %}
+        <div class="report-alert report-alert-info" role="status">
+            <strong>Report generated: {{ applicants|length }} records</strong><br>
+            Date range: {{ applicants_from|default:"Earliest available date" }} to {{ applicants_to|default:"Latest available date" }}<br>
+            Generated: {{ report_date }}
+        </div>
+        {% endif %}
+
+        <div class="report-table-wrap">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Applicant Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Date Registered</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for applicant in applicants %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                {{ applicant.first_name|default:"" }}
+                                {% if applicant.middle_name %}
+                                    {{ applicant.middle_name }}
+                                {% endif %}
+                                {{ applicant.last_name|default:"" }}
+                            </td>
+                            <td>{{ applicant.email|default:"—" }}</td>
+                            <td>{{ applicant.phone_number|default:"—" }}</td>
+                            <td class="report-date">{{ applicant.user.date_joined|date:"M d, Y" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="report-empty">
+                                No applicant records found for the selected date range.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% endif %}
+
+    {% if report_section == "jobs" %}
+    <!-- JOB POST RECORDS -->
+    <div class="report-panel" id="report-jobs">
+        <div class="report-table-heading">
+            <h2 class="report-section-title">Job Post Records</h2>
+            <span class="report-record-count">
+                {{ jobs|length }} records
+            </span>
+        </div>
+
+        <form method="GET" action="{% url 'reports' %}#report-jobs" class="report-filter report-table-controls">
+            <input type="hidden" name="section" value="jobs">
+            <input type="hidden" name="generate" value="jobs">
+            <input type="hidden" name="employers_from" value="{{ employers_from|default:'' }}">
+            <input type="hidden" name="employers_to" value="{{ employers_to|default:'' }}">
+            <input type="hidden" name="applicants_from" value="{{ applicants_from|default:'' }}">
+            <input type="hidden" name="applicants_to" value="{{ applicants_to|default:'' }}">
+            <div class="report-filter-group"><label for="jobs_from">Date From</label><input type="date" id="jobs_from" name="jobs_from" value="{{ jobs_from|default:'' }}"></div>
+            <div class="report-filter-group"><label for="jobs_to">Date To</label><input type="date" id="jobs_to" name="jobs_to" value="{{ jobs_to|default:'' }}"></div>
+            <div class="report-filter-actions">
+                <button type="submit" name="export" value="jobs" class="report-btn report-btn-primary">Generate Report (PDF)</button>
+                <button type="button" class="report-btn report-reset">Reset</button>
+                <button type="button" class="report-btn report-print">Print Report</button>
+            </div>
+        </form>
+        {% if jobs_error %}<div class="report-alert report-alert-error">{{ jobs_error }}</div>{% endif %}
+        {% if jobs_generated and not jobs_error %}
+        <div class="report-alert report-alert-info" role="status">
+            <strong>Report generated: {{ jobs|length }} records</strong><br>
+            Date range: {{ jobs_from|default:"Earliest available date" }} to {{ jobs_to|default:"Latest available date" }}<br>
+            Generated: {{ report_date }}
+        </div>
+        {% endif %}
+
+        <div class="report-table-wrap">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Job Title</th>
+                        <th>Employer</th>
+                        <th>Location</th>
+                        <th>Salary</th>
+                        <th>Status</th>
+                        <th>Date Posted</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for job in jobs %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ job.title|default:"—" }}</td>
+                            <td>{{ job.employer.company_name|default:"—" }}</td>
+                            <td>{{ job.location|default:"—" }}</td>
+                            <td>{{ job.salary|default:"—" }}</td>
+                            <td>
+                                {% with status=job.status|lower %}
+                                    {% if status == "approved" %}
+                                        <span class="report-status status-approved">
+                                            {{ job.status }}
+                                        </span>
+                                    {% elif status == "pending" %}
+                                        <span class="report-status status-pending">
+                                            {{ job.status }}
+                                        </span>
+                                    {% elif status == "rejected" %}
+                                        <span class="report-status status-rejected">
+                                            {{ job.status }}
+                                        </span>
+                                    {% else %}
+                                        <span class="report-status status-default">
+                                            {{ job.status|default:"Unknown" }}
+                                        </span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td class="report-date">{{ job.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="report-empty">
+                                No job post records found for the selected date range.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% endif %}
+
+    {% if report_section == 'hired' %}
+    {% include 'components/hired_records.html' %}
+    {% endif %}
+
+    {% if report_section == 'demand' %}
+    <div class="report-panel" id="report-demand">
+        <div class="report-table-heading"><h2 class="report-section-title">Job Demand Ranking</h2><span class="report-record-count">{{ demand|length }} categories</span></div>
+        <form method="get" action="{% url 'reports' %}#report-demand" class="report-filter report-table-controls">
+            <input type="hidden" name="section" value="demand"><input type="hidden" name="generate" value="demand">
+            <div class="report-filter-group"><label for="demand_from">Application Date From</label><input type="date" id="demand_from" name="demand_from" value="{{ demand_from|default:'' }}"></div>
+            <div class="report-filter-group"><label for="demand_to">Application Date To</label><input type="date" id="demand_to" name="demand_to" value="{{ demand_to|default:'' }}"></div>
+            <div class="report-filter-actions"><button type="submit" class="report-btn">Apply Dates</button><button type="submit" name="export" value="demand" class="report-btn report-btn-primary">Generate Report (PDF)</button><button type="button" class="report-btn report-reset">Reset</button><button type="button" class="report-btn report-print">Print Report</button></div>
+        </form>
+        {% if demand_error %}<div class="report-alert report-alert-error">{{ demand_error }}</div>{% endif %}
+        <div class="report-table-wrap"><table class="report-table"><thead><tr><th>Rank</th><th>Job Category</th><th>Applications</th><th>Applicants</th><th>Hired</th><th>Success Rate</th><th>Trend ({{ trend_days }} days)</th><th>Open Vacancies</th></tr></thead><tbody>
+        {% for row in demand %}<tr>
+            <td><strong>#{{ row.rank }}</strong></td>
+            <td>{{ row.label }}<div class="demand-bar" aria-hidden="true"><span style="width:{{ row.percent }}%"></span></div></td>
+            <td><strong>{{ row.applications }}</strong></td><td>{{ row.applicants }}</td><td>{{ row.hires }}</td>
+            <td>{% if row.success_rate != None %}{{ row.success_rate }}%{% else %}<span class="report-muted">No finished applications</span>{% endif %}</td>
+            <td><span class="demand-trend demand-trend-{{ row.trend }}">{% if row.trend == 'up' %}&#9650; Rising{% elif row.trend == 'down' %}&#9660; Falling{% else %}&#9644; Steady{% endif %}</span> <span class="report-muted">{{ row.previous }} &rarr; {{ row.recent }}</span></td>
+            <td>{{ row.open_vacancies }}</td>
+        </tr>{% empty %}<tr><td colspan="8" class="report-empty">No applications found for the selected date range.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </div>
+    <div class="report-panel" id="report-top-jobs">
+        <div class="report-table-heading"><h2 class="report-section-title">Most Applied Job Posts</h2></div>
+        <div class="report-table-wrap"><table class="report-table"><thead><tr><th>Rank</th><th>Job Title</th><th>Employer</th><th>Category</th><th>Applications</th></tr></thead><tbody>
+        {% for job in top_jobs %}<tr><td>#{{ forloop.counter }}</td><td><a href="{% url 'view-job' job.pk %}">{{ job.title }}</a></td><td>{{ job.employer.company_name }}</td><td>{{ job.get_category_display }}</td><td><strong>{{ job.application_count }}</strong></td></tr>
+        {% empty %}<tr><td colspan="5" class="report-empty">No applications found for the selected date range.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </div>
+    {% endif %}
+
+    {% if report_section == 'assessments' %}
+    {% include 'components/assessment_benchmarks.html' %}
+    {% endif %}
+
+    <div class="report-footer">
+        Generated from the system reports page.
+    </div>
+</div>
+
+
+
+<script src="{% static 'js/report-controls.js' %}"></script>
+{% endblock %}

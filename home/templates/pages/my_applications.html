@@ -1,0 +1,355 @@
+{% extends "home_base.html" %}
+{% load static %}
+{% block body_class %}portal-home portal-applications{% endblock %}
+{% block main_class %}portal-main{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+<link rel="stylesheet" href="{% static 'css/my-applications.css' %}">
+{% endblock %}
+
+{% block content %}
+{% for message in messages %}<p class="application-response-notice" role="status">{{ message }}</p>{% endfor %}
+
+
+<style>
+/* --- Layout Flow & Document Positioning --- */
+.applications-wrapper {
+    width: 100%;
+    min-height: calc(100vh - 140px);
+    padding: 40px 20px 80px 20px; /* Provides bottom spacing so content doesn't cover footer */
+    position: relative; /* Standard flow relative to base header and footer */
+    z-index: 1;
+}
+
+.applications-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 35px;
+    box-shadow: 0 15px 40px rgba(30, 58, 138, 0.08);
+    border: 1px solid #e2e8f0;
+}
+
+.page-title {
+    color: #15284b;
+    font-size: 1.85rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    letter-spacing: -0.01em;
+}
+
+/* --- Table Architecture --- */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.app-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.app-table th {
+    background-color: #2563eb;
+    color: #ffffff;
+    padding: 14px 18px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.app-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #15284b;
+    vertical-align: middle;
+}
+
+.app-table tbody tr.main-row:hover {
+    background-color: #f8fafc;
+}
+
+/* Meta Details & High Contrast Cell Elements */
+.cell-flex {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    color: #15284b; /* High-contrast crisp text */
+}
+
+.cell-flex svg {
+    color: #15284b; /* Theme green icon accents */
+    flex-shrink: 0;
+}
+
+.company-sub {
+    display: block;
+    font-size: 0.85rem;
+    color: #15284b;
+    margin-top: 2px;
+}
+
+/* --- Dropdown Sub-Row --- */
+.detail-row {
+    background-color: #f8fafc;
+}
+
+.detail-row td {
+    padding: 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.details-dropdown-content {
+    display: none;
+    padding: 25px 30px;
+    border-left: 4px solid #2563eb;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.details-section h4 {
+    color: #15284b;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 4px;
+}
+
+.details-section p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #15284b;
+}
+
+/* --- Badges & Action Controls --- */
+.status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-align: center;
+    white-space: nowrap;
+    text-transform: capitalize;
+}
+
+.pending { background: #f59e0b; }
+.reviewing { background: #3b82f6; }
+.shortlisted { background: #3b82f6; }
+.accepted { background: #2563eb; }
+.rejected { background: #dc2626; }
+
+.btn-toggle {
+    background: transparent;
+    border: 1px solid #2563eb;
+    color: #15284b;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.btn-toggle:hover {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.btn-toggle svg {
+    transition: transform 0.2s ease;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    text-decoration: none;
+    background: #2563eb;
+    color: #ffffff;
+    padding: 10px 22px;
+    border-radius: 99px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background: #1d4ed8;
+}
+
+.empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #15284b;
+}
+</style>
+
+<div class="applications-wrapper">
+    <div class="applications-container">
+        <h2 class="page-title">My Applications</h2>
+        <p class="applications-intro">Keep track of your applications and updates from employers.</p>
+
+        {% if applications %}
+        <div class="table-responsive">
+            <table class="app-table">
+                <thead>
+                    <tr>
+                        <th>Job / Company</th>
+                        <th>Location</th>
+                        <th>Job Details</th>
+                        <th>Dates</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in applications %}
+                    <!-- Main Summary Row -->
+                    <tr class="main-row">
+                        <td>
+                            <div class="application-employer">
+                                {% if application.job.employer.company_logo %}
+                                    <img class="application-logo" src="{{ application.job.employer.company_logo.url }}" alt="{{ application.job.employer.company_name }} logo" width="44" height="44">
+                                {% else %}
+                                    <span class="application-logo application-initial" aria-hidden="true">{{ application.job.employer.company_name|first|upper }}</span>
+                                {% endif %}
+                                <div class="application-job-name">
+                                    <strong>{{ application.job.title }}</strong>
+                                    <span class="company-sub">{{ application.job.employer.company_name }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <!-- High Contrast Location Text -->
+                            <span class="cell-flex">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                {{ application.job.location }}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                <span class="cell-flex">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                                    {{ application.job.get_job_type_display }}
+                                </span>
+                                <span class="cell-flex" style="font-size: 0.85rem; color: #15284b;">
+                                    <svg width="14" height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+
+                                    {{ application.job.salary_display }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem;">
+                                <span class="cell-flex">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    Applied: {{ application.applied_at|date:"M d, Y" }}
+                                </span>
+                                <span class="cell-flex" style="color: #dc2626;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    Due: {{ application.job.deadline|date:"M d, Y" }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status {{ application.status }}">
+                                {{ application.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if application.status == 'pending' or application.status == 'reviewing' or application.status == 'shortlisted' %}
+                            <form method="post" action="{% url 'applicant-application-action' application.pk %}" class="application-response-form" data-job="{{ application.job.title }}">{% csrf_token %}<button type="submit" name="action" value="withdraw" class="application-response-button response-danger">Withdraw</button></form>
+                            {% elif application.status == 'offered' %}
+                            <form method="post" action="{% url 'applicant-application-action' application.pk %}" class="application-response-form" data-job="{{ application.job.title }}">{% csrf_token %}<button type="submit" name="action" value="accept" class="application-response-button response-accept">Accept Offer</button><button type="submit" name="action" value="decline" class="application-response-button response-danger">Decline Offer</button></form>
+                            {% endif %}
+                            <button type="button" class="btn-toggle" aria-expanded="false" aria-controls="details-{{ forloop.counter }}" onclick="toggleRow('details-{{ forloop.counter }}', this)">
+                                <span>Details</span>
+                                <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Secondary Hidden Detail Row -->
+                    <tr class="detail-row">
+                        <td colspan="6">
+                            <div id="details-{{ forloop.counter }}" class="details-dropdown-content" inert><div class="details-clip"><div class="details-inner">
+                                <div class="details-grid">
+                                    <div class="details-section">
+                                        <h4>Job Description</h4>
+                                        <p>{{ application.job.description }}</p>
+                                    </div>
+                                    <div class="details-section">
+                                        <h4>Qualifications</h4>
+                                        <p>{{ application.job.qualifications|linebreaksbr }}</p>
+                                    </div>
+                                    {% if application.job.responsibilities %}
+                                    <div class="details-section">
+                                        <h4>Responsibilities</h4>
+                                        <p>{{ application.job.responsibilities|linebreaksbr }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div style="margin-top: 15px; font-size: 0.85rem; color: #15284b;">
+                                    <strong>Available Slots:</strong> {{ application.job.vacancies }} positions open
+                                </div>
+                            </div></div></div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty">
+            <div class="applications-empty-icon"><img src="{% static 'images/nav/checklist.png' %}" alt="" width="32" height="32"></div>
+            <h3>Your next opportunity starts here.</h3>
+            <p>You haven't applied to any jobs yet. Explore local openings and find a role that matches your skills.</p>
+            <a href="{% url 'browse-job' %}" class="btn">Browse Jobs</a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+function toggleRow(elementId, button) {
+    const content = document.getElementById(elementId);
+    const open = button.getAttribute('aria-expanded') !== 'true';
+    button.setAttribute('aria-expanded', String(open));
+    button.querySelector('span').textContent = open ? 'Hide' : 'Details';
+    content.classList.toggle('details-open', open);
+    content.inert = !open;
+    button.querySelector('.chevron-icon').style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+</script>
+
+<dialog id="applicationResponseDialog" class="portal-logout-dialog" aria-labelledby="applicationResponseTitle" aria-describedby="applicationResponseText"><h2 id="applicationResponseTitle"></h2><p id="applicationResponseText"></p><div class="portal-logout-actions"><button type="button" id="applicationResponseCancel" autofocus>Cancel</button><button type="button" id="applicationResponseConfirm">Confirm</button></div></dialog>
+<script src="{% static 'js/application-responses.js' %}"></script>
+{% endblock %}

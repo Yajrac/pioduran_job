@@ -1,0 +1,9 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/logout-modal.css' %}">
+<dialog id="portalLogoutDialog" class="portal-logout-dialog" aria-labelledby="portalLogoutTitle" aria-describedby="portalLogoutDescription">
+    <div class="portal-logout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H4v18h5M14 7l5 5-5 5M8 12h11"/></svg></div>
+    <h2 id="portalLogoutTitle">Log out?</h2>
+    <p id="portalLogoutDescription">You will be signed out of your account. You can log in again anytime.</p>
+    <div class="portal-logout-actions"><button type="button" id="portalLogoutCancel" autofocus>Cancel</button><button type="button" id="portalLogoutConfirm">Log Out</button></div>
+</dialog>
+<script src="{% static 'js/logout-modal.js' %}"></script>

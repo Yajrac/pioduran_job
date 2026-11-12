@@ -1,0 +1,15 @@
+{% load static %}
+{% if request.user.is_authenticated and request.user.role == 'employer' %}
+{% with account=request.user.employer %}
+{% if account.approval_status != 'approved' or not account.is_active %}
+<dialog id="employerAccessDialog" class="portal-logout-dialog" aria-labelledby="employerAccessTitle" aria-describedby="employerAccessText"
+ data-jobs-url="{% url 'job-list' %}" data-dashboard-url="{% url 'employer-dashboard' %}" data-post-url="{% url 'job-post' %}" data-applicants-url="{% url 'applicants' %}">
+    <div class="portal-logout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+    <h2 id="employerAccessTitle">{% if account.approval_status == 'pending' %}Pending PESO Approval{% elif account.approval_status == 'rejected' %}Registration Not Approved{% else %}Account Suspended{% endif %}</h2>
+    <p id="employerAccessText">{% if account.approval_status == 'pending' %}Your employer account is awaiting PESO approval. My Jobs and other employer features will be available once approved.{% elif account.approval_status == 'rejected' %}Your registration was rejected. View your account status for PESO's remarks.{% else %}Your employer account is suspended. Please contact PESO for assistance.{% endif %}</p>
+    <div class="portal-logout-actions"><button type="button" id="employerAccessClose" autofocus>Close</button><a href="{% url 'employer-approval-status' %}" class="employer-access-status-link">View Status</a></div>
+</dialog>
+<script src="{% static 'js/employer-access-modal.js' %}"></script>
+{% endif %}
+{% endwith %}
+{% endif %}

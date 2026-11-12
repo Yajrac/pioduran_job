@@ -1,0 +1,64 @@
+.site-footer.portal-footer { background:#2563eb; border-top:1px solid #ffffff16; padding:28px max(24px,calc((100% - 1200px)/2)) 14px; color:#fff; }
+.portal-footer .footer-container { grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1.15fr); gap:40px; margin-bottom:20px; }
+.portal-footer .footer-identity { display:flex; align-items:center; gap:10px; text-decoration:none; margin-bottom:10px; }
+.portal-footer .footer-identity img { width:40px; height:40px; object-fit:contain; flex-shrink:0; }
+.portal-footer .footer-brand h3 { font-size:18px; letter-spacing:-0.25px; margin:0 0 5px; color:#fff; }
+.portal-footer .footer-identity span { font-size:10px; color:#fff; }
+.portal-footer .footer-brand p,.portal-footer .footer-contact p { font-size:12px; line-height:1.85; color:#fff; margin:0; max-width:340px; }
+.portal-footer .footer-col h4 { font-size:11px; letter-spacing:1.2px; margin:5px 0 12px; color:#fff; }
+.portal-footer .footer-col ul li { margin-bottom:6px; }
+.portal-footer .footer-col ul a { color:#fff; font-size:12px; transition:color .18s ease; }
+.portal-footer .footer-col ul a:hover { color:#fff; }
+.portal-footer .footer-contact .footer-contact-note { margin-top:12px; font-size:11px; color:#fff; }
+.portal-footer .footer-bottom { padding-top:12px; border-top:1px solid #ffffff20; color:#fff; font-size:10px; }
+.portal-footer .footer-bottom span { padding:0 7px; }
+@media(max-width:768px) {
+    .portal-footer .footer-container { grid-template-columns:1fr 1fr; gap:28px; }
+    .portal-footer .footer-brand { grid-column:1 / -1; }
+    .portal-footer .footer-bottom { flex-direction:column; gap:6px; text-align:left; align-items:flex-start; }
+}
+@media(max-width:420px) { .portal-footer .footer-container { grid-template-columns:1fr; gap:26px; } }
+
+/* Compact footer (home_base.html .pf) - overrides the older footer styles */
+body .site-footer.portal-footer.pf {
+  margin: 0; padding: 0; background: #fff; color: #475569;
+  border-top: 1px solid #e2e8f0; box-shadow: none;
+}
+body .site-footer.pf .pf-inner { width: min(1200px, calc(100% - 48px)); margin: 0 auto; }
+body .site-footer.pf .pf-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap;
+  padding: 20px 0 16px;
+}
+body .site-footer.pf .pf-brand { display: flex; align-items: center; gap: 10px; color: #15284b; text-decoration: none; }
+body .site-footer.pf .pf-brand img { width: 32px; height: 32px; border-radius: 50%; }
+body .site-footer.pf .pf-brand span { display: grid; line-height: 1.25; }
+body .site-footer.pf .pf-brand strong { font-size: 14px; font-weight: 700; color: #15284b; }
+body .site-footer.pf .pf-brand small { font-size: 12px; color: #64748b; }
+body .site-footer.pf .pf-links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+body .site-footer.pf .pf-links a { color: #334155; font-size: 13.5px; font-weight: 500; text-decoration: none; }
+body .site-footer.pf .pf-links a:hover { color: #1d4ed8; text-decoration: underline; }
+body .site-footer.pf .pf-bottom {
+  display: flex; justify-content: space-between; gap: 6px 24px; flex-wrap: wrap;
+  padding: 12px 0 16px; border-top: 1px solid #eef2f6;
+}
+body .site-footer.pf .pf-bottom p { margin: 0; color: #64748b; font-size: 12.5px; }
+body .site-footer.pf a:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 2px; }
+@media (max-width: 640px) {
+  body .site-footer.pf .pf-inner { width: calc(100% - 32px); }
+  body .site-footer.pf .pf-top { flex-direction: column; align-items: flex-start; }
+  body .site-footer.pf .pf-bottom { flex-direction: column; }
+}
+
+/* Sticky footer: short pages still push the footer to the bottom of the screen */
+body:has(> footer.site-footer.pf) { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+body:has(> footer.site-footer.pf) > main { flex: 1 0 auto; width: 100%; }
+body:has(> footer.site-footer.pf) > header,
+body:has(> footer.site-footer.pf) > footer.site-footer.pf { flex-shrink: 0; width: 100%; }
+
+/* One row: brand on the left, copyright on the right (no repeated nav links) */
+body .site-footer.pf .pf-top { padding: 16px 0; }
+body .site-footer.pf .pf-meta { display: grid; gap: 2px; text-align: right; }
+body .site-footer.pf .pf-meta p { margin: 0; color: #64748b; font-size: 12.5px; }
+@media (max-width: 640px) {
+  body .site-footer.pf .pf-meta { text-align: left; }
+}

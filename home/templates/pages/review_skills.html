@@ -1,0 +1,21 @@
+{% extends 'home_base.html' %}
+{% load static %}
+{% block body_class %}portal-home portal-skill-review{% endblock %}
+{% block main_class %}portal-main{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/certificates.css' %}">
+<main class="certificates-page skill-review-page"><a href="{% url 'applicant-profile' %}" class="certificate-button">&larr; Back to My Profile</a><header><h1>Review Resume Skills</h1><p>These are keyword suggestions, not verified qualifications. Select only skills you have. Nothing is saved until you confirm.</p></header>
+{% if warning %}<p class="certificate-notice" role="status">{{ warning }}</p>{% endif %}
+<section class="certificate-card"><form method="post">{% csrf_token %}{{ skill_form.non_field_errors }}
+<h2>Detected Skills</h2>{% if suggestions %}<div class="skill-review-options">{{ skill_form.suggested }}{{ skill_form.suggested.errors }}</div>{% else %}<p class="certificate-help">No new skills detected. Existing skills are shown below. You can add others manually.</p>{% endif %}
+<div class="certificate-fields"><div style="grid-column:1/-1"><label for="skills">Your current skills</label>{{ skill_form.skills }}{{ skill_form.skills.errors }}
+<div id="skills-editor" class="skills-editor" hidden><ul id="skill-tags" class="skill-tags" aria-label="Added skills"></ul><div class="skill-entry-row"><input type="text" id="skill-entry" maxlength="60" placeholder="e.g. Customer Service" aria-describedby="skills-help skills-feedback" autocomplete="off"><button type="button" id="skill-add">Add</button></div></div>
+<p id="skills-feedback" aria-live="polite"></p>
+<div class="skill-suggestions" id="skill-suggestions" hidden><span>Quick add</span><button type="button">Customer Service</button><button type="button">Sales</button><button type="button">Cooking</button><button type="button">Driving</button><button type="button">Computer Literacy</button></div><p class="certificate-help" id="skills-help">Press Enter or Add to create a skill tag. Click &times; to remove one. Maximum 20 skills, including selected resume suggestions.</p></div></div>
+<button type="submit" class="certificate-button certificate-primary">Confirm &amp; Save Skills</button></form></section>
+<a class="certificate-button" href="{% url 'browse-job' %}">Browse Recommended Jobs</a></main>
+<script src="{% static 'js/skills-input.js' %}"></script>
+{% endblock %}

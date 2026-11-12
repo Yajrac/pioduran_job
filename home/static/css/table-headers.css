@@ -1,0 +1,10 @@
+/* Keep column labels readable across all portals. */
+@media screen {
+    body table thead th {
+        color: #15284b !important;
+        background-color: #f0f2f6 !important;
+        font-weight: 700 !important;
+        font-size: 11px !important;
+        line-height: 1.6;
+    }
+}

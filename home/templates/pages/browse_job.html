@@ -1,0 +1,238 @@
+{% extends "home_base.html" %}
+{% load static admin_format %}
+
+{% block title %}Browse Jobs{% endblock %}
+{% block body_class %}portal-home portal-browse{% endblock %}
+{% block main_class %}portal-main{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+<link rel="stylesheet" href="{% static 'css/browse-v2.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bj">
+
+    <!-- ================= Hero + search ================= -->
+    <section class="bj-hero" aria-labelledby="bj-title">
+        <div class="bj-wrap">
+            <p class="bj-eyebrow">PESO Pio Duran &middot; Job Board</p>
+            <h1 id="bj-title">Find work in Pio Duran</h1>
+            <p class="bj-lead">Browse approved vacancies from local employers and apply online.</p>
+            <label class="bj-search">
+                <span class="visually-hidden">Search jobs</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input type="search" id="liveSearch" placeholder="Search job title, company, skill, or location" autocomplete="off">
+            </label>
+            <p class="bj-stats"><strong>{{ job|length }}</strong> job{{ job|length|pluralize }} &middot; <strong>{{ browse_filters.employers|length }}</strong> employer{{ browse_filters.employers|length|pluralize }}</p>
+        </div>
+    </section>
+
+    <div class="bj-wrap bj-body">
+
+        <!-- ================= Recommendations (applicants) ================= -->
+        {% if request.user.is_authenticated and request.user.role == "applicant" %}
+        <section class="bj-recs" aria-labelledby="bj-recs-title">
+            <header class="bj-section-head">
+                <div>
+                    <h2 id="bj-recs-title">Recommended for you</h2>
+                    <p>Based on the skills and experience in your profile.</p>
+                </div>
+                <a href="{% url 'review-resume-skills' %}" class="bj-link">Update my skills &rarr;</a>
+            </header>
+            {% if recommended_jobs %}
+            <div class="bj-recs-row">
+                {% for rec in recommended_jobs %}{% with i=rec.job %}
+                <a class="bj-rec" href="{% url 'job_details' i.id %}">
+                    <div class="bj-rec-top">
+                        <span class="bj-match" style="--p:{{ rec.score }}" aria-label="{{ rec.score }} percent match"><span>{{ rec.score }}%</span></span>
+                        {% if i.id in applied_job_ids %}<span class="bj-applied">Applied</span>{% endif %}
+                    </div>
+                    <strong class="bj-rec-title">{{ i.title }}</strong>
+                    <span class="bj-rec-company">{{ i.employer.company_name }}</span>
+                    {% if rec.matched_skills %}<span class="bj-rec-skills">{{ rec.matched_skills|join:', '|truncatechars:60 }}</span>{% endif %}
+                </a>
+                {% endwith %}{% endfor %}
+            </div>
+            {% else %}
+            <p class="bj-muted-box">No matching jobs yet. Add more skills to your profile to get recommendations.</p>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <div class="bj-grid">
+
+            <!-- ================= Filters ================= -->
+            <aside class="bj-filters" aria-label="Filters">
+                <details class="bj-filters-box" open>
+                    <summary><span>Filters</span><span class="bj-filter-count" id="filterCount" hidden></span></summary>
+                    <div class="bj-filters-body">
+                        <fieldset class="bj-fieldset">
+                            <legend>Category</legend>
+                            {% for item, count in browse_filters.categories %}
+                            <label class="bj-check"><input type="checkbox" name="category" value="{{ item.0 }}"><span>{{ item.1 }}</span><em>{{ count }}</em></label>
+                            {% endfor %}
+                        </fieldset>
+                        <fieldset class="bj-fieldset">
+                            <legend>Job type</legend>
+                            <div class="bj-chips">
+                                {% for item, count in browse_filters.types %}
+                                <label class="bj-chip"><input type="checkbox" name="type" value="{{ item.0 }}"><span>{{ item.1 }}</span></label>
+                                {% endfor %}
+                            </div>
+                        </fieldset>
+                        <fieldset class="bj-fieldset">
+                            <legend><label for="employerFilter">Employer</label></legend>
+                            <select id="employerFilter" class="bj-select">
+                                <option value="">All employers</option>
+                                {% for name, count in browse_filters.employers %}
+                                <option value="{{ name|lower }}">{{ name }} ({{ count }})</option>
+                                {% endfor %}
+                            </select>
+                        </fieldset>
+                        <button type="button" class="bj-clear" id="clearFilters">Clear all filters</button>
+                    </div>
+                </details>
+            </aside>
+
+            <!-- ================= Results ================= -->
+            <section class="bj-results" aria-labelledby="bj-results-title">
+                <header class="bj-results-head">
+                    <h2 id="bj-results-title"><span id="jobsCount">{{ job|length }}</span> job<span id="jobsPlural">{{ job|length|pluralize }}</span> found</h2>
+                    <label class="bj-sort">Sort by
+                        <select id="sortJobs" class="bj-select">
+                            <option value="newest">Newest</option>
+                            <option value="closing">Closing soon</option>
+                            <option value="salary">Highest salary</option>
+                        </select>
+                    </label>
+                </header>
+
+                <div class="bj-list" id="jobList">
+                    {% for i in job %}
+                    <article class="bj-card{% if i.days_left != None and i.days_left < 0 %} is-closed{% endif %}"
+                        data-company="{{ i.employer.company_name|lower }}"
+                        data-category="{{ i.category }}"
+                        data-type="{{ i.job_type }}"
+                        data-salary="{{ i.salary|default_if_none:'0' }}"
+                        data-posted="{{ i.created_at|date:'U' }}"
+                        data-days-left="{% if i.days_left != None %}{{ i.days_left }}{% else %}99999{% endif %}"
+                        data-searchable="{{ i.title|lower }} {{ i.employer.company_name|lower }} {{ i.location|lower }} {{ i.get_category_display|lower }} {{ i.required_skills|lower }} {{ i.description|lower }} {{ i.qualifications|lower }}">
+                        <div class="bj-card-main">
+                            {% if i.employer.company_logo %}
+                            <img class="bj-logo" src="{{ i.employer.company_logo.url }}" alt="" width="52" height="52" loading="lazy">
+                            {% else %}
+                            <span class="bj-logo bj-logo-text" aria-hidden="true">{{ i.employer.company_name|first|upper }}</span>
+                            {% endif %}
+                            <div class="bj-card-text">
+                                <h3><a href="{% url 'job_details' i.id %}">{{ i.title }}</a></h3>
+                                <p class="bj-company">{{ i.employer.company_name }}{% if i.location %} &middot; {{ i.location }}{% endif %}</p>
+                                <ul class="bj-tags" aria-label="Job details">
+                                    <li>{{ i.get_category_display }}</li>
+                                    <li>{{ i.get_job_type_display }}</li>
+                                    {% if i.salary %}<li class="bj-tag-salary">{{ i.salary_display }} / month</li>{% endif %}
+                                </ul>
+                                {% if i.description %}<p class="bj-desc">{{ i.description }}</p>{% endif %}
+                            </div>
+                        </div>
+                        <footer class="bj-card-foot">
+                            <div class="bj-facts">
+                                <span>{% if i.vacancies %}{{ i.vacancies }} opening{{ i.vacancies|pluralize }}{% else %}No remaining slots{% endif %}</span>
+                                <span>Posted {{ i.created_at|posted_ago }}</span>
+                                {% if i.days_left != None %}
+                                    {% if i.days_left < 0 %}<span class="bj-deadline is-closed">Applications closed</span>
+                                    {% elif i.days_left == 0 %}<span class="bj-deadline is-soon">Closes today</span>
+                                    {% elif i.days_left <= 7 %}<span class="bj-deadline is-soon">Closes in {{ i.days_left }} day{{ i.days_left|pluralize }}</span>
+                                    {% else %}<span class="bj-deadline">Closes {{ i.deadline|date:'M j' }}</span>{% endif %}
+                                {% endif %}
+                            </div>
+                            {% if i.id in applied_job_ids %}
+                            <a href="{% url 'job_details' i.id %}" class="bj-btn bj-btn-applied">Applied &#10003;</a>
+                            {% else %}
+                            <a href="{% url 'job_details' i.id %}" class="bj-btn">View details</a>
+                            {% endif %}
+                        </footer>
+                    </article>
+                    {% empty %}
+                    <div class="bj-empty">
+                        <h3>No job vacancies yet</h3>
+                        <p>There are no approved vacancies right now. Please check again soon.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="bj-empty" id="searchEmpty" hidden role="status">
+                    <h3>No jobs match your filters</h3>
+                    <p>Try another keyword, or <button type="button" class="bj-inline-btn" data-clear>clear all filters</button>.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+    const list = document.getElementById('jobList');
+    const cards = Array.from(document.querySelectorAll('.bj-card'));
+    const search = document.getElementById('liveSearch');
+    const employer = document.getElementById('employerFilter');
+    const sort = document.getElementById('sortJobs');
+    const empty = document.getElementById('searchEmpty');
+    const count = document.getElementById('jobsCount');
+    const plural = document.getElementById('jobsPlural');
+    const filterCount = document.getElementById('filterCount');
+    const filtersBox = document.querySelector('.bj-filters-box');
+
+    const checked = name => Array.from(document.querySelectorAll('input[name="' + name + '"]:checked')).map(i => i.value);
+
+    function apply() {
+        const q = (search.value || '').toLowerCase().trim();
+        const cats = checked('category'), types = checked('type'), emp = employer.value;
+        let shown = 0;
+        cards.forEach(function (card) {
+            const ok = (!q || card.dataset.searchable.includes(q))
+                && (!cats.length || cats.includes(card.dataset.category))
+                && (!types.length || types.includes(card.dataset.type))
+                && (!emp || card.dataset.company === emp);
+            card.hidden = !ok;
+            if (ok) shown++;
+        });
+        count.textContent = shown;
+        plural.textContent = shown === 1 ? '' : 's';
+        empty.hidden = shown > 0 || cards.length === 0;
+        const active = cats.length + types.length + (emp ? 1 : 0);
+        filterCount.hidden = !active;
+        filterCount.textContent = active;
+    }
+
+    function order() {
+        const key = sort.value;
+        const value = {
+            newest: c => -Number(c.dataset.posted),
+            closing: c => { const d = Number(c.dataset.daysLeft); return d < 0 ? 1e6 + d : d; },
+            salary: c => -Number(c.dataset.salary),
+        }[key];
+        cards.slice().sort((a, b) => value(a) - value(b)).forEach(c => list.appendChild(c));
+    }
+
+    function clearAll() {
+        document.querySelectorAll('.bj-filters input[type="checkbox"]').forEach(i => { i.checked = false; });
+        employer.value = '';
+        search.value = '';
+        apply();
+        search.focus();
+    }
+
+    search.addEventListener('input', apply);
+    employer.addEventListener('change', apply);
+    sort.addEventListener('change', order);
+    document.querySelectorAll('.bj-filters input[type="checkbox"]').forEach(i => i.addEventListener('change', apply));
+    document.getElementById('clearFilters').addEventListener('click', clearAll);
+    document.querySelectorAll('[data-clear]').forEach(b => b.addEventListener('click', clearAll));
+
+    // Filters start collapsed on small screens
+    if (window.matchMedia('(max-width: 900px)').matches) filtersBox.open = false;
+    apply();
+});
+</script>
+{% endblock %}

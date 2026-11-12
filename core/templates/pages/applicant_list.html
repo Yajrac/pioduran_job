@@ -1,0 +1,820 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+
+    /* =========================================================
+       PAGE HEADER
+    ========================================================= */
+
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .page-title h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #15284b;
+        letter-spacing: -0.012em;
+        margin: 0;
+    }
+
+    .admin-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #15284b;
+        font-size: 0.9rem;
+    }
+
+    .admin-profile strong {
+        color: #15284b;
+    }
+
+    .profile-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-badge svg {
+        width: 20px;
+        height: 20px;
+        stroke: #2563eb;
+        fill: none;
+    }
+
+
+    /* =========================================================
+       WORKSPACE
+    ========================================================= */
+
+    .dashboard-workspace {
+        padding: 32px;
+        background-color: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-height: calc(100vh - 87px);
+    }
+
+
+    /* =========================================================
+       DATA CARD
+    ========================================================= */
+
+    .data-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .data-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+    }
+
+    .data-card-header h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #15284b;
+        margin: 0;
+    }
+
+
+    /* =========================================================
+       TOOLBAR
+    ========================================================= */
+
+    .applicant-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 16px 24px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .selection-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #15284b;
+        font-size: 0.88rem;
+    }
+
+    .selection-count {
+        font-weight: 700;
+        color: #2563eb;
+    }
+
+
+    /* =========================================================
+       DELETE BUTTON
+    ========================================================= */
+
+    .delete-selected-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        padding: 10px 16px;
+
+        border: 1px solid #fecaca;
+        border-radius: 9px;
+
+        background: #fef2f2;
+        color: #dc2626;
+
+        font-size: 0.88rem;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: all 0.2s ease;
+    }
+
+    .delete-selected-btn:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #b91c1c;
+    }
+
+    .delete-selected-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        color: #94a3b8;
+    }
+
+
+    /* =========================================================
+       TABLE
+    ========================================================= */
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    th {
+        background: #f8fafc;
+        color: #15284b;
+        padding: 14px 24px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        border-bottom: 1px solid #e2e8f0;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 16px 24px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #15284b;
+        vertical-align: middle;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover td {
+        background-color: #f8fafc;
+    }
+
+
+    /* =========================================================
+       CHECKBOX
+    ========================================================= */
+
+    .checkbox-cell {
+        width: 50px;
+        text-align: center;
+    }
+
+    .applicant-checkbox,
+    #selectAll {
+        width: 17px;
+        height: 17px;
+        cursor: pointer;
+        accent-color: #2563eb;
+    }
+
+
+    /* =========================================================
+       APPLICANT DATA
+    ========================================================= */
+
+    .applicant-username {
+        color: #2563eb;
+        font-weight: 600;
+        font-size: 0.88rem;
+    }
+
+    .date-joined {
+        color: #15284b;
+        font-size: 0.88rem;
+    }
+
+
+    /* =========================================================
+       SELECTED ROW
+    ========================================================= */
+
+    tr.selected-row td {
+        background-color: #eff6ff;
+    }
+
+
+    /* =========================================================
+       EMPTY STATE
+    ========================================================= */
+
+    .empty-state {
+        text-align: center;
+        color: #15284b;
+        padding: 50px 20px !important;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 700px) {
+
+        .content-header {
+            padding: 20px;
+        }
+
+        .dashboard-workspace {
+            padding: 16px;
+        }
+
+        .applicant-toolbar {
+            padding: 14px 16px;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .delete-selected-btn {
+            width: 100%;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+        }
+
+        .admin-profile {
+            display: none;
+        }
+    }
+
+</style>
+
+
+<!-- =========================================================
+     CONTENT HEADER
+========================================================= -->
+
+<header class="content-header">
+
+    <div class="page-title">
+        <h2>Applicants</h2>
+    </div>
+
+    <div class="admin-profile">
+
+        <span>
+            Welcome,
+            <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+        </span>
+
+        <div class="profile-badge">
+
+            <svg
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+
+                <path
+                    d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                ></path>
+
+                <circle
+                    cx="12"
+                    cy="7"
+                    r="4"
+                ></circle>
+
+            </svg>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     WORKSPACE
+========================================================= -->
+
+<div class="dashboard-workspace applicant-list-workspace">
+    <div class="applicant-filters">
+        <input id="applicantSearch" type="search" aria-label="Search applicants" placeholder="Search name, username, email, or phone...">
+        <select id="applicantStatusFilter" aria-label="Filter by account status">
+            <option value="">All account statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+    </div>
+
+    <div class="data-card">
+
+
+        <!-- =====================================================
+             CARD HEADER
+        ====================================================== -->
+
+        <div class="data-card-header">
+
+            <h3>
+                Registered Applicants
+            </h3>
+
+        </div>
+
+
+        <!-- =====================================================
+             DELETE TOOLBAR
+        ====================================================== -->
+
+        <form
+            method="POST"
+            action="{% url 'delete-selected-applicants' %}"
+            id="deleteApplicantsForm"
+        >
+
+            {% csrf_token %}
+
+            <div class="applicant-toolbar">
+
+                <div class="selection-info">
+
+                    <span>
+                        <strong
+                            class="selection-count"
+                            id="selectionCount"
+                        >
+                            0
+                        </strong>
+                        selected
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="delete-selected-btn"
+                    id="deleteSelectedBtn"
+                    disabled
+                >
+
+                    <svg
+                        width="17"
+                        height="17"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6 7h12"
+                        />
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"
+                        />
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M8 7l1 14h6l1-14"
+                        />
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M10 11v6"
+                        />
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14 11v6"
+                        />
+
+                    </svg>
+
+                    Delete Selected
+
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 TABLE
+            ================================================== -->
+
+            <div class="table-responsive">
+
+                <table id="applicantTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <!-- SELECT ALL -->
+
+                            <th class="checkbox-cell">
+
+                                <input
+                                    type="checkbox"
+                                    id="selectAll"
+                                    title="Select all applicants"
+                                >
+
+                            </th>
+
+                            <th>
+                                Full Name
+                            </th>
+
+                            <th>
+                                Username
+                            </th>
+
+                            <th>
+                                Email Address
+                            </th>
+
+                            <th>
+                                Phone Number
+                            </th>
+
+                            <th>
+                                Date Joined
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for applicant in applicants %}
+
+                        <tr class="applicant-row" data-status="{% if applicant.user.is_active %}active{% else %}inactive{% endif %}">
+
+                            <!-- CHECKBOX -->
+
+                            <td class="checkbox-cell">
+
+                                <input
+                                    type="checkbox"
+                                    name="applicant_ids"
+                                    value="{{ applicant.id }}"
+                                    class="applicant-checkbox"
+                                >
+
+                            </td>
+
+
+                            <!-- FULL NAME -->
+
+                            <td>
+
+                                <strong style="color: #15284b;">
+
+                                    {{ applicant.first_name }}
+
+                                    {% if applicant.middle_name %}
+                                        {{ applicant.middle_name }}
+                                    {% endif %}
+
+                                    {{ applicant.last_name }}
+
+                                </strong>
+
+                            </td>
+
+
+                            <!-- USERNAME -->
+
+                            <td class="applicant-username">
+
+                                {{ applicant.user.username }}
+
+                            </td>
+
+
+                            <!-- EMAIL -->
+
+                            <td style="color: #15284b;">
+
+                                {{ applicant.email }}
+
+                            </td>
+
+
+                            <!-- PHONE -->
+
+                            <td style="color: #15284b;">
+
+                                {{ applicant.phone_number }}
+
+                            </td>
+
+
+                            <!-- DATE JOINED -->
+
+                            <td class="date-joined">
+
+                                {{ applicant.user.date_joined|date:"F d, Y" }}
+
+                            </td>
+
+                        </tr>
+
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="empty-state"
+                            >
+
+                                No active job seeker profiles
+                                logged in system database.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+                        <tr id="applicantNoMatches" hidden><td colspan="6" class="empty-state" role="status">No applicants match your search and status filter.</td></tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const selectAll =
+        document.getElementById("selectAll");
+
+    const checkboxes =
+        document.querySelectorAll(".applicant-checkbox");
+
+    const deleteButton =
+        document.getElementById("deleteSelectedBtn");
+
+    const selectionCount =
+        document.getElementById("selectionCount");
+
+
+    /*
+    =========================================================
+    UPDATE SELECTION
+    =========================================================
+    */
+
+    function updateSelection() {
+
+        const checked =
+            document.querySelectorAll(
+                ".applicant-checkbox:checked"
+            );
+
+        const count =
+            checked.length;
+
+
+        /* Update counter */
+
+        selectionCount.textContent = count;
+
+
+        /* Enable / disable delete */
+
+        deleteButton.disabled =
+            count === 0;
+
+
+        /* Update select-all checkbox */
+
+        if (visibleCheckboxes().length === 0) {
+
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+
+            return;
+        }
+
+
+        if (count === 0) {
+
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+
+        }
+        else if (count === visibleCheckboxes().length) {
+
+            selectAll.checked = true;
+            selectAll.indeterminate = false;
+
+        }
+        else {
+
+            selectAll.checked = false;
+            selectAll.indeterminate = true;
+
+        }
+
+
+        /* Highlight selected rows */
+
+        checkboxes.forEach(function (checkbox) {
+
+            const row =
+                checkbox.closest("tr");
+
+            if (!row) {
+                return;
+            }
+
+            if (checkbox.checked) {
+
+                row.classList.add(
+                    "selected-row"
+                );
+
+            } else {
+
+                row.classList.remove(
+                    "selected-row"
+                );
+
+            }
+
+        });
+
+    }
+
+
+    /*
+    =========================================================
+    SELECT ALL
+    =========================================================
+    */
+
+    selectAll.addEventListener(
+        "change",
+        function () {
+
+            checkboxes.forEach(
+                function (checkbox) {
+
+                    checkbox.checked = !checkbox.closest("tr").hidden && selectAll.checked;
+
+                }
+            );
+
+            updateSelection();
+
+        }
+    );
+
+
+    /*
+    =========================================================
+    INDIVIDUAL CHECKBOX
+    =========================================================
+    */
+
+    checkboxes.forEach(
+        function (checkbox) {
+
+            checkbox.addEventListener(
+                "change",
+                updateSelection
+            );
+
+        }
+    );
+
+
+    /*
+    =========================================================
+    INITIAL STATE
+    =========================================================
+    */
+
+    const searchInput = document.getElementById("applicantSearch");
+    const statusFilter = document.getElementById("applicantStatusFilter");
+    const rows = Array.from(document.querySelectorAll(".applicant-row"));
+    function filterApplicants() {
+        const query = searchInput.value.toLowerCase().trim();
+        let visible = 0;
+        rows.forEach(function (row) {
+            const matches = row.textContent.toLowerCase().includes(query)
+                && (!statusFilter.value || row.dataset.status === statusFilter.value);
+            row.dataset.filterHidden = String(!matches);
+            row.hidden = !matches;
+            if (matches) visible += 1;
+            else row.querySelector(".applicant-checkbox").checked = false;
+        });
+        document.getElementById("applicantNoMatches").hidden = rows.length === 0 || visible > 0;
+        document.getElementById("applicantTable").dispatchEvent(new Event("table-filter-change"));
+        updateSelection();
+    }
+    document.getElementById("applicantTable").addEventListener("table-page-change", function () {
+        checkboxes.forEach(function (checkbox) { if (checkbox.closest("tr").hidden) checkbox.checked = false; });
+        updateSelection();
+    });
+    function visibleCheckboxes() {
+        return Array.from(checkboxes).filter(checkbox => !checkbox.closest("tr").hidden);
+    }
+    searchInput.addEventListener("input", filterApplicants);
+    statusFilter.addEventListener("change", filterApplicants);
+    filterApplicants();
+
+});
+
+
+/*
+=========================================================
+CONFIRM DELETE
+=========================================================
+*/
+
+</script>
+
+{% endblock %}

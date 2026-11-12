@@ -1,0 +1,414 @@
+.peso-mobile-header,.peso-menu-close,.peso-menu-backdrop { display:none; }
+/* Shared admin navigation. */
+.peso-admin-pages .sidebar {
+ background:#2563eb;
+ border-right:1px solid #ffffff0d;
+ box-shadow:6px 0 28px #102f2410;
+}
+.peso-admin-pages .sidebar-brand { min-height:104px; padding:24px 20px; gap:12px; border-bottom:1px solid #ffffff12; }
+.peso-admin-pages .sidebar-brand-logo { width:44px; height:44px; padding:5px; border-radius:13px; box-shadow:0 4px 14px #00000018; }
+.peso-admin-pages .sidebar-brand-text h1 { font-size:15px; font-weight:700; letter-spacing:-.3px; }
+.peso-admin-pages .sidebar-brand-text p { margin-top:5px; font-size:11px; font-weight:400; color:#fff; }
+.peso-admin-pages .sidebar-menu { padding:24px 14px; scrollbar-width:thin; scrollbar-color:#ffffff30 transparent; }
+.peso-admin-pages .sidebar-menu-item { margin-bottom:8px; }
+.peso-admin-pages .sidebar-menu-item a {
+ position:relative; min-height:48px; padding:12px 15px; gap:13px;
+ border:1px solid transparent; border-radius:11px;
+ color:#fff; font-size:13px; font-weight:500;
+ transition:background-color .18s ease,color .18s ease,border-color .18s ease;
+}
+.peso-admin-pages .sidebar-menu-item a svg { width:19px; height:19px; stroke:currentColor; opacity:.85; }
+.peso-admin-pages .sidebar-menu-item a:hover { background:#ffffff0c; border-color:#ffffff10; color:#fff; }
+.peso-admin-pages .sidebar-menu-item a:hover svg { transform:none; opacity:1; }
+.peso-admin-pages .sidebar-menu-item.active a {
+ background:#dfe7f4; color:#15284b; border-color:#eaeff9;
+ font-weight:600; box-shadow:0 4px 12px #0000000d;
+}
+.peso-admin-pages .sidebar-menu-item.active a::after { content:""; width:6px; height:6px; margin-left:auto; flex-shrink:0; border-radius:50%; background:#2563eb; }
+.peso-admin-pages .sidebar-menu-item.active a svg { stroke:currentColor; opacity:1; }
+.peso-admin-pages .sidebar-menu-item a:focus-visible { outline:2px solid #9ab4e0; outline-offset:3px; }
+.peso-admin-pages .sidebar-footer { padding:16px 14px 20px; background:transparent; border-top:1px solid #ffffff12; }
+.peso-admin-pages .sidebar-footer a { color:#fff; border:1px solid #ffffff16; background:#ffffff05; }
+.peso-admin-pages .sidebar-footer a svg { stroke:currentColor; }
+.peso-admin-pages .sidebar-footer a:hover { background:#ffffff0d; color:#ffc5c0; border-color:#eeb0a838; }
+@media(prefers-reduced-motion:reduce) { .peso-admin-pages .sidebar-menu-item a,.peso-admin-pages .sidebar-menu-item a svg { transition:none; } }
+.peso-admin-pages .main-content { min-width:0; }
+.peso-admin-pages #report-assessments .report-table { min-width:0; width:100%; table-layout:fixed; }
+.peso-admin-pages #report-assessments .report-table th:first-child { width:75%; }
+.peso-admin-pages #report-assessments .report-table th:last-child { width:25%; }
+.peso-admin-pages #report-assessments .report-table td:first-child { color:#15284b; font-size:12px; font-weight:500; overflow-wrap:normal; word-break:normal; }
+.peso-admin-pages #report-assessments .report-table td:last-child { color:#15284b; font-size:14px; font-weight:700; font-variant-numeric:tabular-nums; }
+.peso-admin-pages #report-assessments .report-table td { padding:17px 24px; line-height:1.7; }
+.peso-admin-pages #report-assessments .report-table th { padding:14px 24px; }
+@media(max-width:600px) { .peso-admin-pages #report-assessments .report-table th:first-child { width:68%; }.peso-admin-pages #report-assessments .report-table th:last-child { width:32%; }.peso-admin-pages #report-assessments .report-table td,.peso-admin-pages #report-assessments .report-table th { padding:14px 16px; } }
+.peso-admin-pages .employer-actions-menu .btn-action:disabled { opacity:.4; cursor:not-allowed; box-shadow:none; }
+.peso-admin-pages .employer-detail-workspace { display:flex; flex-direction:row; flex-wrap:wrap; gap:24px; align-items:flex-start; }
+.employer-detail-workspace>p[role=status] { flex:1 0 100%; padding:12px 16px; border-radius:8px; background:#edf0f5; color:#15284b; font-size:12px; }
+.peso-admin-pages .employer-detail-workspace>.data-card { flex:1 1 480px; min-width:0; padding:26px; border-radius:12px; border-color:#dfe2e8; box-shadow:none; }
+.employer-detail-workspace>.employer-review-card { flex:0 0 330px; min-width:0; position:sticky; top:24px; box-sizing:border-box; }
+.employer-detail-workspace .entity-header { gap:18px; flex-wrap:wrap; margin-bottom:22px; padding-bottom:22px; }
+.employer-detail-workspace .company-logo-img { width:72px; height:72px; padding:0; border:0; background:transparent; border-radius:0; object-fit:contain; }
+.employer-detail-workspace .entity-title h2 { font-size:23px; letter-spacing:-0.25px; }
+.employer-detail-workspace .entity-status-wrapper { flex-wrap:wrap; font-size:11px; gap:8px; }
+.employer-detail-workspace .badge-status { font-size:10px; border:0; border-radius:5px; padding:5px 9px; }
+.employer-detail-workspace .review-pending { background:#fff4dc; color:#886322; }
+.peso-admin-pages .employer-detail-workspace .details-table { min-width:0; table-layout:fixed; }
+.employer-detail-workspace .details-table th { width:36%; padding:14px; font-size:10px; font-weight:700; color:#15284b; background:#f2f4f7; vertical-align:top; }
+.employer-detail-workspace .details-table td { padding:14px; font-size:12px; line-height:1.8; overflow-wrap:anywhere; }
+.employer-detail-workspace .details-table .permit-code { white-space:normal; overflow-wrap:anywhere; font-size:11px; }
+.employer-detail-workspace .employer-review-card h3 { font-size:16px; margin-bottom:14px; }
+.employer-detail-workspace .employer-review-card p { color:#15284b; font-size:12px; }
+.employer-detail-workspace .employer-review-card label { font-size:11px; }
+.employer-detail-workspace .employer-review-card textarea { font-size:12px; min-height:120px; resize:vertical; }
+.employer-detail-workspace .employer-review-card textarea:focus { outline:2px solid #2563eb; outline-offset:2px; }
+.employer-detail-workspace #employerReviewForm>div { display:flex; flex-wrap:wrap; gap:8px; }
+.employer-detail-workspace .employer-review-card button { flex:1 1 110px; margin:0; font-size:11px; padding:11px 12px; }
+@media(max-width:1100px) { .employer-detail-workspace>.employer-review-card { flex:1 1 100%; position:static; } }
+@media(max-width:600px) { .peso-admin-pages .employer-detail-workspace>.data-card { padding:18px; }.employer-detail-workspace .details-table th { width:40%; padding:10px; }.employer-detail-workspace .details-table td { padding:10px; } }
+.hired-report-note { margin:16px 24px; color:#15284b; font-size:11px; line-height:1.8; }
+@media screen { .peso-admin-pages #report-hired th:nth-child(2) { width:22%; } .peso-admin-pages #report-hired th:nth-child(4) { width:24%; } }
+.employer-review-card { padding:24px; border:1px solid #dfe2e8; border-radius:10px; background:#fff; color:#15284b; font-size:13px; line-height:1.8; }
+.employer-review-card h3 { margin-bottom:12px; }.employer-review-card label { display:block; margin-top:16px; font-weight:600; }
+.employer-review-card textarea { width:100%; box-sizing:border-box; margin:8px 0 14px; padding:12px; border:1px solid #d9dde4; border-radius:7px; font:inherit; }
+.employer-review-card button { padding:11px 16px; background:#2563eb; color:#fff; border:0; border-radius:7px; font-weight:600; cursor:pointer; margin-right:8px; }.employer-review-card .review-reject { background:#fbecea; color:#a43630; }
+.employer-approval-label { display:inline-block; padding:4px 8px; border-radius:5px; background:#edf0f4; font-size:10px; }.approval-pending { background:#fff4dc; color:#886322; }.approval-rejected { background:#fbecea; color:#a43630; }
+.employer-review-link { display:block; color:#15284b; font-size:11px; margin-top:6px; text-decoration:underline; }
+.peso-admin-pages #employerTable th:nth-child(1) { width:25%; }.peso-admin-pages #employerTable th:nth-child(2) { width:24%; }.peso-admin-pages #employerTable th:nth-child(3) { width:16%; }.peso-admin-pages #employerTable th:nth-child(4) { width:17%; }.peso-admin-pages #employerTable th:nth-child(5) { width:18%; }
+.job-delete-dialog { margin:auto; width:calc(100% - 32px); max-width:440px; padding:28px; border:1px solid #e4e6ea; border-radius:16px; background:#fff; color:#15284b; box-shadow:0 24px 80px #102f2433; }
+.job-delete-dialog::backdrop { background:#102a2266; backdrop-filter:blur(3px); }
+.job-delete-symbol { width:48px; height:48px; display:grid; place-items:center; border-radius:12px; background:#fbecea; color:#b7453f; margin-bottom:20px; }
+.job-delete-symbol svg { width:23px; height:23px; }
+.job-delete-dialog h2 { font-size:20px; margin:0 0 12px; letter-spacing:-.4px; }
+.job-delete-dialog p { font-size:13px; line-height:1.9; color:#15284b; overflow-wrap:anywhere; }
+.job-delete-dialog strong { color:#15284b; font-weight:600; }
+.job-delete-dialog-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:26px; }
+.job-delete-dialog-actions button { min-height:42px; padding:10px 16px; border:1px solid #d9dde4; border-radius:8px; background:#fff; color:#15284b; font-size:12px; font-weight:600; cursor:pointer; }
+.job-delete-dialog-actions button:hover { background:#f1f3f6; }
+.job-delete-dialog-actions #confirmJobDelete,.job-delete-dialog-actions .confirm-danger-delete { background:#b83f39; border-color:#b83f39; color:#fff; }
+.job-delete-dialog-actions #confirmJobDelete:hover,.job-delete-dialog-actions .confirm-danger-delete:hover { background:#9d302c; }
+.job-delete-dialog-actions button:disabled { opacity:.6; cursor:wait; }
+.job-delete-dialog-actions button:focus-visible { outline:2px solid #2563eb; outline-offset:3px; }
+.employer-status-dialog .job-delete-symbol { background:#e7ecf4; color:#15284b; }
+.employer-status-dialog.status-suspending .job-delete-symbol { background:#fff2db; color:#94671e; }
+.job-delete-dialog-actions #confirmEmployerStatus { background:#2563eb; border-color:#2563eb; color:#fff; }
+.job-delete-dialog-actions #confirmEmployerStatus:hover { background:#1d4ed8; }
+.job-delete-dialog-actions #adminConfirmProceed { background:#2563eb; border-color:#2563eb; color:#fff; }
+.job-delete-dialog-actions #adminConfirmProceed:hover { background:#1d4ed8; }
+.job-delete-dialog-actions #adminConfirmProceed.confirm-danger-delete { background:#b83f39; border-color:#b83f39; }
+.job-delete-dialog-actions #adminConfirmProceed.confirm-danger-delete:hover { background:#9d302c; }
+.employer-status-dialog.confirming-deletion .job-delete-symbol { background:#fbecea; color:#b7453f; }
+.job-delete-dialog-actions #confirmEmployerStatus.confirm-suspend { background:#94671e; border-color:#94671e; }
+.job-delete-dialog-actions #confirmEmployerStatus.confirm-suspend:hover { background:#785117; }
+@media(prefers-reduced-motion:no-preference) { .job-delete-dialog[open] { animation:job-dialog-enter .18s ease-out; } @keyframes job-dialog-enter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } } }
+.sidebar-collapse-toggle { display:none; }
+.peso-admin-pages.sidebar-initializing .sidebar,.peso-admin-pages.sidebar-initializing .main-content,.sidebar-initializing .sidebar-collapse-toggle svg { transition:none!important; }
+@media(min-width:769px) {
+ .peso-admin-pages .sidebar-collapse-toggle { display:grid; place-items:center; position:absolute; right:-15px; top:36px; width:30px; height:30px; padding:5px; z-index:2; border:1px solid #d4dae4; border-radius:50%; background:#fff; color:#15284b; box-shadow:0 2px 8px #19332d15; cursor:pointer; }
+ .sidebar-collapse-toggle svg { width:19px; height:19px; transition:transform .26s ease; }
+ .peso-admin-pages .sidebar-collapse-toggle:hover { background:#edf0f6; }
+ .peso-admin-pages .sidebar-collapse-toggle:focus-visible { outline:2px solid #7690bc; outline-offset:3px; }
+ .peso-admin-pages .sidebar { transition:width .26s cubic-bezier(.22,1,.36,1); }
+ .peso-admin-pages .main-content { transition:margin-left .26s cubic-bezier(.22,1,.36,1),width .26s cubic-bezier(.22,1,.36,1); }
+ body.peso-admin-pages.sidebar-collapsed { --sidebar-width:76px; }
+ .sidebar-collapsed .sidebar-collapse-toggle svg { transform:rotate(180deg); }
+ .peso-admin-pages.sidebar-collapsed .sidebar-brand { padding:24px 15px; }
+ .sidebar-collapsed .sidebar-brand-text { display:none; }
+ .peso-admin-pages.sidebar-collapsed .sidebar-menu { padding:24px 10px; }
+ .peso-admin-pages.sidebar-collapsed .sidebar-menu-item a,.peso-admin-pages.sidebar-collapsed .sidebar-reports summary { justify-content:center; padding:12px; gap:0; }
+ .sidebar-collapsed .sidebar-menu-item a>span,.sidebar-collapsed .sidebar-reports summary>span { display:none; }
+ .peso-admin-pages.sidebar-collapsed .sidebar-menu-item.active a::after { display:none; }
+ .sidebar-collapsed .reports-submenu { display:none; }
+ .peso-admin-pages.sidebar-collapsed .sidebar-footer { padding:16px 10px 20px; }
+}
+@media(prefers-reduced-motion:reduce) { .peso-admin-pages .main-content,.sidebar-collapse-toggle svg { transition:none; } }
+.peso-admin-pages .sidebar-reports { list-style:none; }
+.peso-admin-pages .sidebar-reports summary { display:flex; align-items:center; gap:13px; min-height:48px; padding:12px 15px; border:1px solid transparent; border-radius:11px; color:#fff; font-size:13px; font-weight:500; cursor:pointer; list-style:none; }
+.peso-admin-pages .sidebar-reports summary::-webkit-details-marker { display:none; }
+.peso-admin-pages .sidebar-reports summary>svg { width:19px; height:19px; flex-shrink:0; }
+.peso-admin-pages .sidebar-reports summary:hover { background:#ffffff0c; color:#fff; }
+.peso-admin-pages .sidebar-reports details[open]>summary { background:#ffffff0c; color:#fff; }
+.peso-admin-pages .reports-chevron { margin-left:auto; display:grid; place-items:center; width:20px; height:20px; transition:transform .26s ease; }
+.peso-admin-pages .reports-chevron svg { width:16px; height:16px; }
+.peso-admin-pages .sidebar-reports details[open]:not(.is-closing) .reports-chevron { transform:rotate(180deg); }
+.peso-admin-pages .sidebar-reports details { overflow:hidden; }
+@media(prefers-reduced-motion:reduce) { .peso-admin-pages .reports-chevron { transition:none; } }
+.peso-admin-pages .reports-submenu { list-style:none; margin:8px 0 12px 24px; padding-left:13px; border-left:1px solid #ffffff24; }
+.peso-admin-pages .reports-submenu li { margin:4px 0; }
+.peso-admin-pages .reports-submenu a { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:7px; color:#bec6d4; font-size:12px; line-height:1.5; }
+.peso-admin-pages .reports-submenu .reports-menu-icon { width:18px; height:18px; flex:0 0 18px; }
+.peso-admin-pages .reports-submenu a:hover { background:#ffffff0c; color:#fff; }
+.peso-admin-pages .reports-submenu a[aria-current=page] { background:#dfe7f4; color:#15284b; font-weight:600; }
+.peso-admin-pages .sidebar-reports summary:focus-visible,.peso-admin-pages .reports-submenu a:focus-visible { outline:2px solid #9ab4e0; outline-offset:2px; }
+@media screen {
+ .peso-admin-pages .reports-page { padding:28px 32px; color:#15284b; }
+ .peso-admin-pages .reports-header { margin-bottom:24px; }
+ .peso-admin-pages .reports-title { font-size:24px; letter-spacing:-0.25px; }
+ .peso-admin-pages .reports-subtitle { color:#727883; line-height:1.7; }
+ .peso-admin-pages .report-panel { padding:0; margin-bottom:24px; border:1px solid #dfe2e8; border-radius:12px; overflow:hidden; }
+ .peso-admin-pages .report-table-heading { margin:0; padding:22px 24px; }
+ .peso-admin-pages .report-table-heading .report-section-title { font-size:16px; font-weight:600; letter-spacing:-.2px; }
+ .peso-admin-pages .report-record-count { padding:5px 10px; background:#edf0f4; color:#15284b; font-size:10px; font-weight:500; border-radius:6px; }
+ .peso-admin-pages .report-table-controls { margin:0; padding:18px 24px; gap:12px; background:#f9fafc; border-top:1px solid #e8eaee; border-bottom:1px solid #e8eaee; }
+ .peso-admin-pages .report-filter-group { min-width:0; flex:0 1 180px; }
+ .peso-admin-pages .report-filter-group label { font-size:10px; font-weight:600; color:#15284b; }
+ .peso-admin-pages .report-filter-group input { min-height:40px; padding:9px 12px; border:1px solid #d9dde4; border-radius:7px; color:#15284b; font-size:12px; }
+ .peso-admin-pages .report-filter-actions { margin-left:auto; gap:8px; }
+ .peso-admin-pages .report-btn { min-height:40px; padding:9px 14px; border-color:#d9dde4; border-radius:7px; font-weight:500; font-size:11px; color:#15284b; }
+ .peso-admin-pages .report-btn-primary { background:#2563eb; border-color:#2563eb; color:#fff; }
+ .peso-admin-pages .report-btn-primary:hover { background:#1d4ed8; border-color:#1d4ed8; color:#fff; }
+ .peso-admin-pages .report-btn:hover { border-color:#8797b2; }
+ .peso-admin-pages .report-filter input:focus-visible,.peso-admin-pages .report-btn:focus-visible { outline:2px solid #2563eb; outline-offset:2px; }
+ .peso-admin-pages .report-table { min-width:880px; table-layout:fixed; font-size:12px; }
+ .peso-admin-pages .report-table th { padding:14px 18px; background:#f0f2f6; color:#15284b; font-size:10px; font-weight:600; letter-spacing:.4px; text-transform:uppercase; white-space:normal; line-height:1.6; }
+ .peso-admin-pages .report-table td { padding:17px 18px; line-height:1.6; border-bottom:1px solid #edeff2; color:#15284b; overflow-wrap:anywhere; }
+ .peso-admin-pages .report-table th:first-child { width:54px; }
+ .peso-admin-pages .report-table td:first-child { color:#828891; font-size:11px; font-variant-numeric:tabular-nums; }
+ .peso-admin-pages .report-table td:nth-child(2) { font-weight:500; color:#15284b; }
+ .peso-admin-pages .report-table tbody tr:nth-child(even) { background:#fbfcfd; }
+ .peso-admin-pages .report-table tbody tr:hover { background:#f2f4f8; }
+ .peso-admin-pages .report-table tbody tr:last-child td { border-bottom:0; }
+ .peso-admin-pages #report-employers th:nth-child(2) { width:23%; }
+ .peso-admin-pages #report-employers th:nth-child(3) { width:25%; }
+ .peso-admin-pages #report-employers th:nth-child(5) { width:12%; }
+ .peso-admin-pages #report-applicants th:nth-child(2) { width:25%; }
+ .peso-admin-pages #report-applicants th:nth-child(3) { width:30%; }
+ .peso-admin-pages #report-jobs .report-table { min-width:1050px; }
+ .peso-admin-pages #report-jobs th:nth-child(2) { width:24%; }
+ .peso-admin-pages #report-jobs th:nth-child(3) { width:18%; }
+ .peso-admin-pages .report-status { padding:4px 9px; font-size:10px; font-weight:500; border-radius:5px; }
+ .peso-admin-pages .status-active,.peso-admin-pages .status-approved { background:#e7ecf4; color:#15284b; }
+ .peso-admin-pages .status-pending { background:#fff4dc; color:#886322; }
+ .peso-admin-pages .status-rejected,.peso-admin-pages .status-suspended { background:#f9e9e7; color:#a24e47; }
+ .peso-admin-pages .report-panel>.report-alert { margin:16px 24px; }
+}
+@media screen and (max-width:1100px) { .peso-admin-pages .report-filter-actions { margin-left:0; } }
+@media screen and (max-width:768px) {
+ .peso-admin-pages .reports-page { padding:22px 16px; }
+ .peso-admin-pages .report-table-heading { padding:18px 16px; }
+ .peso-admin-pages .report-table-controls { padding:16px; }
+ .peso-admin-pages .report-filter-group { flex:1 1 130px; }
+ .peso-admin-pages .report-filter-actions { width:100%; }
+ .peso-admin-pages .report-filter-actions .report-btn { flex:1 1 auto; }
+}
+.peso-admin-pages .dashboard-summary-cards .stat-card { padding:22px; background:var(--card-bg); border:0; border-radius:10px; box-shadow:none; color:#15284b; }
+.peso-admin-pages .dashboard-summary-cards .stat-card:nth-child(1) { --card-bg:#e8eff9; --card-ink:#365c87; }
+.peso-admin-pages .dashboard-summary-cards .stat-card:nth-child(2) { --card-bg:#e6eaf2; --card-ink:#2563eb; }
+.peso-admin-pages .dashboard-summary-cards .stat-card:nth-child(3) { --card-bg:#f3e9e1; --card-ink:#855c40; }
+.peso-admin-pages .dashboard-summary-cards .stat-card:nth-child(4) { --card-bg:#eee9f7; --card-ink:#6b518c; }
+.peso-admin-pages .dashboard-summary-cards .stat-card:nth-child(5) { --card-bg:#e3f1f2; --card-ink:#326b75; }
+.peso-admin-pages .dashboard-summary-cards .stat-card:nth-child(6) { --card-bg:#e0e6ef; --card-ink:#2563eb; }
+.peso-admin-pages .dashboard-summary-cards .stat-card:nth-child(7) { --card-bg:#f8efd9; --card-ink:#856522; }
+.peso-admin-pages .dashboard-summary-cards .stat-card:nth-child(8) { --card-bg:#f6e6e9; --card-ink:#94515e; }
+.peso-admin-pages .dashboard-summary-cards .stat-card.summary-hiring { --card-bg:#e8eeef; --card-ink:#38626a; grid-column:1/-1; text-decoration:none; }
+.peso-admin-pages .summary-hiring .hiring-summary-value { font-size:26px; }
+.hiring-summary-value>span { font-size:13px; font-weight:500; }
+.summary-hiring:focus-visible { outline:2px solid #2563eb; outline-offset:3px; }
+.peso-admin-pages .dashboard-summary-cards .stat-card::before,.peso-admin-pages .dashboard-summary-cards .stat-card::after { display:none; }
+.peso-admin-pages .summary-card-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.peso-admin-pages .dashboard-summary-cards .stat-label { margin:0; color:#15284b; font-size:11px; font-weight:600; text-transform:none; letter-spacing:0; }
+.peso-admin-pages .summary-card-icon { display:grid; place-items:center; width:34px; height:34px; flex-shrink:0; border-radius:9px; background:#edf3fb; color:#3874bd; }
+.peso-admin-pages .summary-card-icon svg { width:19px; height:19px; }
+.peso-admin-pages .dashboard-summary-cards .stat-value { font-size:30px; color:#3874bd; }
+.peso-admin-pages .dashboard-summary-cards .stat-description { color:#727883; font-size:11px; line-height:1.6; }
+.peso-admin-pages .summary-green .summary-card-icon { background:#eaeef5; color:#15284b; }
+.peso-admin-pages .summary-red .summary-card-icon { background:#fbeeed; color:#b34f48; }
+.peso-admin-pages .summary-amber .summary-card-icon { background:#fff5e0; color:#a57926; }
+.peso-admin-pages .dashboard-summary-cards .summary-green .stat-value { color:#15284b; }
+.peso-admin-pages .dashboard-summary-cards .summary-red .stat-value { color:#b34f48; }
+.peso-admin-pages .dashboard-summary-cards .summary-amber .stat-value { color:#a57926; }
+.peso-admin-pages .dashboard-summary-cards .stat-card .stat-value { color:var(--card-ink); }
+.peso-admin-pages .dashboard-summary-cards .stat-card .summary-card-icon { background:#ffffff80; color:var(--card-ink); }
+.peso-admin-pages .dashboard-summary-cards .stat-card .stat-label { color:#15284b; }
+.peso-admin-pages .dashboard-summary-cards .stat-card .stat-description { color:#15284b; }
+.peso-admin-pages .table-pagination { display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:6px; padding:16px 20px; border-top:1px solid #e5e8ec; background:#fff; }
+.peso-admin-pages .pagination-info { margin-right:auto; color:#727883; font-size:11px; }
+.peso-admin-pages .table-pagination button { min-width:34px; min-height:34px; padding:7px 11px; border:1px solid #dfe2e8; border-radius:6px; background:#fff; color:#15284b; font-size:12px; cursor:pointer; }
+.peso-admin-pages .table-pagination button:hover:not(:disabled) { background:#edf0f6; border-color:#9faec7; }
+.peso-admin-pages .table-pagination button[aria-current=page] { background:#2563eb; color:#fff; border-color:#2563eb; }
+.peso-admin-pages .table-pagination button:disabled { opacity:.4; cursor:default; }
+.peso-admin-pages .table-pagination button:focus-visible { outline:2px solid #2563eb; outline-offset:2px; }
+@media(max-width:480px) { .peso-admin-pages .pagination-info { width:100%; margin-bottom:6px; } .peso-admin-pages .table-pagination { justify-content:center; padding:14px 10px; } }
+.peso-admin-pages .applicant-filters { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:24px; }
+.peso-admin-pages .applicant-filters input,.peso-admin-pages .applicant-filters select { min-height:42px; padding:10px 14px; background:#fff; color:#15284b; border:1px solid #d9dde4; border-radius:8px; font-size:12px; }
+.peso-admin-pages .applicant-filters input { flex:1 1 260px; max-width:480px; }
+.peso-admin-pages .applicant-filters select { width:190px; cursor:pointer; }
+.peso-admin-pages .applicant-filters :focus-visible { outline:2px solid #2563eb; outline-offset:2px; }
+.peso-admin-pages .applicant-list-workspace .data-card { border-radius:10px; border-color:#dfe2e8; box-shadow:none; }
+.peso-admin-pages .applicant-list-workspace .data-card-header { padding:20px 24px; border-color:#e5e8ec; }
+.peso-admin-pages .applicant-list-workspace .data-card-header h3 { font-size:16px; }
+.peso-admin-pages .applicant-list-workspace .applicant-toolbar { padding:14px 24px; background:#fff; border-color:#e5e8ec; }
+.peso-admin-pages #applicantTable { min-width:900px; table-layout:fixed; }
+.peso-admin-pages #applicantTable th { padding:14px 18px; font-size:11px; font-weight:700; color:#15284b; background:#f4f5f8; line-height:1.5; border-color:#e5e8ec; }
+.peso-admin-pages #applicantTable th:first-child { width:52px; }
+.peso-admin-pages #applicantTable th:nth-child(2) { width:23%; }
+.peso-admin-pages #applicantTable th:nth-child(3) { width:16%; }
+.peso-admin-pages #applicantTable th:nth-child(4) { width:26%; }
+.peso-admin-pages #applicantTable td { padding:18px; font-size:12px; line-height:1.6; border-color:#edeff2; overflow-wrap:anywhere; }
+.peso-admin-pages #applicantTable td strong { font-size:13px; font-weight:600; }
+.peso-admin-pages #applicantTable tbody tr { background:#fff; }
+.peso-admin-pages #applicantTable tbody tr:hover td { background:#f8f9fb; }
+.peso-admin-pages #applicantTable tbody tr.selected-row td { background:#eaeef5; }
+.peso-admin-pages #applicantTable tr[hidden] { display:none; }
+.peso-admin-pages #applicantTable input[type=checkbox] { accent-color:#2563eb; }
+.peso-admin-pages #applicantTable td:nth-child(5) { white-space:nowrap; }
+@media(max-width:768px) { .peso-admin-pages .applicant-filters select { width:100%; } }
+.peso-admin-pages .employer-list-workspace .control-panel { justify-content:flex-start; gap:12px; }
+.peso-admin-pages .employer-list-workspace .search-box-wrapper { max-width:480px; flex:1 1 260px; }
+.peso-admin-pages .employer-list-workspace .search-input { min-height:42px; border-color:#d9dde4; border-radius:8px; font-size:12px; }
+.peso-admin-pages .employer-list-workspace .employer-status-filter { width:180px; cursor:pointer; }
+.peso-admin-pages .employer-list-workspace .search-input:focus { border-color:#2563eb; box-shadow:0 0 0 3px #27845f18; }
+.peso-admin-pages .employer-list-workspace .data-card { border-radius:10px; border-color:#dfe2e8; box-shadow:none; }
+.peso-admin-pages .employer-list-workspace .data-card-header { padding:20px 24px; border-color:#e5e8ec; }
+.peso-admin-pages .employer-list-workspace .data-card-header h3 { font-size:16px; }
+.peso-admin-pages #employerTable { min-width:760px; table-layout:fixed; }
+.peso-admin-pages #employerTable th { padding:14px 18px; font-size:10px; line-height:1.5; color:#15284b; background:#f4f5f8; border-color:#e5e8ec; }
+.peso-admin-pages #employerTable th:nth-child(1) { width:30%; }
+.peso-admin-pages #employerTable th:nth-child(2) { width:30%; }
+.peso-admin-pages #employerTable th:nth-child(3) { width:20%; }
+.peso-admin-pages #employerTable th:nth-child(4) { width:20%; }
+.peso-admin-pages #employerTable td { padding:18px; font-size:12px; line-height:1.6; border-color:#edeff2; overflow-wrap:anywhere; }
+.peso-admin-pages #employerTable tbody tr { background:#fff; }
+.peso-admin-pages #employerTable tbody tr:hover td { background:#f8f9fb; }
+.peso-admin-pages #employerTable tr[hidden] { display:none; }
+.peso-admin-pages #employerTable td:first-child>div:first-child { font-size:13px; font-weight:600!important; }
+.peso-admin-pages #employerTable td:first-child>div+div { font-size:10px!important; color:#727883!important; margin-top:4px!important; }
+.peso-admin-pages #employerTable .permit-code { display:inline-block; max-width:100%; padding:3px 7px; font-size:11px; line-height:1.6; background:#f4f5f7; border-color:#e4e7eb; border-radius:4px; overflow-wrap:anywhere; }
+.peso-admin-pages #employerTable td:nth-child(3) { white-space:nowrap; }
+@media(max-width:768px) { .peso-admin-pages .employer-list-workspace .employer-status-filter { width:100%; } }
+.peso-admin-pages .job-list-workspace .control-panel { justify-content:flex-start; gap:12px; }
+.peso-admin-pages .job-list-workspace .search-wrapper { max-width:480px; flex:1 1 260px; }
+.peso-admin-pages .job-list-workspace .search-input { min-height:42px; border-color:#d9dde4; border-radius:8px; font-size:12px; }
+.peso-admin-pages .job-list-workspace .job-status-filter { width:180px; cursor:pointer; }
+.peso-admin-pages .job-list-workspace .search-input:focus { border-color:#2563eb; box-shadow:0 0 0 3px #27845f18; }
+.peso-admin-pages .job-list-workspace .data-card { border-radius:10px; border-color:#dfe2e8; box-shadow:none; }
+.peso-admin-pages .job-list-workspace .data-card-header { padding:20px 24px; border-color:#e5e8ec; }
+.peso-admin-pages .job-list-workspace .data-card-header h3 { font-size:16px; }
+.peso-admin-pages #jobTable { min-width:980px; table-layout:fixed; }
+.peso-admin-pages #jobTable th { padding:14px 18px; font-size:10px; color:#15284b; background:#f4f5f8; border-color:#e5e8ec; line-height:1.5; }
+.peso-admin-pages #jobTable th:nth-child(1) { width:19%; }
+.peso-admin-pages #jobTable th:nth-child(2) { width:20%; }
+.peso-admin-pages #jobTable th:nth-child(3) { width:14%; }
+.peso-admin-pages #jobTable th:nth-child(4) { width:24%; }
+.peso-admin-pages #jobTable th:nth-child(5) { width:11%; }
+.peso-admin-pages #jobTable th:nth-child(6) { width:12%; }
+.peso-admin-pages #jobTable td { padding:18px; font-size:12px; line-height:1.6; border-color:#edeff2; overflow-wrap:anywhere; }
+.peso-admin-pages #jobTable tbody tr { background:#fff; }
+.peso-admin-pages #jobTable tbody tr:hover td { background:#f8f9fb; }
+.peso-admin-pages #jobTable tr[hidden] { display:none; }
+.peso-admin-pages #jobTable td:first-child>div:first-child { font-weight:600!important; font-size:13px; }
+.peso-admin-pages #jobTable td:first-child>div+div { font-size:10px!important; color:#727883!important; margin-top:4px!important; }
+.peso-admin-pages #jobTable .permit-code { display:inline-block; max-width:100%; padding:3px 7px; font-size:11px; line-height:1.6; background:#f4f5f7; border-color:#e4e7eb; border-radius:4px; overflow-wrap:anywhere; }
+.peso-admin-pages #jobTable td:nth-child(3) { white-space:nowrap; }
+.peso-admin-pages #jobTable td:nth-child(4)>div { color:#15284b!important; font-weight:500!important; }
+.peso-admin-pages #jobTable .badge-status { border:0; border-radius:5px; padding:4px 9px; font-size:10px; font-weight:500; }
+.peso-admin-pages #jobTable .badge-status.active { background:#e7ecf4; color:#15284b; }
+.peso-admin-pages #jobTable .badge-status.pending { background:#fff4db; color:#8c651d; }
+.peso-admin-pages #jobTable .badge-status.rejected { background:#fbeceb; color:#a44742; }
+@media(max-width:768px) {
+ .peso-admin-pages .job-list-workspace .job-status-filter { width:100%; }
+ .peso-admin-pages #jobTable th:last-child { width:9%; }
+}
+.peso-admin-pages .table-responsive { max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.peso-admin-pages .content-header { flex-wrap:wrap; gap:16px; }
+@media(max-width:1100px) { .peso-admin-pages .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; } }
+@media(max-width:768px) {
+ body.peso-admin-pages { overflow-x:clip; }
+ body.peso-menu-open { overflow:hidden; }
+ .peso-admin-pages .peso-mobile-header { display:flex; position:sticky; top:0; z-index:1001; justify-content:space-between; align-items:center; padding:12px 16px; min-height:64px; background:#2563eb; color:#fff; font-size:16px; font-weight:600; }
+ .peso-mobile-header button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; width:40px; height:40px; border:1px solid #ffffff40; border-radius:5px; background:transparent; }
+ .peso-mobile-header button span { width:20px; height:2px; background:#fff; }
+ .peso-menu-open #pesoMenuToggle { visibility:hidden; pointer-events:none; }
+ .peso-admin-pages .sidebar { position:fixed; inset:0 auto 0 0; width:min(300px,88vw); max-width:none; height:100vh; height:100dvh; z-index:1003; transform:translate3d(-105%,0,0); visibility:hidden; transition:transform .32s cubic-bezier(.22,1,.36,1),visibility 0s linear .32s; overflow-y:auto; overscroll-behavior:contain; }
+ .peso-menu-open .sidebar { transform:translate3d(0,0,0); visibility:visible; transition-delay:0s; }
+ .peso-admin-pages .peso-menu-close { display:grid; place-items:center; align-self:flex-end; flex-shrink:0; margin:12px 14px 0; width:32px; height:32px; border:1px solid #ffffff40; border-radius:5px; background:#ffffff10; color:#fff; font-size:25px; cursor:pointer; }
+ .peso-admin-pages .peso-menu-backdrop { display:block; position:fixed; inset:0; z-index:1002; background:#0c231a73; opacity:0; visibility:hidden; transition:opacity .32s ease,visibility 0s linear .32s; }
+ .peso-menu-open .peso-menu-backdrop { opacity:1; visibility:visible; transition-delay:0s; }
+ .peso-admin-pages .main-content { margin-left:0; width:100%; }
+ .peso-admin-pages .content-header { padding:22px 16px; }
+ .peso-admin-pages .dashboard-workspace { padding:20px 16px 32px; }
+ .peso-admin-pages .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+ .peso-admin-pages .stat-card { min-width:0; padding:20px 16px; }
+ .peso-admin-pages .stat-label { font-size:10px; line-height:1.6; }
+ .peso-admin-pages .stat-value { font-size:30px; }
+ .peso-admin-pages .stat-description { font-size:11px; line-height:1.6; }
+ .peso-admin-pages .data-card { min-width:0; }
+ .peso-admin-pages .data-card-header { padding:20px 16px; }
+ .peso-admin-pages .data-card table { min-width:620px; }
+ .peso-admin-pages .sidebar-menu { overflow-y:auto; }
+}
+@media(max-width:380px) { .peso-admin-pages .stats-grid { grid-template-columns:1fr; } }
+@media(prefers-reduced-motion:reduce) { .peso-admin-pages .sidebar,.peso-menu-backdrop { transition:none!important; } }
+.employer-actions-toggle { display:none; }
+@media(max-width:768px) {
+ .peso-admin-pages .employer-actions-toggle { display:inline-grid; place-items:center; width:34px; height:34px; background:#fff; border:1px solid #d9dde4; border-radius:5px; color:#15284b; font-size:25px; cursor:pointer; }
+ .peso-admin-pages .employer-actions-menu { display:none; }
+ .peso-admin-pages .employer-actions-menu.actions-open { display:flex; position:fixed; z-index:1100; flex-direction:column; align-items:stretch; gap:6px; width:155px; padding:8px; background:#fff; border:1px solid #e0e3e8; border-radius:6px; box-shadow:0 8px 24px #19332d20; }
+ .peso-admin-pages .employer-actions-menu.actions-open .btn-action { display:flex; justify-content:flex-start; width:100%; min-height:38px; padding:9px 12px; border-radius:4px; font-size:12px; text-decoration:none; box-sizing:border-box; }
+ .peso-admin-pages .employer-actions-menu.actions-open form { margin:0; width:100%; }
+}
+.peso-admin-pages .employer-actions-menu .btn-action { min-width:36px; width:36px; height:36px; padding:8px; border-radius:5px; }
+.peso-admin-pages .action-icon-content { display:inline-flex; align-items:center; justify-content:center; gap:9px; }
+.peso-admin-pages .action-icon-content img { width:18px; height:18px; flex-shrink:0; object-fit:contain; }
+.peso-admin-pages .action-button-label { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+@media(max-width:768px) { .peso-admin-pages .actions-open .action-button-label { position:static; width:auto; height:auto; overflow:visible; clip-path:none; } .peso-admin-pages .employer-actions-menu.actions-open .btn-action { height:auto; } }
+.peso-admin-pages .admin-job-detail-actions { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.peso-admin-pages .admin-review-job { display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:12px 18px; min-height:42px; background:#2563eb; color:#fff; border:1px solid #2563eb; border-radius:5px; font-size:12px; font-weight:600; text-decoration:none; }
+.peso-admin-pages .admin-review-job img { filter:brightness(0) invert(1); }
+.peso-admin-pages .admin-review-job:hover { background:#1d4ed8; }
+.peso-admin-pages .dashboard-visual-analytics { min-width:0; margin-bottom:28px; }
+.peso-admin-pages .dashboard-visual-analytics>h2 { color:#15284b; font-size:18px; margin:0 0 16px; }
+.peso-admin-pages .dashboard-chart-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.peso-admin-pages .dashboard-chart-panel { min-width:0; padding:24px; background:#fff; border:1px solid #e0e3e8; border-radius:6px; }
+.peso-admin-pages .dashboard-chart-panel h3 { margin:0 0 24px; color:#15284b; font-size:16px; }
+.peso-admin-pages .employer-status-donut { width:180px; height:180px; border-radius:50%; background:conic-gradient(#3874bd var(--active-share),#d3d7de 0); margin:0 auto 24px; display:grid; place-items:center; }
+.peso-admin-pages .employer-status-donut>div { width:120px; height:120px; background:#fff; border-radius:50%; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:6px; }
+.peso-admin-pages .employer-status-donut strong { font-size:28px; color:#15284b; }
+.peso-admin-pages .employer-status-donut div span { font-size:11px; color:#616772; }
+.peso-admin-pages .dashboard-chart-legend { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; list-style:none; padding:0; margin:0; font-size:12px; color:#15284b; }
+.peso-admin-pages .dashboard-chart-legend li { display:flex; align-items:center; gap:7px; }
+.peso-admin-pages .dashboard-chart-legend li>span { width:9px; height:9px; border-radius:2px; }
+.peso-admin-pages .legend-active { background:#3874bd; }
+.peso-admin-pages .legend-suspended { background:#d3d7de; }
+.peso-admin-pages .dashboard-job-bars { display:grid; gap:27px; padding:18px 0; }
+.peso-admin-pages .job-bar-label { display:flex; justify-content:space-between; gap:12px; font-size:12px; color:#15284b; margin-bottom:10px; }
+.peso-admin-pages .job-bar-track { height:18px; background:#f1f2f5; border-radius:4px; overflow:hidden; }
+.peso-admin-pages .job-bar-track>span { display:block; height:100%; border-radius:4px; }
+.peso-admin-pages .bar-approved { background:#2563eb; }
+.peso-admin-pages .bar-pending { background:#c49a4b; }
+.peso-admin-pages .bar-rejected { background:#bc6a65; }
+.peso-admin-pages .analytics-empty { text-align:center; padding:65px 0; font-size:13px; color:#616772; }
+@media(max-width:768px) { .peso-admin-pages .dashboard-chart-grid { grid-template-columns:1fr; gap:16px; } .peso-admin-pages .dashboard-chart-panel { padding:20px; } }
+.peso-admin-pages .recent-activity-panel { border:1px solid #e0e3e8; border-radius:6px; box-shadow:none; overflow:hidden; }
+.peso-admin-pages .recent-activity-panel .data-card-header { padding:22px 24px; border-color:#e4e7ec; }
+.peso-admin-pages .recent-activity-panel .data-card-header h3 { font-size:18px; letter-spacing:-.4px; color:#15284b; }
+.peso-admin-pages .recent-activity-panel .data-card-header p { font-size:12px; line-height:1.8; color:#616772; margin-top:6px; }
+.peso-admin-pages .recent-activity-panel table { width:100%; border-collapse:collapse; }
+.peso-admin-pages .recent-activity-panel th { background:#f4f5f8; padding:13px 24px; font-size:10px; font-weight:600; letter-spacing:.6px; color:#616772; border-color:#e4e7ec; }
+.peso-admin-pages .recent-activity-panel td { padding:17px 24px; font-size:12px; border-bottom:1px solid #ebedf1; color:#15284b; }
+.peso-admin-pages .recent-activity-panel tbody tr:nth-child(n) { background:#fff; }
+.peso-admin-pages .recent-activity-panel tbody tr:hover { background:#f9fafc; }
+.peso-admin-pages .activity-identity { display:flex; align-items:center; gap:12px; }
+.peso-admin-pages .activity-identity img { width:24px; height:24px; object-fit:contain; flex-shrink:0; border-radius:4px; }
+.peso-admin-pages .activity-identity strong { font-size:12px; font-weight:600; line-height:1.6; }
+.peso-admin-pages .recent-activity-panel .category-tag { font-weight:400; color:#616772; }
+.peso-admin-pages .recent-activity-panel .badge-status { border-radius:4px; padding:5px 9px; font-size:10px; font-weight:500; border:0; }
+.peso-admin-pages .recent-activity-panel .badge-status.active,.peso-admin-pages .recent-activity-panel .badge-status.approved { background:#eaeef4; color:#15284b; }
+.peso-admin-pages .recent-activity-panel .badge-status.registered { background:#edf2f9; color:#486d9d; }
+@media(max-width:768px) {
+ .peso-admin-pages .recent-activity-panel table { min-width:0; }
+ .peso-admin-pages .recent-activity-panel thead { display:none; }
+ .peso-admin-pages .recent-activity-panel tbody { display:block; }
+ .peso-admin-pages .recent-activity-panel tbody tr { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:20px; border-bottom:1px solid #e4e7ec; }
+ .peso-admin-pages .recent-activity-panel td { display:block; border:0; padding:0; min-width:0; overflow-wrap:anywhere; }
+ .peso-admin-pages .recent-activity-panel td:first-child { grid-column:1 / -1; }
+ .peso-admin-pages .recent-activity-panel td[data-label]:not(:first-child)::before { content:attr(data-label); display:block; color:#717781; font-size:9px; margin-bottom:6px; }
+ .peso-admin-pages .recent-activity-panel td[colspan] { grid-column:1 / -1; }
+}
+.peso-admin-pages .activity-category { display:inline-flex; align-items:center; border-radius:4px; padding:5px 10px; font-size:11px; font-weight:500; line-height:1.5; }
+.peso-admin-pages .category-employer { background:#eaf1fb; color:#355f9a; }
+.peso-admin-pages .category-applicant { background:#f1ebfa; color:#77529d; }
+.peso-admin-pages .category-job { background:#e8ecf4; color:#15284b; }
+.peso-admin-pages .bar-demand { background:#2563eb; }
+.peso-admin-pages .dashboard-demand-panel { grid-column:1 / -1; }
+.peso-admin-pages .dashboard-demand-link { display:inline-block; margin-top:14px; font-size:13px; font-weight:600; color:#2563eb; text-decoration:none; }
+.peso-admin-pages .dashboard-demand-link:hover { text-decoration:underline; }

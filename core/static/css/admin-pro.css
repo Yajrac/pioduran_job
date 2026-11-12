@@ -1,0 +1,701 @@
+/* =====================================================================
+   PESO Admin - professional theme
+   Loaded last in core/templates/base.html so it wins over page styles.
+
+   Follows ISO 9241-110 / 9241-112 (dialogue & presentation principles)
+   and ISO/IEC 40500 (WCAG 2.1 AA):
+   - consistent layout, wording and component styles on every page
+   - text contrast >= 4.5:1, visible keyboard focus, skip link
+   - status shown with colour + text (never colour alone)
+   - actions labelled with words, destructive actions in red
+   ===================================================================== */
+
+body.peso-admin-pages {
+  --a-canvas: #f4f6fa;
+  --a-surface: #ffffff;
+  --a-line: #e2e8f0;
+  --a-line-strong: #cbd5e1;
+  --a-ink: #0f172a;
+  --a-ink-2: #334155;
+  --a-muted: #64748b;
+  --a-brand: #1d4ed8;
+  --a-brand-hover: #1e40af;
+  --a-brand-soft: #eff6ff;
+  --a-navy: #0b1a33;
+  --a-navy-2: #12264a;
+  --a-success: #15803d; --a-success-bg: #ecfdf3; --a-success-line: #bbf7d0;
+  --a-warning: #b45309; --a-warning-bg: #fffbeb; --a-warning-line: #fde68a;
+  --a-danger: #b91c1c;  --a-danger-bg: #fef2f2;  --a-danger-line: #fecaca;
+  --a-neutral: #475569; --a-neutral-bg: #f1f5f9; --a-neutral-line: #e2e8f0;
+  --a-radius: 12px;
+  --a-shadow: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .04);
+  background: var(--a-canvas);
+  color: var(--a-ink-2);
+}
+
+/* ---------- Accessibility helpers ---------- */
+body.peso-admin-pages .admin-skip-link {
+  position: absolute; left: 16px; top: -60px; z-index: 1000;
+  padding: 10px 16px; border-radius: 8px;
+  background: var(--a-brand); color: #fff; font-weight: 600; text-decoration: none;
+}
+body.peso-admin-pages .admin-skip-link:focus { top: 12px; }
+body.peso-admin-pages .visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+body.peso-admin-pages .main-content:focus { outline: none; }
+body.peso-admin-pages :is(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--a-brand); outline-offset: 2px;
+}
+
+/* ---------- Sidebar ---------- */
+body.peso-admin-pages .sidebar {
+  background: linear-gradient(180deg, var(--a-navy) 0%, var(--a-navy-2) 100%);
+  border-right: 0;
+  box-shadow: none;
+}
+body.peso-admin-pages .sidebar-brand { border-bottom: 1px solid rgba(255, 255, 255, .08); }
+body.peso-admin-pages .sidebar-brand-logo { background: #fff; box-shadow: none; }
+body.peso-admin-pages .sidebar-brand-text h1 { color: #fff; font-size: 15px; letter-spacing: 0; }
+body.peso-admin-pages .sidebar-brand-text p { color: #94a3b8; }
+
+body.peso-admin-pages .sidebar-menu-item { margin-bottom: 4px; }
+body.peso-admin-pages .sidebar-menu-item a,
+body.peso-admin-pages .sidebar-reports summary {
+  min-height: 44px; border-radius: 8px; border: 0;
+  color: #cbd5e1; font-size: 13.5px; font-weight: 500;
+}
+body.peso-admin-pages .sidebar-menu-item a:hover,
+body.peso-admin-pages .sidebar-reports summary:hover {
+  background: rgba(255, 255, 255, .06); color: #fff;
+}
+body.peso-admin-pages .sidebar-menu-item.active a,
+body.peso-admin-pages .sidebar-reports.active > details > summary {
+  background: rgba(96, 165, 250, .16); color: #fff; font-weight: 600;
+  box-shadow: inset 3px 0 0 #60a5fa;
+  border: 0;
+}
+body.peso-admin-pages .sidebar-menu-item.active a::after { display: none; }
+body.peso-admin-pages .sidebar :is(a, summary):focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
+
+body.peso-admin-pages .nav-count {
+  margin-left: auto; min-width: 22px; padding: 1px 7px; border-radius: 999px;
+  background: #f59e0b; color: #1f1300; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
+}
+body.peso-admin-pages .sidebar.collapsed .nav-count,
+body.peso-admin-pages.sidebar-collapsed .nav-count { display: none; }
+
+body.peso-admin-pages .reports-submenu a { color: #94a3b8; border-radius: 6px; }
+body.peso-admin-pages .reports-submenu a:hover { color: #fff; background: rgba(255, 255, 255, .05); }
+body.peso-admin-pages .reports-submenu a[aria-current="page"] {
+  color: #fff; background: rgba(255, 255, 255, .08); font-weight: 600;
+}
+body.peso-admin-pages .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, .08); }
+body.peso-admin-pages .sidebar-footer a {
+  color: #cbd5e1; background: transparent; border: 1px solid rgba(255, 255, 255, .12); border-radius: 8px;
+}
+body.peso-admin-pages .sidebar-footer a:hover { color: #fecaca; border-color: rgba(254, 202, 202, .4); background: rgba(185, 28, 28, .12); }
+body.peso-admin-pages .sidebar-collapse-toggle { background: #fff; color: var(--a-navy); border: 1px solid var(--a-line); }
+
+/* ---------- Breadcrumb & page header ---------- */
+body.peso-admin-pages .admin-breadcrumb {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 12px 32px; background: var(--a-surface); border-bottom: 1px solid var(--a-line);
+  font-size: 12.5px; color: var(--a-muted);
+}
+body.peso-admin-pages .admin-breadcrumb ol { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; }
+body.peso-admin-pages .admin-breadcrumb li { display: flex; align-items: center; gap: 6px; }
+body.peso-admin-pages .admin-breadcrumb li + li::before { content: "/"; color: var(--a-line-strong); }
+body.peso-admin-pages .admin-breadcrumb a { color: var(--a-muted); text-decoration: none; }
+body.peso-admin-pages .admin-breadcrumb a:hover { color: var(--a-brand); text-decoration: underline; }
+body.peso-admin-pages .admin-breadcrumb [aria-current="page"] { color: var(--a-ink); font-weight: 600; }
+body.peso-admin-pages .admin-breadcrumb-date { white-space: nowrap; }
+
+body.peso-admin-pages .content-header {
+  background: var(--a-surface); border-bottom: 1px solid var(--a-line); box-shadow: none;
+}
+body.peso-admin-pages :is(.content-header .page-title h2, .reports-title) {
+  color: var(--a-ink); font-size: 22px; font-weight: 700; letter-spacing: -.01em;
+}
+body.peso-admin-pages .reports-subtitle { color: var(--a-muted); }
+body.peso-admin-pages .admin-profile { color: var(--a-muted); font-size: 13px; }
+body.peso-admin-pages .admin-profile strong { color: var(--a-ink); }
+
+/* ---------- Cards & panels ---------- */
+body.peso-admin-pages :is(.data-card, .report-panel, .dashboard-chart-panel, .publication-card, .employer-review-card, .details-card, .job-detail-card) {
+  background: var(--a-surface); border: 1px solid var(--a-line); border-radius: var(--a-radius); box-shadow: var(--a-shadow);
+}
+body.peso-admin-pages :is(.data-card-header h3, .report-section-title, .dashboard-chart-panel h3, .dashboard-visual-analytics h2) {
+  color: var(--a-ink); font-weight: 700;
+}
+
+/* Dashboard summary cards: one neutral style, colour only in the icon */
+body.peso-admin-pages .dashboard-summary-cards .stat-card,
+body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-hiring {
+  --card-bg: var(--a-surface);
+  background: var(--a-surface); border: 1px solid var(--a-line); border-radius: var(--a-radius);
+  box-shadow: var(--a-shadow); transition: border-color .15s ease, box-shadow .15s ease;
+}
+body.peso-admin-pages .dashboard-summary-cards a.stat-card:hover { border-color: #93c5fd; box-shadow: 0 4px 12px rgba(15, 23, 42, .08); }
+body.peso-admin-pages .dashboard-summary-cards .stat-label { color: var(--a-muted); font-size: 12.5px; font-weight: 600; }
+body.peso-admin-pages .dashboard-summary-cards .stat-value,
+body.peso-admin-pages .dashboard-summary-cards :is(.summary-green, .summary-red, .summary-amber, .summary-blue) .stat-value {
+  color: var(--a-ink); font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+body.peso-admin-pages .dashboard-summary-cards .stat-description { color: var(--a-muted); font-size: 12px; }
+body.peso-admin-pages .summary-card-icon { width: 36px; height: 36px; border-radius: 10px; }
+body.peso-admin-pages .summary-blue .summary-card-icon,
+body.peso-admin-pages .summary-hiring .summary-card-icon { background: var(--a-brand-soft); color: var(--a-brand); }
+body.peso-admin-pages .summary-green .summary-card-icon { background: var(--a-success-bg); color: var(--a-success); }
+body.peso-admin-pages .summary-amber .summary-card-icon { background: var(--a-warning-bg); color: var(--a-warning); }
+body.peso-admin-pages .summary-red .summary-card-icon { background: var(--a-danger-bg); color: var(--a-danger); }
+body.peso-admin-pages .summary-hiring :is(.hiring-summary-value, .stat-value) { color: var(--a-ink); }
+
+/* Dashboard bars */
+body.peso-admin-pages .job-bar-track { background: var(--a-neutral-bg); border-radius: 999px; }
+body.peso-admin-pages .bar-approved { background: var(--a-success); }
+body.peso-admin-pages .bar-pending { background: #f59e0b; }
+body.peso-admin-pages .bar-rejected { background: var(--a-danger); }
+body.peso-admin-pages .bar-demand { background: var(--a-brand); }
+
+/* ---------- Tables ---------- */
+body.peso-admin-pages :is(#employerTable, #jobTable, #applicantTable, .report-table, .data-card table) {
+  border-collapse: separate; border-spacing: 0;
+}
+body.peso-admin-pages :is(#employerTable, #jobTable, #applicantTable, .report-table, .data-card table) thead th {
+  background: #f8fafc; color: var(--a-neutral);
+  font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  border-bottom: 1px solid var(--a-line);
+}
+body.peso-admin-pages :is(#employerTable, #jobTable, #applicantTable, .report-table, .data-card table) tbody td {
+  color: var(--a-ink-2); font-size: 13.5px; border-bottom: 1px solid #eef2f6; background: transparent;
+}
+body.peso-admin-pages :is(#employerTable, #jobTable, #applicantTable, .report-table, .data-card table) tbody tr:nth-child(even) { background: transparent; }
+body.peso-admin-pages :is(#employerTable, #jobTable, #applicantTable, .report-table, .data-card table) tbody tr:hover td { background: #f8fafc; }
+body.peso-admin-pages :is(#employerTable, #jobTable, #applicantTable, .report-table) tbody tr:last-child td { border-bottom: 0; }
+
+/* ---------- Status badges (colour + text, never colour alone) ---------- */
+body.peso-admin-pages #main-content :is(.badge-status, .employer-approval-label, .report-status, .job-detail-status, .profile-badge) {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 999px; border: 1px solid var(--a-neutral-line);
+  background: var(--a-neutral-bg); color: var(--a-neutral);
+  font-size: 12px; font-weight: 600; line-height: 1.5; white-space: nowrap; text-transform: none; letter-spacing: 0;
+}
+body.peso-admin-pages #main-content :is(.badge-status, .employer-approval-label, .report-status, .job-detail-status)::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0;
+}
+body.peso-admin-pages #main-content :is(.badge-status.active, .badge-status.approved, .employer-approval-label.is-active,
+  .report-status.status-approved, .report-status.status-active, .job-detail-status.status-approved) {
+  background: var(--a-success-bg); border-color: var(--a-success-line); color: var(--a-success);
+}
+body.peso-admin-pages #main-content :is(.badge-status.pending, .badge-status.review-pending, .employer-approval-label.approval-pending,
+  .report-status.status-pending, .job-detail-status.status-pending) {
+  background: var(--a-warning-bg); border-color: var(--a-warning-line); color: var(--a-warning);
+}
+body.peso-admin-pages #main-content :is(.badge-status.suspended, .badge-status.rejected, .employer-approval-label.is-suspended,
+  .employer-approval-label.approval-rejected, .report-status.status-rejected, .report-status.status-suspended,
+  .job-detail-status.status-rejected) {
+  background: var(--a-danger-bg); border-color: var(--a-danger-line); color: var(--a-danger);
+}
+
+/* ---------- Row actions: icon + visible word (wide screens) ---------- */
+@media (min-width: 1201px) {
+  body.peso-admin-pages .employer-actions-menu { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+  body.peso-admin-pages .employer-actions-menu .btn-action,
+  body.peso-admin-pages td .btn-action {
+    width: auto; min-width: 0; height: 32px; padding: 0 10px; gap: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--a-line-strong); border-radius: 7px; background: var(--a-surface);
+    color: var(--a-ink-2); font-size: 12.5px; font-weight: 600; text-decoration: none; box-shadow: none;
+  }
+  body.peso-admin-pages .btn-action .action-button-label {
+    position: static; width: auto; height: auto; overflow: visible; clip-path: none;
+  }
+  body.peso-admin-pages .btn-action .action-icon-content { display: inline-flex; align-items: center; gap: 6px; }
+  body.peso-admin-pages .btn-action img { width: 16px; height: 16px; }
+  body.peso-admin-pages .btn-action:hover { background: #f8fafc; border-color: #94a3b8; }
+  body.peso-admin-pages :is(.btn-suspend) { color: var(--a-warning); }
+  body.peso-admin-pages :is(.btn-activate, .btn-action-approve) { color: var(--a-success); }
+  body.peso-admin-pages :is(.btn-delete, .btn-action-delete) { color: var(--a-danger); border-color: var(--a-danger-line); }
+  body.peso-admin-pages :is(.btn-delete, .btn-action-delete):hover { background: var(--a-danger-bg); border-color: var(--a-danger); }
+}
+
+/* ---------- Buttons ---------- */
+body.peso-admin-pages :is(.report-btn, .btn) {
+  border-radius: 8px; font-weight: 600;
+}
+body.peso-admin-pages :is(.report-btn-primary, .btn-primary, .publication-publish) {
+  background: var(--a-brand); border-color: var(--a-brand); color: #fff;
+}
+body.peso-admin-pages :is(.report-btn-primary, .btn-primary, .publication-publish):hover {
+  background: var(--a-brand-hover); border-color: var(--a-brand-hover);
+}
+body.peso-admin-pages .report-btn:not(.report-btn-primary) {
+  background: var(--a-surface); border: 1px solid var(--a-line-strong); color: var(--a-ink-2);
+}
+body.peso-admin-pages .report-btn:not(.report-btn-primary):hover { background: #f8fafc; border-color: #94a3b8; }
+
+/* ---------- Form controls ---------- */
+body.peso-admin-pages :is(.search-input, .report-filter input[type="date"], .publication-reject textarea, select.search-input) {
+  border: 1px solid var(--a-line-strong); border-radius: 8px; background: var(--a-surface);
+  color: var(--a-ink); font-size: 14px; box-shadow: none;
+}
+body.peso-admin-pages :is(.search-input, .report-filter input, .publication-reject textarea)::placeholder { color: #64748b; }
+body.peso-admin-pages :is(.search-input, .report-filter input, .publication-reject textarea):focus {
+  border-color: var(--a-brand); box-shadow: 0 0 0 3px rgba(29, 78, 216, .15); outline: none;
+}
+body.peso-admin-pages .report-filter-group label { color: var(--a-ink-2); font-size: 12.5px; font-weight: 600; }
+
+/* ---------- Alerts ---------- */
+body.peso-admin-pages .report-alert-error { background: var(--a-danger-bg); border: 1px solid var(--a-danger-line); color: var(--a-danger); }
+body.peso-admin-pages .report-alert-info { background: var(--a-brand-soft); border: 1px solid #bfdbfe; color: #1e3a8a; }
+body.peso-admin-pages :is(.hired-report-note, .report-footer) { color: var(--a-muted); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  body.peso-admin-pages .admin-breadcrumb { padding: 10px 16px; }
+  body.peso-admin-pages .admin-breadcrumb-date { display: none; }
+}
+@media print {
+  body.peso-admin-pages .admin-breadcrumb, body.peso-admin-pages .admin-skip-link { display: none; }
+}
+
+/* Row actions stay on one line; give the actions column room for words */
+@media (min-width: 1201px) {
+  body.peso-admin-pages .employer-actions-menu { flex-wrap: nowrap; }
+  body.peso-admin-pages .employer-actions-menu form { display: inline-flex; margin: 0; }
+  body.peso-admin-pages #employerTable th:nth-child(1) { width: 24%; }
+  body.peso-admin-pages #employerTable th:nth-child(2) { width: 19%; }
+  body.peso-admin-pages #employerTable th:nth-child(3) { width: 14%; }
+  body.peso-admin-pages #employerTable th:nth-child(4) { width: 13%; }
+  body.peso-admin-pages #employerTable th:nth-child(5) { width: 30%; }
+}
+body.peso-admin-pages .summary-hiring :is(.hiring-summary-value, .stat-value),
+body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-hiring .stat-value { color: var(--a-ink); }
+
+@media (min-width: 1201px) {
+  body.peso-admin-pages #jobTable th:nth-child(1) { width: 18%; }
+  body.peso-admin-pages #jobTable th:nth-child(2) { width: 17%; }
+  body.peso-admin-pages #jobTable th:nth-child(3) { width: 13%; }
+  body.peso-admin-pages #jobTable th:nth-child(4) { width: 22%; }
+  body.peso-admin-pages #jobTable th:nth-child(5) { width: 12%; }
+  body.peso-admin-pages #jobTable th:nth-child(6) { width: 18%; }
+}
+
+/* Report tables: keep rank numbers together, consistent link colour */
+body.peso-admin-pages #main-content :is(#report-demand, #report-top-jobs) .report-table td:first-child { white-space: nowrap; width: 64px; }
+body.peso-admin-pages #main-content .report-table a { color: var(--a-brand); font-weight: 600; text-decoration: none; }
+body.peso-admin-pages #main-content .report-table a:hover { text-decoration: underline; }
+
+/* Mobile top bar matches the navy sidebar */
+@media (max-width: 768px) {
+  body.peso-admin-pages .peso-mobile-header { background: var(--a-navy); color: #fff; box-shadow: none; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+}
+
+/* =====================================================================
+   Dashboard charts (components/dashboard_charts.html)
+   Thin marks, 4px rounded data-ends, hairline solid grid, 2px surface
+   gaps, text in text colours (never the series colour).
+   ===================================================================== */
+body.peso-admin-pages .viz { position: relative; margin-top: 8px; }
+body.peso-admin-pages .viz > h2 { margin: 0 0 16px; color: var(--a-ink); font-size: 18px; font-weight: 700; }
+body.peso-admin-pages .viz-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+body.peso-admin-pages .viz-span-2 { grid-column: span 2; }
+body.peso-admin-pages .viz-card {
+  display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 22px 24px;
+  background: var(--a-surface); border: 1px solid var(--a-line); border-radius: var(--a-radius); box-shadow: var(--a-shadow);
+}
+body.peso-admin-pages .viz-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+body.peso-admin-pages .viz-head h3 { margin: 0; color: var(--a-ink); font-size: 15px; font-weight: 700; }
+body.peso-admin-pages .viz-head p { margin: 4px 0 0; color: var(--a-muted); font-size: 12.5px; }
+
+/* legend + keys (rect for bars, short line for lines) */
+body.peso-admin-pages .viz-legend { display: flex; gap: 16px; margin: 0; padding: 0; list-style: none; color: var(--a-ink-2); font-size: 12.5px; }
+body.peso-admin-pages .viz-legend li { display: flex; align-items: center; gap: 6px; }
+body.peso-admin-pages .viz-key { display: inline-block; flex-shrink: 0; }
+body.peso-admin-pages .viz-key-bar { width: 10px; height: 10px; border-radius: 3px; }
+body.peso-admin-pages .viz-key-line { width: 14px; height: 2px; border-radius: 2px; }
+
+/* trend chart */
+body.peso-admin-pages .viz-svg { display: block; width: 100%; height: auto; overflow: visible; }
+body.peso-admin-pages .viz-gridline { stroke: #eef2f6; stroke-width: 1; }
+body.peso-admin-pages .viz-baseline { stroke: var(--a-line-strong); }
+body.peso-admin-pages .viz-tick { fill: var(--a-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+body.peso-admin-pages .viz-value { fill: var(--a-ink); font-size: 12px; font-weight: 700; }
+body.peso-admin-pages .viz-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+body.peso-admin-pages .viz-dot { stroke: var(--a-surface); stroke-width: 2; }
+body.peso-admin-pages .viz-band { fill: transparent; cursor: default; outline: none; }
+body.peso-admin-pages .viz-band.is-active,
+body.peso-admin-pages .viz-band:focus-visible { fill: rgba(15, 23, 42, .04); }
+body.peso-admin-pages .viz-band:focus-visible { stroke: var(--a-brand); stroke-width: 1.5; }
+
+/* table view */
+body.peso-admin-pages .viz-table summary { width: fit-content; color: var(--a-brand); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+body.peso-admin-pages .viz-table table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 13px; }
+body.peso-admin-pages .viz-table :is(th, td) { padding: 8px 10px; border-bottom: 1px solid #eef2f6; text-align: right; font-variant-numeric: tabular-nums; }
+body.peso-admin-pages .viz-table :is(thead th, tbody th) { text-align: left; }
+body.peso-admin-pages .viz-table thead th { color: var(--a-neutral); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; }
+body.peso-admin-pages .viz-table tbody th { color: var(--a-ink-2); font-weight: 500; }
+
+/* status split: thin segmented bar + list */
+body.peso-admin-pages .viz-seg { display: flex; gap: 2px; height: 8px; border-radius: 999px; overflow: hidden; background: var(--a-neutral-bg); }
+body.peso-admin-pages .viz-seg-part { min-width: 6px; height: 100%; outline: none; }
+body.peso-admin-pages .viz-seg-part.is-active,
+body.peso-admin-pages .viz-seg-part:focus-visible { filter: brightness(1.12); box-shadow: inset 0 0 0 2px rgba(15, 23, 42, .35); }
+body.peso-admin-pages .viz-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+body.peso-admin-pages .viz-list li {
+  display: grid; grid-template-columns: 10px 1fr auto 44px; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: var(--a-ink-2);
+}
+body.peso-admin-pages .viz-list li:last-child { border-bottom: 0; }
+body.peso-admin-pages .viz-list-count { color: var(--a-ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+body.peso-admin-pages .viz-list-share { color: var(--a-muted); text-align: right; font-variant-numeric: tabular-nums; }
+body.peso-admin-pages .viz-list li.is-zero { color: var(--a-muted); }
+body.peso-admin-pages .viz-list li.is-zero .viz-list-count { color: var(--a-muted); font-weight: 500; }
+
+/* ranked category bars */
+body.peso-admin-pages .viz-rank { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+body.peso-admin-pages .viz-rank li {
+  display: grid; grid-template-columns: 22px minmax(120px, 200px) 1fr 92px; align-items: center; gap: 14px;
+  padding: 8px 10px; border-radius: 8px; outline: none;
+}
+body.peso-admin-pages .viz-rank li.is-active,
+body.peso-admin-pages .viz-rank li:focus-visible { background: #f8fafc; }
+body.peso-admin-pages .viz-rank li:focus-visible { box-shadow: inset 0 0 0 2px var(--a-brand); }
+body.peso-admin-pages .viz-rank-no { color: var(--a-muted); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+body.peso-admin-pages .viz-rank-name { color: var(--a-ink); font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.peso-admin-pages .viz-rank-track { height: 10px; }
+body.peso-admin-pages .viz-rank-bar { display: block; height: 100%; min-width: 4px; border-radius: 0 4px 4px 0; }
+body.peso-admin-pages .viz-rank-value { display: flex; justify-content: flex-end; gap: 8px; font-size: 13px; font-variant-numeric: tabular-nums; }
+body.peso-admin-pages .viz-rank-value strong { color: var(--a-ink); }
+body.peso-admin-pages .viz-rank-value span { width: 36px; color: var(--a-muted); text-align: right; }
+
+body.peso-admin-pages .viz-link { color: var(--a-brand); font-size: 12.5px; font-weight: 600; text-decoration: none; margin-top: auto; }
+body.peso-admin-pages .viz-link:hover { text-decoration: underline; }
+body.peso-admin-pages .viz-head .viz-link { margin-top: 2px; }
+body.peso-admin-pages .viz-empty { margin: 0; color: var(--a-muted); font-size: 13px; }
+
+/* tooltip: value leads, label follows, line keys */
+body.peso-admin-pages .viz-tooltip {
+  position: absolute; top: 0; left: 0; z-index: 20; min-width: 150px; padding: 10px 12px; pointer-events: none;
+  background: #0f172a; color: #e2e8f0; border-radius: 8px; box-shadow: 0 8px 24px rgba(15, 23, 42, .25); font-size: 12px;
+}
+body.peso-admin-pages .viz-tooltip-title { margin-bottom: 6px; color: #94a3b8; font-weight: 600; }
+body.peso-admin-pages .viz-tooltip-row { display: flex; align-items: center; gap: 8px; line-height: 1.7; }
+body.peso-admin-pages .viz-tooltip-row strong { color: #fff; font-size: 13px; font-variant-numeric: tabular-nums; }
+body.peso-admin-pages .viz-tooltip-key { width: 12px; height: 2px; border-radius: 2px; }
+body.peso-admin-pages .viz-tooltip-key.is-blank { background: transparent; }
+
+@media (max-width: 1100px) {
+  body.peso-admin-pages .viz-grid { grid-template-columns: 1fr 1fr; }
+  body.peso-admin-pages .viz-span-2 { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) {
+  body.peso-admin-pages .viz-grid { grid-template-columns: 1fr; }
+  body.peso-admin-pages .viz-rank li { grid-template-columns: 20px 1fr 76px; }
+  body.peso-admin-pages .viz-rank-track { grid-column: 2 / -1; grid-row: 2; }
+}
+
+/* =====================================================================
+   Reports > Assessment & Benchmarks (components/assessment_benchmarks.html)
+   ===================================================================== */
+body.peso-admin-pages .ab { display: grid; gap: 28px; }
+body.peso-admin-pages .ab-section {
+  display: grid; gap: 20px; padding: 24px;
+  background: var(--a-surface); border: 1px solid var(--a-line); border-radius: var(--a-radius); box-shadow: var(--a-shadow);
+}
+body.peso-admin-pages .ab-section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+body.peso-admin-pages .ab-section-head h2 { margin: 0; color: var(--a-ink); font-size: 17px; font-weight: 700; }
+body.peso-admin-pages .ab-section-head p { margin: 6px 0 0; max-width: 760px; color: var(--a-muted); font-size: 13px; line-height: 1.6; }
+body.peso-admin-pages .ab-count {
+  flex-shrink: 0; padding: 4px 12px; border-radius: 999px; background: var(--a-neutral-bg);
+  color: var(--a-ink-2); font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+
+/* stat tiles */
+body.peso-admin-pages .ab-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+body.peso-admin-pages .ab-tile {
+  display: flex; flex-direction: column; gap: 6px; padding: 16px 18px;
+  border: 1px solid var(--a-line); border-radius: 10px; background: #fbfcfe;
+}
+body.peso-admin-pages .ab-tile-label { color: var(--a-muted); font-size: 12.5px; font-weight: 600; }
+body.peso-admin-pages .ab-tile-value { color: var(--a-ink); font-size: 26px; font-weight: 700; line-height: 1.2; }
+body.peso-admin-pages .ab-tile-value small { color: var(--a-muted); font-size: 13px; font-weight: 500; }
+body.peso-admin-pages .ab-tile-value.is-empty { color: var(--a-line-strong); }
+body.peso-admin-pages .ab-tile-note { color: var(--a-muted); font-size: 12px; }
+
+/* meter: brand fill on a lighter step of the same hue */
+body.peso-admin-pages .ab-meter { display: block; height: 6px; margin-top: 4px; border-radius: 999px; background: #dbeafe; overflow: hidden; }
+body.peso-admin-pages .ab-meter > span { display: block; height: 100%; border-radius: inherit; background: var(--a-brand); }
+
+/* probation outcomes split */
+body.peso-admin-pages .ab-outcomes { display: grid; gap: 12px; margin: 0; padding: 18px; border: 1px solid var(--a-line); border-radius: 10px; }
+body.peso-admin-pages .ab-outcomes-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+body.peso-admin-pages .ab-outcomes-head h3 { margin: 0; color: var(--a-ink); font-size: 14px; font-weight: 700; }
+body.peso-admin-pages .ab-outcomes-head span { color: var(--a-muted); font-size: 12.5px; }
+body.peso-admin-pages .ab-outcomes .viz-list { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 24px; }
+body.peso-admin-pages .ab-outcomes .viz-list li { border-bottom: 0; }
+
+/* benchmark cards */
+body.peso-admin-pages .ab-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+body.peso-admin-pages .ab-card { display: grid; gap: 16px; align-content: start; padding: 18px 20px; border: 1px solid var(--a-line); border-radius: 10px; }
+body.peso-admin-pages .ab-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+body.peso-admin-pages .ab-card-head h3 { margin: 0; color: var(--a-ink); font-size: 15px; font-weight: 700; }
+body.peso-admin-pages .ab-progress { display: grid; gap: 6px; padding: 12px 14px; border-radius: 8px; background: var(--a-brand-soft); }
+body.peso-admin-pages .ab-progress-text { color: var(--a-ink-2); font-size: 12.5px; }
+body.peso-admin-pages .ab-progress-text strong { color: var(--a-ink); }
+body.peso-admin-pages .ab-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px 16px; margin: 0; }
+body.peso-admin-pages .ab-stats dt { color: var(--a-muted); font-size: 12px; font-weight: 600; }
+body.peso-admin-pages .ab-stats dd { margin: 2px 0 0; color: var(--a-ink); font-size: 20px; font-weight: 700; }
+body.peso-admin-pages .ab-stats dd small { display: block; color: var(--a-muted); font-size: 11.5px; font-weight: 500; }
+body.peso-admin-pages .ab-skills { display: grid; gap: 8px; padding-top: 14px; border-top: 1px solid #eef2f6; }
+body.peso-admin-pages .ab-skills-label { color: var(--a-muted); font-size: 12px; font-weight: 600; }
+body.peso-admin-pages .ab-skills ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+body.peso-admin-pages .ab-skills li { padding: 4px 10px; border: 1px solid #bfdbfe; border-radius: 999px; background: var(--a-brand-soft); color: #1e3a8a; font-size: 12.5px; font-weight: 600; }
+body.peso-admin-pages .ab-skills li span { color: #475569; font-weight: 500; }
+body.peso-admin-pages .ab-skills p { margin: 0; color: var(--a-muted); font-size: 12.5px; }
+
+/* empty state */
+body.peso-admin-pages .ab-empty { display: grid; justify-items: center; gap: 8px; padding: 28px 16px 8px; text-align: center; }
+body.peso-admin-pages .ab-empty-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; background: var(--a-brand-soft); color: var(--a-brand); }
+body.peso-admin-pages .ab-empty-icon svg { width: 24px; height: 24px; }
+body.peso-admin-pages .ab-empty h3 { margin: 6px 0 0; color: var(--a-ink); font-size: 16px; font-weight: 700; }
+body.peso-admin-pages .ab-empty > p { margin: 0; color: var(--a-muted); font-size: 13px; }
+body.peso-admin-pages .ab-steps {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; width: 100%; margin: 18px 0 0; padding: 0; list-style: none; text-align: left;
+}
+body.peso-admin-pages .ab-steps li { display: flex; gap: 10px; padding: 14px; border: 1px solid var(--a-line); border-radius: 10px; background: #fbfcfe; }
+body.peso-admin-pages .ab-steps li > span {
+  display: grid; place-items: center; flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--a-brand); color: #fff; font-size: 12px; font-weight: 700;
+}
+body.peso-admin-pages .ab-steps strong { display: block; margin-bottom: 2px; color: var(--a-ink); font-size: 13px; }
+body.peso-admin-pages .ab-steps div { color: var(--a-muted); font-size: 12.5px; line-height: 1.5; }
+body.peso-admin-pages .ab-note { margin: 0; color: var(--a-muted); font-size: 12px; }
+
+@media (max-width: 1100px) {
+  body.peso-admin-pages .ab-tiles, body.peso-admin-pages .ab-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.peso-admin-pages .ab-outcomes .viz-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.peso-admin-pages .ab-cards { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  body.peso-admin-pages .ab-section { padding: 18px; }
+  body.peso-admin-pages .ab-section-head { flex-direction: column; }
+  body.peso-admin-pages .ab-tiles, body.peso-admin-pages .ab-steps, body.peso-admin-pages .ab-outcomes .viz-list { grid-template-columns: 1fr; }
+}
+
+/* =====================================================================
+   Reports > Hired Records (components/hired_records.html)
+   ===================================================================== */
+body.peso-admin-pages #main-content .hr.report-panel { display: grid; gap: 20px; padding: 0; background: none; border: 0; box-shadow: none; }
+body.peso-admin-pages .hr-panel {
+  display: grid; gap: 16px; padding: 20px 24px;
+  background: var(--a-surface); border: 1px solid var(--a-line); border-radius: var(--a-radius); box-shadow: var(--a-shadow);
+}
+body.peso-admin-pages .hr-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+body.peso-admin-pages .hr-head h2 { margin: 0; color: var(--a-ink); font-size: 16px; font-weight: 700; }
+body.peso-admin-pages .hr-head-note { color: var(--a-muted); font-size: 12.5px; }
+
+/* filters */
+body.peso-admin-pages .hr-presets { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+body.peso-admin-pages .hr-filter-label { margin-right: 4px; color: var(--a-ink-2); font-size: 13px; font-weight: 600; }
+body.peso-admin-pages .hr-chip {
+  padding: 6px 14px; border: 1px solid var(--a-line-strong); border-radius: 999px; background: var(--a-surface);
+  color: var(--a-ink-2); font-size: 13px; font-weight: 600; text-decoration: none;
+}
+body.peso-admin-pages .hr-chip:hover { border-color: #94a3b8; background: #f8fafc; }
+body.peso-admin-pages .hr-chip.is-active { border-color: var(--a-brand); background: var(--a-brand-soft); color: var(--a-brand); }
+body.peso-admin-pages #main-content .hr-form { margin: 0; padding: 16px 0 0; border: 0; border-top: 1px solid #eef2f6; background: none; }
+
+/* KPI tiles */
+body.peso-admin-pages .hr-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+body.peso-admin-pages .hr-kpi {
+  display: flex; flex-direction: column; gap: 6px; padding: 18px 20px;
+  background: var(--a-surface); border: 1px solid var(--a-line); border-radius: var(--a-radius); box-shadow: var(--a-shadow);
+}
+body.peso-admin-pages .hr-kpi-label { display: flex; align-items: center; gap: 6px; color: var(--a-muted); font-size: 12.5px; font-weight: 600; }
+body.peso-admin-pages .hr-kpi-value { color: var(--a-ink); font-size: 26px; font-weight: 700; line-height: 1.2; }
+body.peso-admin-pages .hr-kpi-value.is-empty { color: var(--a-line-strong); }
+body.peso-admin-pages .hr-kpi-note { overflow: hidden; color: var(--a-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+body.peso-admin-pages .hr-info {
+  display: inline-grid; place-items: center; width: 16px; height: 16px; border: 1px solid var(--a-line-strong); border-radius: 50%;
+  color: var(--a-muted); font-size: 10px; font-weight: 700; font-style: normal; cursor: help;
+}
+
+/* breakdown bars */
+body.peso-admin-pages .hr-bars { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+body.peso-admin-pages .hr-bars li { display: grid; grid-template-columns: minmax(180px, 280px) 1fr 110px; align-items: center; gap: 16px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+body.peso-admin-pages .hr-bars li:last-child { border-bottom: 0; }
+body.peso-admin-pages .hr-bar-name { display: grid; min-width: 0; }
+body.peso-admin-pages .hr-bar-name strong { overflow: hidden; color: var(--a-ink); font-size: 13.5px; text-overflow: ellipsis; white-space: nowrap; }
+body.peso-admin-pages .hr-bar-name span, body.peso-admin-pages .hr-bar-value span { color: var(--a-muted); font-size: 12px; }
+body.peso-admin-pages .hr-bar-track { height: 10px; }
+body.peso-admin-pages .hr-bar-track span { display: block; height: 100%; min-width: 4px; border-radius: 0 4px 4px 0; background: var(--a-brand); }
+body.peso-admin-pages .hr-bar-value { display: grid; justify-items: end; }
+body.peso-admin-pages .hr-bar-value strong { color: var(--a-ink); font-size: 13.5px; }
+
+/* records */
+body.peso-admin-pages .hr-records { padding-bottom: 8px; }
+body.peso-admin-pages .hr-search { position: relative; display: block; width: min(320px, 100%); }
+body.peso-admin-pages .hr-search svg { position: absolute; top: 50%; left: 12px; width: 16px; height: 16px; color: var(--a-muted); transform: translateY(-50%); }
+body.peso-admin-pages .hr-search input {
+  width: 100%; height: 38px; padding: 0 12px 0 36px; box-sizing: border-box;
+  border: 1px solid var(--a-line-strong); border-radius: 8px; color: var(--a-ink); font: inherit; font-size: 13.5px;
+}
+body.peso-admin-pages .hr-search input:focus { border-color: var(--a-brand); box-shadow: 0 0 0 3px rgba(29, 78, 216, .15); outline: none; }
+body.peso-admin-pages #main-content .hr-records { gap: 0; padding: 0; overflow: hidden; }
+body.peso-admin-pages #main-content .hr-records .hr-head { padding: 18px 24px; }
+body.peso-admin-pages #main-content .hr-records .report-table-wrap { margin: 0; border-top: 1px solid var(--a-line); }
+body.peso-admin-pages #main-content #report-hired .hr-table { width: 100%; min-width: 720px; table-layout: auto; }
+body.peso-admin-pages #main-content #report-hired .hr-table th { width: auto; white-space: nowrap; }
+body.peso-admin-pages #main-content #report-hired .hr-table th:nth-child(1) { width: 30%; }
+body.peso-admin-pages #main-content #report-hired .hr-table th:nth-child(2) { width: 32%; }
+body.peso-admin-pages #main-content #report-hired .hr-table :is(th, td):first-child { padding-left: 24px; }
+body.peso-admin-pages #main-content #report-hired .hr-table :is(th, td):last-child { padding-right: 24px; }
+body.peso-admin-pages .hr-person { display: flex; align-items: center; gap: 10px; color: var(--a-ink); font-weight: 600; }
+body.peso-admin-pages .hr-avatar {
+  display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--a-brand-soft); color: var(--a-brand); font-size: 12px; font-weight: 700;
+}
+body.peso-admin-pages .hr-position { display: grid; }
+body.peso-admin-pages .hr-position strong { color: var(--a-ink); font-weight: 600; }
+body.peso-admin-pages .hr-position span { color: var(--a-muted); font-size: 12.5px; }
+body.peso-admin-pages .hr-time {
+  display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--a-neutral-bg);
+  color: var(--a-ink); font-size: 12.5px; font-weight: 600; white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+  body.peso-admin-pages .hr-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.peso-admin-pages .hr-bars li { grid-template-columns: 1fr 100px; }
+  body.peso-admin-pages .hr-bar-track { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (max-width: 640px) {
+  body.peso-admin-pages .hr-kpis { grid-template-columns: 1fr; }
+  body.peso-admin-pages .hr-panel { padding: 16px; }
+  body.peso-admin-pages #main-content .hr-records .hr-head { padding: 16px; }
+}
+@media print {
+  body.peso-admin-pages .hr-presets, body.peso-admin-pages .hr-form, body.peso-admin-pages .hr-search { display: none; }
+}
+
+/* =====================================================================
+   Sidebar v2: no coloured borders - active state is a soft filled pill
+   ===================================================================== */
+body.peso-admin-pages .sidebar-menu-item.active a,
+body.peso-admin-pages .sidebar-reports.active > details > summary {
+  box-shadow: none; border: 0;
+}
+body.peso-admin-pages .sidebar-menu-item.active a {
+  background: rgba(255, 255, 255, .10); color: #fff; font-weight: 600;
+}
+body.peso-admin-pages .sidebar-menu-item.active a svg { opacity: 1; }
+
+/* Reports parent: white text only; the current sub-item carries the highlight */
+body.peso-admin-pages .sidebar-reports details[open] > summary,
+body.peso-admin-pages .sidebar-reports.active > details > summary { background: transparent; color: #fff; }
+body.peso-admin-pages .sidebar-reports.active > details > summary { font-weight: 600; }
+body.peso-admin-pages .sidebar-reports summary:hover { background: rgba(255, 255, 255, .06); }
+
+/* Submenu: no guide line, indented under the Reports label */
+body.peso-admin-pages .reports-submenu { margin: 4px 0 8px 0; padding-left: 0; border-left: 0; }
+body.peso-admin-pages .reports-submenu a { padding: 9px 12px 9px 44px; border-radius: 8px; color: #94a3b8; font-size: 13px; }
+body.peso-admin-pages .reports-submenu a:hover { background: rgba(255, 255, 255, .06); color: #fff; }
+body.peso-admin-pages .reports-submenu a[aria-current="page"] { background: rgba(255, 255, 255, .10); color: #fff; font-weight: 600; }
+
+/* Sidebar scrollbar: invisible until hovered */
+body.peso-admin-pages .sidebar-menu { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+body.peso-admin-pages .sidebar-menu:hover { scrollbar-color: rgba(255, 255, 255, .18) transparent; }
+body.peso-admin-pages .sidebar-menu::-webkit-scrollbar { width: 6px; }
+body.peso-admin-pages .sidebar-menu::-webkit-scrollbar-track { background: transparent; }
+body.peso-admin-pages .sidebar-menu::-webkit-scrollbar-thumb { background: transparent; border: 0; border-radius: 999px; }
+body.peso-admin-pages .sidebar-menu:hover::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .18); }
+
+/* Logout: quiet outline */
+body.peso-admin-pages .sidebar-footer a { border-color: rgba(255, 255, 255, .10); }
+
+/* =====================================================================
+   Settings page (pages/admin_settings.html)
+   ===================================================================== */
+body.peso-admin-pages .st-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px 32px; }
+body.peso-admin-pages .st { display: grid; gap: 24px; max-width: 880px; padding: 32px; }
+body.peso-admin-pages .st-alert { padding: 12px 16px; border: 1px solid var(--a-success-line); border-radius: 10px; background: var(--a-success-bg); color: var(--a-success); font-size: 13.5px; font-weight: 600; }
+body.peso-admin-pages .st-card { padding: 24px; background: var(--a-surface); border: 1px solid var(--a-line); border-radius: var(--a-radius); box-shadow: var(--a-shadow); }
+body.peso-admin-pages .st-card-head { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; margin-bottom: 20px; border-bottom: 1px solid #eef2f6; }
+body.peso-admin-pages .st-icon { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 10px; background: var(--a-brand-soft); color: var(--a-brand); }
+body.peso-admin-pages .st-icon svg { width: 20px; height: 20px; }
+body.peso-admin-pages .st-card-head h3 { margin: 0; color: var(--a-ink); font-size: 16px; font-weight: 700; }
+body.peso-admin-pages .st-card-head p { margin: 4px 0 0; color: var(--a-muted); font-size: 13px; }
+body.peso-admin-pages .st-form { display: grid; gap: 18px; }
+body.peso-admin-pages .st-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+body.peso-admin-pages .st-span-2 { grid-column: 1 / -1; }
+body.peso-admin-pages .st-field { display: grid; gap: 6px; max-width: 520px; }
+body.peso-admin-pages .st-grid .st-field { max-width: none; }
+body.peso-admin-pages .st-label { color: var(--a-ink-2); font-size: 13px; font-weight: 600; }
+body.peso-admin-pages .st-static { padding: 10px 12px; border-radius: 8px; background: var(--a-neutral-bg); color: var(--a-ink); font-size: 14px; }
+body.peso-admin-pages .st-help { color: var(--a-muted); font-size: 12px; }
+body.peso-admin-pages .st-input {
+  width: 100%; height: 42px; padding: 0 12px; box-sizing: border-box;
+  border: 1px solid var(--a-line-strong); border-radius: 8px; background: var(--a-surface);
+  color: var(--a-ink); font: inherit; font-size: 14px;
+}
+body.peso-admin-pages .st-input:focus { border-color: var(--a-brand); box-shadow: 0 0 0 3px rgba(29, 78, 216, .15); outline: none; }
+body.peso-admin-pages .st-input[aria-invalid="true"] { border-color: var(--a-danger); }
+body.peso-admin-pages .st-password { position: relative; }
+body.peso-admin-pages .st-password .st-input { padding-right: 68px; }
+body.peso-admin-pages .st-reveal {
+  position: absolute; top: 50%; right: 6px; height: 30px; padding: 0 10px; transform: translateY(-50%);
+  border: 0; border-radius: 6px; background: transparent; color: var(--a-brand); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+body.peso-admin-pages .st-reveal:hover { background: var(--a-brand-soft); }
+body.peso-admin-pages .st-error { color: var(--a-danger); font-size: 12.5px; }
+body.peso-admin-pages .st-error-box { padding: 10px 14px; border: 1px solid var(--a-danger-line); border-radius: 8px; background: var(--a-danger-bg); color: var(--a-danger); font-size: 13px; }
+body.peso-admin-pages .st-rules { display: grid; gap: 4px; margin: 4px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--a-muted); }
+body.peso-admin-pages .st-rules li { display: flex; align-items: center; gap: 8px; }
+body.peso-admin-pages .st-rules li::before {
+  content: ""; width: 14px; height: 14px; flex-shrink: 0; box-sizing: border-box;
+  border: 1.5px solid var(--a-line-strong); border-radius: 50%;
+}
+body.peso-admin-pages .st-rules li.is-met { color: var(--a-success); }
+body.peso-admin-pages .st-rules li.is-met::before {
+  border: 0; background: var(--a-success) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12 4 4 8-8'/%3E%3C/svg%3E") center / 10px no-repeat;
+}
+body.peso-admin-pages .st-actions { display: flex; justify-content: flex-end; padding-top: 4px; }
+body.peso-admin-pages .st-btn { height: 40px; padding: 0 18px; border: 1px solid transparent; border-radius: 8px; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+body.peso-admin-pages .st-btn-primary { background: var(--a-brand); color: #fff; }
+body.peso-admin-pages .st-btn-primary:hover { background: var(--a-brand-hover); }
+
+@media (max-width: 768px) {
+  body.peso-admin-pages .st { padding: 16px; }
+  body.peso-admin-pages .st-header { padding: 16px; }
+  body.peso-admin-pages .st-grid { grid-template-columns: 1fr; }
+  body.peso-admin-pages .st-actions .st-btn { width: 100%; }
+}
+
+/* Employer list: pending registrations get a clear "Review" action */
+body.peso-admin-pages #main-content .btn-action.btn-review {
+  border-color: var(--a-brand); background: var(--a-brand); color: #fff;
+}
+body.peso-admin-pages #main-content .btn-action.btn-review:hover { background: #1e40af; border-color: #1e40af; color: #fff; }
+body.peso-admin-pages #main-content .btn-action.btn-review svg { flex: none; }
+
+/* Job Posts / Employers: the actions column always fits its buttons (no overlap) */
+@media (min-width: 1201px) {
+  body.peso-admin-pages #main-content :is(#jobTable, #employerTable) { table-layout: auto; }
+  body.peso-admin-pages #main-content :is(#jobTable, #employerTable) th:last-child,
+  body.peso-admin-pages #main-content :is(#jobTable, #employerTable) td:last-child { width: 1%; white-space: nowrap; }
+  body.peso-admin-pages #main-content #jobTable th:nth-child(1) { width: 22%; }
+  body.peso-admin-pages #main-content #jobTable th:nth-child(2) { width: 16%; }
+  body.peso-admin-pages #main-content #jobTable th:nth-child(3) { width: 13%; }
+  body.peso-admin-pages #main-content #jobTable th:nth-child(4) { width: 20%; }
+  body.peso-admin-pages #main-content #jobTable th:nth-child(5) { width: 12%; }
+  body.peso-admin-pages #main-content :is(#jobTable, #employerTable) .employer-actions-menu { display: inline-flex; flex-wrap: nowrap; }
+  body.peso-admin-pages #main-content :is(#jobTable, #employerTable) .btn-action { flex: 0 0 auto; }
+}
+/* Pending job post: Approve is the main action */
+body.peso-admin-pages #main-content .btn-action.btn-action-approve {
+  border-color: var(--a-success); background: var(--a-success); color: #fff;
+}
+body.peso-admin-pages #main-content .btn-action.btn-action-approve:hover { filter: brightness(.92); color: #fff; }
+body.peso-admin-pages #main-content .btn-action.btn-action-approve img { filter: brightness(0) invert(1); }
+body.peso-admin-pages #main-content :is(#jobTable, #employerTable) td:nth-child(2) > * { white-space: nowrap; }

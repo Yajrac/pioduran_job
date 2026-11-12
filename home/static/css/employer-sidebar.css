@@ -1,0 +1,45 @@
+/* Employer sidebar v2: grouped links, line icons, soft filled active state (no coloured border). */
+.employer-portal #employerSidebar {
+  padding: 20px 12px; background: #fff; border-right: 1px solid #e2e8f0;
+}
+.employer-portal #employerSidebar .es-menu { display: flex; flex-direction: column; gap: 2px; }
+.employer-portal #employerSidebar .es-group {
+  margin: 14px 12px 6px; color: #94a3b8; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+}
+.employer-portal #employerSidebar .es-group:first-child { margin-top: 2px; }
+
+.employer-portal #employerSidebar .sidebar-link {
+  display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 12px;
+  border: 0; border-radius: 9px; background: transparent; box-shadow: none; transform: none;
+  color: #475569; font-size: 14px; font-weight: 500; text-decoration: none;
+  transition: background-color .15s ease, color .15s ease;
+}
+.employer-portal #employerSidebar .sidebar-link::before,
+.employer-portal #employerSidebar .sidebar-link::after { display: none; }
+.employer-portal #employerSidebar .es-icon {
+  width: 19px; height: 19px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round; color: #94a3b8; transition: color .15s ease;
+}
+.employer-portal #employerSidebar .sidebar-link:hover { background: #f1f5f9; color: #0f172a; }
+.employer-portal #employerSidebar .sidebar-link:hover .es-icon { color: #475569; }
+
+.employer-portal #employerSidebar .sidebar-link.active { background: #eff6ff; color: #1d4ed8; font-weight: 600; box-shadow: none; }
+.employer-portal #employerSidebar .sidebar-link.active .es-icon { color: #1d4ed8; }
+
+.employer-portal #employerSidebar .sidebar-link:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 2px; }
+
+/* footer: quiet log out */
+.employer-portal #employerSidebar .es-footer { margin-top: 20px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+.employer-portal #employerSidebar .es-footer .sidebar-link.logout-link {
+  justify-content: flex-start; background: transparent; color: #475569; font-size: 14px;
+}
+.employer-portal #employerSidebar .es-footer .sidebar-link.logout-link:hover { background: #fef2f2; color: #b91c1c; }
+.employer-portal #employerSidebar .es-footer .sidebar-link.logout-link:hover .es-icon { color: #b91c1c; }
+
+@media (max-width: 768px) {
+  .employer-portal #employerSidebar { padding: 20px 14px max(20px, env(safe-area-inset-bottom)); }
+  .employer-portal #employerSidebar .es-group { display: block; }
+}
+
+/* Header no longer shows the company name/logo: keep the mobile menu button on the right */
+.employer-portal .employer-menu-toggle { margin-left: auto; }
