@@ -21,6 +21,10 @@ SEMAPHORE_URL = "https://api.semaphore.co/api/v4/messages"
 IPROG_URL = "https://www.iprogsms.com/api/v1/sms_messages"
 TIMEOUT = 15
 
+# Shown at the start of every SMS so people know who sent it, whatever the
+# Semaphore sender name is (e.g. the shared "SEMAPHORE" while PioJobs is pending).
+SMS_BRAND = "PESO Pio Duran Job Portal"
+
 
 @dataclass
 class SMSResult:

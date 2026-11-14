@@ -156,7 +156,7 @@ from django.db import transaction
 import random
 from django.contrib.auth.hashers import make_password
 
-from .sms import send_sms, format_ph_mobile
+from .sms import SMS_BRAND, send_sms, format_ph_mobile
 
 def normalize_skill(skill):
     """
@@ -477,7 +477,7 @@ def employee_registration(request):
         # ==========================================
 
         sms_message = (
-            f"Your employer registration "
+            f"{SMS_BRAND}: Your employer registration "
             f"verification code is {otp_code}. "
             f"This code will expire in 5 minutes."
         )
@@ -1006,7 +1006,7 @@ def applicant_registration(request):
         # ==========================================
 
         message = (
-            "PESO Pio Duran Job Portal: "
+            f"{SMS_BRAND}: "
             f"Your verification code is {otp_code}. "
             "This code will expire in 5 minutes."
         )
@@ -2392,6 +2392,7 @@ def update_applicant_status(request, id):
                 # (failures are logged; the status change still stands)
                 # ======================================
 
+                message = f"{SMS_BRAND}\n\n{message}"
                 if not send_sms(phone, message).ok:
                     messages.warning(request, "Status updated, but the SMS notification could not be sent.")
 
