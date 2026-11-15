@@ -1022,12 +1022,6 @@
                 {% if not request.user.is_authenticated %}
 
                     <li>
-                        <a href="{% url 'browse-job' %}" class="{% if request.resolver_match.url_name == 'browse-job' %}active{% endif %}">
-                            <img class="nav-item-icon" src="{% static 'images/nav/search.png' %}" alt="" width="20" height="20"> Browse Jobs
-                        </a>
-                    </li>
-
-                    <li>
                         <a href="{% url 'applicant-registration' %}" class="{% if request.resolver_match.url_name == 'applicant-registration' or request.resolver_match.url_name == 'verify-applicant-registration' %}active{% endif %}" {% if request.resolver_match.url_name == 'applicant-registration' or request.resolver_match.url_name == 'verify-applicant-registration' %}aria-current="page"{% endif %}>
                             <img class="nav-item-icon" src="{% static 'images/nav/applicant.png' %}" alt="" width="20" height="20"> Register Applicant
                         </a>

@@ -158,3 +158,29 @@
   .bj-section-head { flex-direction: column; align-items: flex-start; }
 }
 @media (prefers-reduced-motion: reduce) { .bj * { transition: none !important; } }
+
+/* ---------- mobile fit (v3) ----------
+   Grid tracks default to their content's min width, so the swipeable
+   "Recommended" row made the whole page wider than the phone and the
+   browser zoomed out. Only the row itself may scroll sideways. */
+.bj-body { grid-template-columns: minmax(0, 1fr); }
+.bj-recs, .bj-results, .bj-filters { min-width: 0; }
+.bj-recs-row { scrollbar-width: thin; overscroll-behavior-x: contain; }
+.bj-rec { min-width: 0; }
+.bj-rec-title, .bj-rec-company, .bj-rec-skills { overflow-wrap: anywhere; }
+.bj-card-text, .bj-company, .bj-card h3 { overflow-wrap: anywhere; }
+
+@media (max-width: 560px) {
+  .bj-wrap { width: calc(100% - 32px); }
+  .bj-hero { padding: 24px 0 20px; }
+  .bj-hero h1 { font-size: 26px; }
+  .bj-lead { margin: 6px 0 16px; font-size: 14.5px; }
+  .bj-search input { height: 50px; font-size: 15px; border-radius: 12px; }
+  .bj-body { gap: 20px; padding-top: 20px; }
+  /* one card and a peek of the next */
+  .bj-recs-row { grid-auto-columns: 80%; gap: 12px; margin: 0 -16px; padding: 0 16px 8px; scroll-padding-left: 16px; }
+  .bj-section-head { gap: 6px; }
+  .bj-results-head h2 { font-size: 16px; }
+  .bj-sort .bj-select { min-width: 0; flex: 1; }
+  .bj-tags li { font-size: 12px; }
+}
