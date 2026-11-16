@@ -10,8 +10,14 @@ from .assessment_views import review_applicant
 from .password_views import AccountPasswordChangeView
 from .report_views import employer_reports
 from . import document_views
+from . import password_reset
 
 urlpatterns = [
+    path('forgot-password/', password_reset.forgot_password, name='forgot-password'),
+    path('forgot-password/verify/', password_reset.verify_code, name='forgot-password-verify'),
+    path('forgot-password/resend/', password_reset.resend_code, name='forgot-password-resend'),
+    path('forgot-password/account/', password_reset.choose_account, name='forgot-password-account'),
+    path('forgot-password/new/', password_reset.new_password, name='forgot-password-new'),
     path('applicant/documents/<str:kind>/', document_views.my_document, name='my-document'),
     path('applications/<int:pk>/documents/<str:kind>/', document_views.application_document, name='application-document'),
     path('employer/reports/', employer_reports, name='employer-reports'),

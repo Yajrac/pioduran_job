@@ -238,8 +238,7 @@ def home_view(request):
     # ==========================================
 
     featured_jobs = (
-        JobPost.objects
-        .filter(status="approved")
+        JobPost.objects.public()
         .annotate(
             application_count=Count("applications")
         )
@@ -256,9 +255,7 @@ def home_view(request):
 
     registered_applicants = Applicant.objects.count()
 
-    active_job_vacancies = JobPost.objects.filter(
-        status="approved"
-    ).count()
+    active_job_vacancies = JobPost.objects.public().count()
 
     successful_placements = JobApplication.objects.filter(
         status__in=["accepted", "hired"]
@@ -1463,9 +1460,7 @@ def browse_job(request):
     # APPROVED JOBS
     # =========================================================
 
-    job = list(JobPost.objects.filter(
-        status="approved"
-    ).select_related("employer").order_by("-created_at"))
+    job = list(JobPost.objects.public().select_related("employer").order_by("-created_at"))
 
     # Filter options with counts, and days left before each deadline
     from collections import Counter
@@ -1713,7 +1708,7 @@ def job_details(request, id):
     user = request.user
     is_owner = user.is_authenticated and job.employer.employer_id == user.pk
     is_admin = user.is_authenticated and (user.role == "admin" or user.is_superuser)
-    if job.status != "approved" and not (is_owner or is_admin):
+    if not job.is_public and not (is_owner or is_admin):
         from django.http import Http404
         raise Http404()
 
@@ -1723,11 +1718,14 @@ def job_details(request, id):
 
 def company_profile(request, id):
     company = get_object_or_404(Employer, id=id)
+    user = request.user
+    is_owner = user.is_authenticated and company.employer_id == user.pk
+    is_admin = user.is_authenticated and (user.role == "admin" or user.is_superuser)
+    if not (company.approval_status == "approved" and company.is_active) and not (is_owner or is_admin):
+        from django.http import Http404
+        raise Http404()
 
-    jobs = JobPost.objects.filter(
-        employer=company,
-        status="approved"
-    )
+    jobs = JobPost.objects.public().filter(employer=company)
 
     return render(request, "pages/company_profile.html", {
         "company": company,
@@ -1817,7 +1815,7 @@ def apply_job(request, id):
     # ONLY APPROVED JOBS CAN RECEIVE APPLICATIONS
     # =========================================================
 
-    if job.status != "approved" or job.deadline < timezone.localdate():
+    if not job.is_public or job.deadline < timezone.localdate():
 
         messages.error(
             request,
@@ -2490,6 +2488,8 @@ def edit_applicant_profile(request):
             errors["phone_number"] = "Mobile number is required."
         elif not phone_number.isdigit() or len(phone_number) != 11 or not phone_number.startswith("09"):
             errors["phone_number"] = "Enter a valid 11-digit Philippine mobile number starting with 09."
+        elif Applicant.objects.filter(phone_number=phone_number).exclude(pk=applicant.pk).exists():
+            errors["phone_number"] = "This mobile number is already used by another account."
 
         errors.update(applicant_field_errors(request.POST))
         resume_result = inspect_resume(resume)

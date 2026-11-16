@@ -56,7 +56,17 @@ class EmployerRegistrationOTP(models.Model):
 
 
 
+class JobPostQuerySet(models.QuerySet):
+    def public(self):
+        """Jobs the public may see and apply to: the post is approved AND its
+        employer is approved and not suspended. Suspending an employer hides
+        their jobs; activating them again brings the jobs back."""
+        return self.filter(status="approved", employer__approval_status="approved", employer__is_active=True)
+
+
 class JobPost(models.Model):
+    objects = JobPostQuerySet.as_manager()
+
     STATUS_CHOICES = (
         ("pending", "Pending Review"),
         ("approved", "Approved"),
@@ -133,6 +143,11 @@ class JobPost(models.Model):
             return "Salary not specified"
 
         return f"₱{self.salary:,.2f}"
+
+    @property
+    def is_public(self):
+        return (self.status == "approved" and self.employer.approval_status == "approved"
+                and self.employer.is_active)
 
     def __str__(self):
         return f"{self.title} ({self.status})"

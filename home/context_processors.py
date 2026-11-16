@@ -6,7 +6,8 @@ def demo_sms(request):
     from django.conf import settings
     if not (settings.DEBUG and getattr(settings, "OTP_DEV_MODE", False)):
         return {}
-    if not request.path.rstrip("/").endswith("/registration/verify"):
+    path = request.path.rstrip("/")
+    if not (path.endswith("/registration/verify") or path.endswith("/forgot-password/verify")):
         return {}
     return {"demo_sms": request.session.get("demo_sms")}
 

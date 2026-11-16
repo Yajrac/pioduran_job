@@ -60,7 +60,7 @@ def demand_ranking(date_from=None, date_to=None):
 
     open_jobs = {
         item["category"]: item
-        for item in JobPost.objects.filter(status="approved", deadline__gte=timezone.localdate())
+        for item in JobPost.objects.public().filter(deadline__gte=timezone.localdate())
         .values("category").annotate(jobs=Count("pk"), vacancies=Sum("vacancies"))
     }
 
