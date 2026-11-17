@@ -5,7 +5,7 @@
 {% block main_class %}portal-main{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/landing.css' %}">
-<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+<link rel="stylesheet" href="{% static 'css/registration.css' %}?v=icon3">
 {% endblock %}
 
 {% block content %}
@@ -538,6 +538,21 @@
 .password-toggle svg {
     width: 19px;
     height: 19px;
+}
+
+/* The eye button is as tall as the field, so the icon always sits in the
+   vertical middle whatever global button sizes apply. */
+.password-wrapper .password-toggle,
+.password-wrapper .password-toggle:hover,
+.password-wrapper .password-toggle:active,
+.password-wrapper .password-toggle:focus {
+    top: 0;
+    bottom: 0;
+    right: 4px;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    margin: 0;
 }
 
 
@@ -1269,39 +1284,7 @@
                             >
 
 
-                            <button
-                                type="button"
-                                class="password-toggle"
-                                id="passwordToggle"
-                                onclick="togglePassword()"
-                                aria-label="Show password"
-                                title="Show password"
-                            >
-
-                                <svg
-                                    id="eyeIcon"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                >
-
-                                    <path
-                                        d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"
-                                    />
-
-                                    <circle
-                                        cx="12"
-                                        cy="12"
-                                        r="3"
-                                    />
-
-                                </svg>
-
-                            </button>
+                            <button type="button" class="password-toggle" data-toggle-password="password" aria-label="Show password" title="Show password" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
 
                         </div>
 
@@ -1409,7 +1392,10 @@
 
                     <div class="field-group">
                         <label for="confirm_password">Confirm Password</label>
-                        <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" placeholder="Retype your password" aria-describedby="confirm_password-feedback" required>
+                        <div class="password-wrapper">
+                            <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" placeholder="Retype your password" aria-describedby="confirm_password-feedback" required>
+                            <button type="button" class="password-toggle" data-toggle-password="confirm_password" aria-label="Show password" title="Show password" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        </div>
                         <p class="field-feedback" id="confirm_password-feedback" aria-live="polite">{{ field_errors.confirm_password }}</p>
                     </div>
                 </div>
@@ -2013,94 +1999,7 @@ function renderStepUI() {
 }
 
 
-/* =========================================================
-   PASSWORD SHOW / HIDE
-========================================================= */
-
-function togglePassword() {
-
-    const passwordInput =
-        document.getElementById("password");
-
-    const passwordToggle =
-        document.getElementById("passwordToggle");
-
-    const eyeIcon =
-        document.getElementById("eyeIcon");
-
-
-    if (passwordInput.type === "password") {
-
-        passwordInput.type = "text";
-
-
-        passwordToggle.setAttribute(
-            "aria-label",
-            "Hide password"
-        );
-
-
-        passwordToggle.setAttribute(
-            "title",
-            "Hide password"
-        );
-
-
-        eyeIcon.innerHTML = `
-
-            <path
-                d="M3 3l18 18"
-            />
-
-            <path
-                d="M10.6 10.6a2 2 0 0 0 2.8 2.8"
-            />
-
-            <path
-                d="M9.9 4.2A10.8 10.8 0 0 1 12 4c7 0 10 8 10 8a17.5 17.5 0 0 1-3.2 4.5"
-            />
-
-            <path
-                d="M6.6 6.6C3.7 8.4 2 12 2 12s3.5 8 10 8a10.7 10.7 0 0 0 4.4-.9"
-            />
-
-        `;
-
-    }
-
-    else {
-
-        passwordInput.type = "password";
-
-
-        passwordToggle.setAttribute(
-            "aria-label",
-            "Show password"
-        );
-
-
-        passwordToggle.setAttribute(
-            "title",
-            "Show password"
-        );
-
-
-        eyeIcon.innerHTML = `
-
-            <path
-                d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"
-            />
-
-            <circle
-                cx="12"
-                cy="12"
-                r="3"
-            />
-
-        `;
-    }
-}
-
+/* Password show / hide: js/password-toggle.js (data-toggle-password buttons) */
 
 /* =========================================================
    PASSWORD VALIDATION
@@ -2592,5 +2491,6 @@ renderStepUI();
 })();
 </script>
 <script src="{% static 'js/skills-input.js' %}"></script>
-<script src="{% static 'js/email-availability.js' %}" data-email-url="{% url 'check-registration-email' %}"></script>
+<script src="{% static 'js/password-toggle.js' %}?v=2"></script>
+<script src="{% static 'js/email-availability.js' %}?v=2" data-email-url="{% url 'check-registration-email' %}"></script>
 {% endblock %}

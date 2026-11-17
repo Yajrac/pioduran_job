@@ -829,7 +829,7 @@
                             <td>{{ job.title|default:"—" }}</td>
                             <td>{{ job.employer.company_name|default:"—" }}</td>
                             <td>{{ job.location|default:"—" }}</td>
-                            <td>{{ job.salary|default:"—" }}</td>
+                            <td>{% if job.salary %}{{ job.salary_display }}{% else %}—{% endif %}</td>
                             <td>
                                 {% with status=job.status|lower %}
                                     {% if status == "approved" %}
@@ -895,7 +895,7 @@
     <div class="report-panel" id="report-top-jobs">
         <div class="report-table-heading"><h2 class="report-section-title">Most Applied Job Posts</h2></div>
         <div class="report-table-wrap"><table class="report-table"><thead><tr><th>Rank</th><th>Job Title</th><th>Employer</th><th>Category</th><th>Applications</th></tr></thead><tbody>
-        {% for job in top_jobs %}<tr><td>#{{ forloop.counter }}</td><td><a href="{% url 'view-job' job.pk %}">{{ job.title }}</a></td><td>{{ job.employer.company_name }}</td><td>{{ job.get_category_display }}</td><td><strong>{{ job.application_count }}</strong></td></tr>
+        {% for job in top_jobs %}<tr><td>#{{ forloop.counter }}</td><td><a href="{% url 'view-job' job.pk %}">{{ job.title }}</a></td><td>{{ job.employer.company_name }}</td><td>{{ job.category_label }}</td><td><strong>{{ job.application_count }}</strong></td></tr>
         {% empty %}<tr><td colspan="5" class="report-empty">No applications found for the selected date range.</td></tr>{% endfor %}
         </tbody></table></div>
     </div>

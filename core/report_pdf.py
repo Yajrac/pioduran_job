@@ -39,7 +39,7 @@ def download_demand_report(context):
                      f"{row['success_rate']}%" if row["success_rate"] is not None else "No finished applications",
                      f"{trend_text[row['trend']]} ({row['previous']} to {row['recent']})", row["open_vacancies"]]
                     for row in context["demand"]]
-    job_rows = [[n, job.title, job.employer.company_name, job.get_category_display(), job.application_count]
+    job_rows = [[n, job.title, job.employer.company_name, job.category_label, job.application_count]
                 for n, job in enumerate(context["top_jobs"], 1)]
     story = [Paragraph("PESO Pio Duran", styles["Title"]), Paragraph("Job Demand Ranking", styles["Heading2"]),
              Paragraph(f"Application date range: {start} to {end}<br/>Generated: {context['report_date']}", styles["Normal"]),
@@ -87,7 +87,7 @@ def download_report(key, context):
             days = getattr(item, 'time_to_hire_days', None)
             row = [n, ' '.join(filter(None, [person.first_name, person.middle_name, person.last_name])), item.job.employer.company_name, item.job.title, date(item.applied_at), date(item.hired_at), days if days is not None else 'Not available']
         else:
-            row = [n, item.title, item.employer.company_name, item.location, f"{item.salary:,.2f}" if item.salary is not None else "Not specified", item.get_status_display(), date(item.created_at)]
+            row = [n, item.title, item.employer.company_name, item.location, f"{item.salary:,.2f} / {item.salary_period or 'month'}" if item.salary is not None else "Not specified", item.get_status_display(), date(item.created_at)]
         records.append(row)
 
     output = BytesIO()

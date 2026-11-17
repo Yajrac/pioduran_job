@@ -62,10 +62,24 @@
 .registration-employer .checklist-item { font-size:11px; line-height:1.6; gap:8px; }
 .portal-registration .password-wrapper { position:relative; width:100%; }
 .portal-registration .password-wrapper input { width:100%; min-width:0; }
-.portal-registration .password-wrapper .toggle-password-btn,.portal-registration .password-wrapper .password-toggle { position:absolute; right:10px; top:50%; transform:translateY(-50%); }
+/* Eye button: full field height, icon centred by flex, never moved by transforms
+   (top:50% + translateY broke on hover when other rules reset `top`). */
+.portal-registration .password-wrapper :is(.toggle-password-btn,.password-toggle),
+.portal-registration .password-wrapper :is(.toggle-password-btn,.password-toggle):is(:hover,:active,:focus,:focus-visible) {
+  position:absolute; top:0; bottom:0; right:4px; width:40px; height:auto; min-height:0; max-height:none; margin:0; padding:0;
+  display:flex; align-items:center; justify-content:center; transform:none; translate:none; box-shadow:none;
+}
+.portal-registration .password-wrapper :is(.toggle-password-btn,.password-toggle) { background:transparent; border:0; border-radius:8px; }
+.portal-registration .password-wrapper :is(.toggle-password-btn,.password-toggle):hover { background:transparent; color:#1d4ed8; }
+.portal-registration .password-wrapper :is(.toggle-password-btn,.password-toggle):focus-visible { outline:2px solid #2563eb; outline-offset:-4px; }
 .portal-registration .field-feedback { display:block; width:100%; overflow-wrap:anywhere; }
 .portal-registration .field-feedback:empty { display:none; }
 .registration-submit-spinner { display:inline-block; width:18px; height:18px; flex-shrink:0; border:2px solid #ffffff55; border-top-color:currentColor; border-radius:50%; animation:registration-submit-spin .7s linear infinite; }
 .btn-flow-submit:disabled { opacity:.8; cursor:wait; }
 @keyframes registration-submit-spin { to { transform:rotate(360deg); } }
 @media(prefers-reduced-motion:reduce) { .registration-submit-spinner { animation:none; } }
+/* Same plain eye icon as the Employer form: no box/outline when clicked or hovered.
+   (Keyboard users still get the focus-visible ring above.) */
+.portal-registration .password-wrapper :is(.toggle-password-btn,.password-toggle):is(:focus,:active,:hover):not(:focus-visible) {
+  outline:none; border:0; background:transparent; box-shadow:none;
+}

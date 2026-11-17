@@ -102,6 +102,16 @@ class JobPost(models.Model):
         blank=True
     )
 
+    # Free-text category when the employer picks "Other" (e.g. "Event Staff").
+    category_other = models.CharField(max_length=60, blank=True, default="")
+
+    SALARY_PERIODS = (
+        ("month", "per month"),
+        ("day", "per day"),
+        ("hour", "per hour"),
+    )
+    salary_period = models.CharField(max_length=10, choices=SALARY_PERIODS, default="month")
+
     location = models.CharField(max_length=255)
 
     category = models.CharField(
@@ -142,7 +152,21 @@ class JobPost(models.Model):
         if self.salary is None:
             return "Salary not specified"
 
-        return f"₱{self.salary:,.2f}"
+        return f"₱{self.salary:,.2f} / {self.salary_period or 'month'}"
+
+    @property
+    def salary_monthly_estimate(self):
+        """For sorting by salary across periods (26 work days, 8 hours a day)."""
+        if self.salary is None:
+            return 0
+        return float(self.salary) * {"day": 26, "hour": 208}.get(self.salary_period, 1)
+
+    @property
+    def category_label(self):
+        """The category name to show: the employer's own text for "Other"."""
+        if self.category == "other" and self.category_other:
+            return self.category_other
+        return self.get_category_display()
 
     @property
     def is_public(self):

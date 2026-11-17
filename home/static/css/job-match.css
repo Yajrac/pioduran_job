@@ -33,3 +33,6 @@
 .jm-checks { display: grid; gap: 4px; margin: 0; padding-left: 16px; color: #334155; font-size: 12px; line-height: 1.45; }
 .jm-checks .is-above strong { color: #15803d; }
 .jm-checks .is-below strong { color: #b45309; }
+/* "4 of 4 required skills" headline (the 0-100 score is no longer shown) */
+.jm-score.jm-skills strong { font-size: 18px; }
+.jm-score.jm-skills span { font-size: 13px; }

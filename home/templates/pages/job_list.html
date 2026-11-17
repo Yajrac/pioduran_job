@@ -4,6 +4,13 @@
 {% block content %}
 
 <style>
+    .job-saved { display: flex; align-items: flex-start; gap: 12px; margin: 0 0 20px; padding: 14px 16px; border: 1px solid #bbf7d0; border-radius: 12px; background: #ecfdf3; color: #14532d; }
+    .job-saved svg { width: 22px; height: 22px; flex-shrink: 0; color: #15803d; }
+    .job-saved div { display: grid; gap: 2px; }
+    .job-saved strong { font-size: 14.5px; }
+    .job-saved span { font-size: 13.5px; line-height: 1.5; }
+    .job-saved.is-info { border-color: #fde68a; background: #fffbeb; color: #78350f; }
+    .job-saved.is-info svg { color: #b45309; }
     /* =========================================================
        MODERN UI VARIABLES
     ========================================================= */
@@ -426,6 +433,13 @@
     <!-- =====================================================
          PAGE HEADER
     ====================================================== -->
+
+    {% for message in messages %}{% if 'job_saved' in message.tags %}
+    <div class="job-saved {% if message.level_tag == 'info' %}is-info{% endif %}" role="status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% if message.level_tag == 'info' %}<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>{% else %}<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>{% endif %}</svg>
+        <div><strong>{% if message.level_tag == 'info' %}Waiting for re-approval{% else %}Submitted{% endif %}</strong><span>{{ message }}</span></div>
+    </div>
+    {% endif %}{% endfor %}
 
     <div class="page-header">
 

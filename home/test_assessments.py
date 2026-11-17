@@ -75,3 +75,42 @@ class AssessmentTests(TestCase):
         response = self.client.get(reverse('reports'), {'section':'assessments'})
         self.assertEqual(response.context['assessment_summary']['not_evaluated'], 1)
         self.assertEqual(response.context['assessment_summary']['failed'], 0)
+
+
+class OutcomeDateTests(TestCase):
+    def setUp(self):
+        from datetime import datetime, time, timedelta
+        from django.utils import timezone
+        self.owner = User.objects.create_user(username='owner2', role='employer')
+        employer = Employer.objects.create(employer=self.owner, company_name='Co', business_permit_no='P9', contact_no='09123450000')
+        user = User.objects.create_user(username='worker')
+        applicant = Applicant.objects.create(user=user, email='w@example.com', skills='Sales')
+        job = JobPost.objects.create(employer=employer, title='Clerk', required_skills='Sales', deadline=date(2030, 1, 1))
+        self.hired_on = timezone.localdate() - timedelta(days=100)
+        self.application = JobApplication.objects.create(
+            job=job, applicant=applicant, status='hired',
+            hired_at=timezone.make_aware(datetime.combine(self.hired_on, time(9))))
+        self.url = reverse('review-applicant', args=[self.application.pk])
+        self.client.force_login(self.owner)
+        self.timedelta = timedelta
+
+    def post(self, start, evaluated=None, outcome='passed'):
+        return self.client.post(self.url, {'section': 'outcome', 'outcome': outcome,
+                                           'started_on': start.isoformat() if start else '',
+                                           'evaluated_on': evaluated.isoformat() if evaluated else '',
+                                           'outcome_notes': 'Met the targets.'})
+
+    def test_start_cannot_be_before_the_hire_date(self):
+        response = self.post(self.hired_on - self.timedelta(days=1), self.hired_on + self.timedelta(days=60))
+        self.assertContains(response, 'cannot be earlier than the hire date')
+        self.assertFalse(ApplicantAssessment.objects.filter(outcome='passed').exists())
+
+    def test_valid_dates_are_saved(self):
+        response = self.post(self.hired_on + self.timedelta(days=3), self.hired_on + self.timedelta(days=93))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(ApplicantAssessment.objects.get().outcome, 'passed')
+
+    def test_calendar_limits_are_set(self):
+        page = self.client.get(self.url)
+        self.assertContains(page, f'min="{self.hired_on.isoformat()}"')
+        self.assertNotContains(page, 'Probation length')

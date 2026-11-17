@@ -26,6 +26,11 @@ def employer_field_errors(data):
         errors['confirm_password'] = 'Passwords do not match.'
     if email and User.objects.filter(email__iexact=email).exists():
         errors['email'] = 'Email address is already registered.'
+    if email and 'email' not in errors:
+        from .email_checks import email_domain_error
+        domain_error = email_domain_error(email)
+        if domain_error:
+            errors['email'] = domain_error
     for field, label in [('company_name', 'Company name'), ('business_permit_no', 'Business permit number'), ('contact_no', 'Mobile number')]:
         value = data.get(field, '').strip()
         if value and Employer.objects.filter(**{field + '__iexact': value}).exists():

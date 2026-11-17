@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/job-match.css' %}?v=1">
+<link rel="stylesheet" href="{% static 'css/job-match.css' %}?v=2">
 <style>
     /* --- Container & Layout --- */
     .applicants-container {
@@ -216,10 +216,10 @@
         <div><label for="candidateJob">Job position</label><select id="candidateJob" name="job"><option value="">All positions</option>{% for job in filter_jobs %}<option value="{{ job.pk }}" {% if filter_job == job.pk|stringformat:'s' %}selected{% endif %}>{{ job.title }}</option>{% endfor %}</select></div>
         <div><label for="candidateStatus">Status</label><select id="candidateStatus" name="status"><option value="">All statuses</option>{% for value,label in status_choices %}<option value="{{ value }}" {% if filter_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
         <div><label for="candidateExperience">Work experience</label><select id="candidateExperience" name="experience"><option value="">All applicants</option><option value="relevant" {% if filter_experience == 'relevant' %}selected{% endif %}>Relevant experience</option><option value="any" {% if filter_experience == 'any' %}selected{% endif %}>Has experience</option><option value="none" {% if filter_experience == 'none' %}selected{% endif %}>No experience added</option></select></div>
-        <div><label for="candidateSort">Sort by</label><select id="candidateSort" name="sort"><option value="match" {% if filter_sort == 'match' %}selected{% endif %}>Highest Match</option><option value="likelihood" {% if filter_sort == 'likelihood' %}selected{% endif %}>Likelihood of Success</option><option value="recent" {% if filter_sort == 'recent' %}selected{% endif %}>Newest Application</option></select></div>
+        <div><label for="candidateSort">Sort by</label><select id="candidateSort" name="sort"><option value="match" {% if filter_sort == 'match' %}selected{% endif %}>Most skills matched</option><option value="likelihood" {% if filter_sort == 'likelihood' %}selected{% endif %}>Likelihood of Success</option><option value="recent" {% if filter_sort == 'recent' %}selected{% endif %}>Newest Application</option></select></div>
         <button type="submit">Apply Filters</button><a href="{% url 'applicants' %}">Reset</a>
     </form>
-    <div class="candidate-results-bar"><strong role="status">{{ result_count }} application{{ result_count|pluralize }} found</strong><details><summary>How matching works</summary><p>Matches use confirmed skills against the job's required skills. Experience contributes 20 points only when required. Compare applicants for the same position. Scores do not predict hiring success.</p></details></div>
+    <div class="candidate-results-bar"><strong role="status">{{ result_count }} application{{ result_count|pluralize }} found</strong><details><summary>How matching works</summary><p>Each applicant's confirmed skills are compared with the job's required skills. When the job requires work experience, applicants with related experience are listed higher. Compare applicants for the same position. This helps you review; it does not decide who gets hired.</p></details></div>
     <!-- MAIN DATA INTERFACE PANEL -->
     <div class="table-responsive">
         <table class="applicants-table">
@@ -256,11 +256,11 @@
                         <td class="candidate-score-cell">
                             <div class="jm">
                                 {% if application.match.score != None %}
-                                <div class="jm-score {% if application.match.score >= 70 %}is-high{% elif application.match.score >= 40 %}is-mid{% else %}is-low{% endif %}">
-                                    <strong>{{ application.match.score|floatformat:'-1' }}</strong><span>/100 match</span>
+                                {% widthratio application.match.matched|length application.match.required|length 100 as coverage %}
+                                <div class="jm-score jm-skills {% if coverage|add:0 >= 70 %}is-high{% elif coverage|add:0 >= 40 %}is-mid{% else %}is-low{% endif %}">
+                                    <strong>{{ application.match.matched|length }} of {{ application.match.required|length }}</strong><span>required skill{{ application.match.required|length|pluralize }}</span>
                                 </div>
-                                <span class="jm-meter" aria-hidden="true"><span style="width:{{ application.match.score|floatformat:'0' }}%"></span></span>
-                                <p class="jm-cov">{{ application.match.matched|length }} of {{ application.match.required|length }} required skill{{ application.match.required|length|pluralize }}</p>
+                                <span class="jm-meter" aria-hidden="true"><span style="width:{{ coverage }}%"></span></span>
                                 {% else %}
                                 <div class="jm-score is-none"><strong>Not scored</strong></div>
                                 <p class="jm-cov">Add required skills to this job to score applicants.</p>
@@ -285,7 +285,6 @@
                                         {% if application.match.score != None %}
                                         <p><strong>Matched skills:</strong> {{ application.match.matched|join:', '|default:'None' }}</p>
                                         {% if application.match.missing %}<p><strong>Missing:</strong> {{ application.match.missing|join:', ' }}</p>{% endif %}
-                                        <p>Skills: {{ application.match.skills_points }} points{% if application.job.experience_required %} &middot; Experience: {{ application.match.experience_points }} points{% endif %}</p>
                                         {% if application.match.experience %}<p><strong>Experience:</strong> {{ application.match.experience|join:', ' }}</p>{% endif %}
                                         {% else %}
                                         {% if application.matched_skills %}<p><strong>Matched skills:</strong> {{ application.matched_skills|join:', ' }}</p>{% endif %}

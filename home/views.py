@@ -62,7 +62,10 @@ def registration_email_check(request):
     if not error and (User.objects.filter(email__iexact=email).exists()
                       or Applicant.objects.filter(email__iexact=email).exists()):
         error = 'Email address is already registered.'
-    response = JsonResponse({'available': not bool(error), 'error': error})
+    from .email_checks import email_domain_error, suggest_email
+    if not error:
+        error = email_domain_error(email)
+    response = JsonResponse({'available': not bool(error), 'error': error, 'suggestion': suggest_email(email)})
     response['Cache-Control'] = 'no-store'
     return response
 
@@ -98,6 +101,13 @@ def otp_attempts_exceeded(request, key):
 JOB_TYPES = {"full_time", "part_time", "contract", "internship", "temporary"}
 
 
+def _category_other(data):
+    """The typed category for "Other", tidied; blank for every other category."""
+    if data.get("category") != "other":
+        return ""
+    return re.sub(r"\s+", " ", data.get("category_other", "")).strip()[:60]
+
+
 def job_form_errors(data):
     """Validate the core job post fields; returns a list of messages."""
     errors = []
@@ -112,6 +122,12 @@ def job_form_errors(data):
     from employer.job_categories import CATEGORY_KEYS
     if data.get("category") not in CATEGORY_KEYS:
         errors.append("Choose a job category.")
+    elif data.get("category") == "other":
+        other = re.sub(r"\s+", " ", data.get("category_other", "")).strip()
+        if not other:
+            errors.append("Type the job category when you choose Other.")
+        elif len(other) > 60 or not any(c.isalpha() for c in other):
+            errors.append("The job category must contain letters and be at most 60 characters.")
     salary = data.get("salary", "").strip().replace(",", "")
     if salary:
         try:
@@ -120,6 +136,8 @@ def job_form_errors(data):
                 raise InvalidOperation
         except InvalidOperation:
             errors.append("Salary must be a number from 0 to 99,999,999.99.")
+    if (data.get("salary_period") or "month") not in {"month", "day", "hour"}:
+        errors.append("Choose whether the salary is per month, per day, or per hour.")
     try:
         deadline = datetime.strptime(data.get("deadline", ""), "%Y-%m-%d").date()
         if deadline < timezone.localdate():
@@ -856,6 +874,15 @@ def applicant_registration(request):
                     )
                 }
             )
+
+        # ==========================================
+        # CHECK THAT THE EMAIL DOMAIN EXISTS
+        # ==========================================
+
+        from .email_checks import email_domain_error
+        domain_error = email_domain_error(email) if email else ""
+        if domain_error:
+            return render(request, "pages/register_applicant.html", {"error": domain_error})
 
         # ==========================================
         # CHECK PHONE NUMBER
@@ -1610,6 +1637,8 @@ def post_job(request):
             qualifications=request.POST.get("qualifications"),
             responsibilities=request.POST.get("responsibilities", ""),
             salary=salary,
+            salary_period=request.POST.get("salary_period") or "month",
+            category_other=_category_other(request.POST),
             location=request.POST.get("location"),
             category=request.POST.get("category"),
             job_type=request.POST.get("job_type"),
@@ -1617,6 +1646,12 @@ def post_job(request):
             deadline=request.POST.get("deadline"),
         )
 
+        messages.success(
+            request,
+            f"\u201c{request.POST.get('title', '').strip()}\u201d was submitted. It is waiting for PESO approval "
+            "and will appear on Browse Jobs once approved.",
+            extra_tags="job_saved",
+        )
         return redirect("job-list")
 
     return render(
@@ -1657,6 +1692,8 @@ def update_job(request, id):
         job.qualifications = request.POST.get("qualifications")
         job.responsibilities = request.POST.get("responsibilities", "")
         job.salary = request.POST.get("salary", "").strip().replace(",", "") or None
+        job.salary_period = request.POST.get("salary_period") or "month"
+        job.category_other = _category_other(request.POST)
         job.location = request.POST.get("location")
         job.category = request.POST.get("category")
         job.job_type = request.POST.get("job_type")
@@ -1672,7 +1709,11 @@ def update_job(request, id):
         job.save()
 
         if was_published:
-            messages.info(request, "Job updated. It will be visible again after PESO re-approves it.")
+            messages.info(request, "Changes saved. The job is hidden until PESO approves it again.",
+                          extra_tags="job_saved")
+        else:
+            messages.success(request, "Changes saved. The job is still waiting for PESO approval.",
+                             extra_tags="job_saved")
 
         return redirect("job-list")
 

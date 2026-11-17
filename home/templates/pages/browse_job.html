@@ -113,10 +113,10 @@
                         data-company="{{ i.employer.company_name|lower }}"
                         data-category="{{ i.category }}"
                         data-type="{{ i.job_type }}"
-                        data-salary="{{ i.salary|default_if_none:'0' }}"
+                        data-salary="{{ i.salary_monthly_estimate }}"
                         data-posted="{{ i.created_at|date:'U' }}"
                         data-days-left="{% if i.days_left != None %}{{ i.days_left }}{% else %}99999{% endif %}"
-                        data-searchable="{{ i.title|lower }} {{ i.employer.company_name|lower }} {{ i.location|lower }} {{ i.get_category_display|lower }} {{ i.required_skills|lower }} {{ i.description|lower }} {{ i.qualifications|lower }}">
+                        data-searchable="{{ i.title|lower }} {{ i.employer.company_name|lower }} {{ i.location|lower }} {{ i.category_label|lower }} {{ i.required_skills|lower }} {{ i.description|lower }} {{ i.qualifications|lower }}">
                         <div class="bj-card-main">
                             {% if i.employer.company_logo %}
                             <img class="bj-logo" src="{{ i.employer.company_logo.url }}" alt="" width="52" height="52" loading="lazy">
@@ -127,9 +127,9 @@
                                 <h3><a href="{% url 'job_details' i.id %}">{{ i.title }}</a></h3>
                                 <p class="bj-company">{{ i.employer.company_name }}{% if i.location %} &middot; {{ i.location }}{% endif %}</p>
                                 <ul class="bj-tags" aria-label="Job details">
-                                    <li>{{ i.get_category_display }}</li>
+                                    <li>{{ i.category_label }}</li>
                                     <li>{{ i.get_job_type_display }}</li>
-                                    {% if i.salary %}<li class="bj-tag-salary">{{ i.salary_display }} / month</li>{% endif %}
+                                    {% if i.salary %}<li class="bj-tag-salary">{{ i.salary_display }}</li>{% endif %}
                                 </ul>
                                 {% if i.description %}<p class="bj-desc">{{ i.description }}</p>{% endif %}
                             </div>

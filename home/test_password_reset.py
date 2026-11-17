@@ -43,8 +43,8 @@ class PasswordResetTests(TestCase):
     def test_login_page_links_to_forgot_password(self, send):
         self.assertContains(self.client.get(reverse('login-user')), reverse('forgot-password'))
 
-    def test_full_reset_by_username_email_and_number(self, send):
-        for identifier in ['maria', 'MARIA@example.com', '+63 917 123 4567']:
+    def test_full_reset_by_number_in_any_format(self, send):
+        for identifier in ['09171234567', '+63 917 123 4567', '0917-123-4567']:
             with self.subTest(identifier=identifier):
                 self.start(identifier)
                 self.assertEqual(send.call_args.args[0], '09171234567')
@@ -56,15 +56,15 @@ class PasswordResetTests(TestCase):
         self.assertIn('Your password was changed', send.call_args.args[1])
 
     def test_unknown_account_shows_the_same_message_and_sends_nothing(self, send):
-        known = self.start('maria')
+        known = self.start('09171234567')
         send.reset_mock()
-        unknown = self.client.post(reverse('forgot-password'), {'identifier': 'nobody'}, follow=True)
+        unknown = self.client.post(reverse('forgot-password'), {'identifier': '09990000000'}, follow=True)
         self.assertRedirects(known, reverse('forgot-password-verify'))
         self.assertContains(unknown, 'If an account matches')
         send.assert_not_called()
 
     def test_code_is_hashed_and_wrong_codes_are_limited(self, send):
-        self.start('maria')
+        self.start('09171234567')
         record = PasswordResetCode.objects.get()
         self.assertNotIn(code_from(send), record.code_hash)
         for _ in range(5):
@@ -74,24 +74,32 @@ class PasswordResetTests(TestCase):
         self.assertEqual(self.client.get(reverse('forgot-password-new')).status_code, 302)
 
     def test_expired_code_is_rejected(self, send):
-        self.start('maria')
+        self.start('09171234567')
         PasswordResetCode.objects.update(expires_at=timezone.now() - timedelta(seconds=1))
         response = self.client.post(reverse('forgot-password-verify'), {'otp': code_from(send)})
         self.assertContains(response, 'expired')
 
     def test_at_most_three_codes_per_hour(self, send):
         for _ in range(4):
-            self.start('maria')
+            self.start('09171234567')
         self.assertEqual(send.call_count, 3)
 
     def test_new_password_page_needs_a_verified_code(self, send):
         self.assertRedirects(self.client.get(reverse('forgot-password-new')), reverse('forgot-password'))
-        self.start('maria')
+        self.start('09171234567')
         self.assertRedirects(self.client.get(reverse('forgot-password-new')), reverse('forgot-password'))
 
+    def test_only_a_mobile_number_is_accepted(self, send):
+        for identifier in ['maria', 'maria@example.com', '12345']:
+            with self.subTest(identifier=identifier):
+                response = self.start(identifier)
+                self.assertContains(response, 'Enter an 11-digit mobile number starting with 09.')
+        send.assert_not_called()
+
     def test_admin_accounts_cannot_be_reset(self, send):
-        User.objects.create_user('pesoadmin', 'admin@example.com', 'x', role='admin')
-        self.start('pesoadmin')
+        self.maria.role = 'admin'
+        self.maria.save()
+        self.start('09171234567')
         send.assert_not_called()
 
     def test_one_number_with_applicant_and_employer_asks_which_account(self, send):
@@ -109,21 +117,10 @@ class PasswordResetTests(TestCase):
         owner.refresh_from_db()
         self.assertTrue(owner.check_password('Store#Pass2026'))
 
-    def test_username_reset_cannot_switch_to_another_account_on_the_number(self, send):
-        other = User.objects.create_user('juan', 'juan@example.com', 'x', role='employer')
-        Employer.objects.create(employer=other, company_name='Juan Store', business_permit_no='BP-2',
-                                contact_no='09171234567', description='d')
-        self.start('maria')
-        self.client.post(reverse('forgot-password-verify'), {'otp': code_from(send)})
-        self.client.post(reverse('forgot-password-account'), {'account': other.pk})
-        self.client.post(reverse('forgot-password-new'), {'new_password1': 'Hack#Pass2026', 'new_password2': 'Hack#Pass2026'})
-        other.refresh_from_db()
-        self.assertFalse(other.check_password('Hack#Pass2026'))
-
     def test_reset_signs_out_other_sessions(self, send):
         other_device = self.client_class()
         other_device.force_login(self.maria)
-        self.start('maria')
+        self.start('09171234567')
         self.finish(send)
         self.assertEqual(other_device.get(reverse('applicant-profile')).status_code, 302)
 

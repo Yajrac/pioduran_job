@@ -208,5 +208,11 @@ if not DEBUG:
         f"{'https' if USE_HTTPS else 'http'}://{host.lstrip('.')}"
         for host in ALLOWED_HOSTS if host not in ("localhost", "127.0.0.1")]
 
+# Registration: reject email domains that do not exist (DNS lookup). Off while
+# running the test suite so tests never depend on the internet.
+import sys as _sys
+EMAIL_DOMAIN_CHECK = (os.getenv("EMAIL_DOMAIN_CHECK", "True").lower() == "true"
+                      and not (len(_sys.argv) > 1 and _sys.argv[1] == "test"))
+
 # Upload size guard (individual file checks are 5 MB).
 DATA_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024

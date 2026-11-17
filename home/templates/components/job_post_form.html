@@ -165,6 +165,51 @@
             width: 100%;
         }
     }
+    .salary-row { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 8px; }
+    .field-help { display: block; margin-top: 6px; color: #64748b; font-size: 12.5px; line-height: 1.5; }
+    .field-help strong { color: #15284b; }
+    .skill-box { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 48px; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; cursor: text; box-sizing: border-box; }
+    .skill-box:focus-within { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, .12); }
+    .skill-box[hidden] { display: none; }
+    .skill-chips { display: contents; margin: 0; padding: 0; list-style: none; }
+    .skill-chips li { display: inline-flex; align-items: center; gap: 4px; padding: 4px 6px 4px 12px; border: 1px solid #bfdbfe; border-radius: 999px; background: #eff6ff; color: #1e3a8a; font-size: 13px; font-weight: 600; }
+    .skill-chips button { display: grid; place-items: center; width: 20px; height: 20px; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 50%; background: transparent; box-shadow: none; transform: none; color: #1e3a8a; font-size: 15px; line-height: 1; cursor: pointer; }
+    .skill-chips button:hover { background: #dbeafe; }
+    .skill-box input#skill_entry { flex: 1; min-width: 180px; height: 34px; min-height: 0; margin: 0; padding: 0 6px; border: 0 !important; box-shadow: none !important; outline: none; background: transparent; font: inherit; font-size: 14px; }
+    .skill-error { margin: 6px 0 0; color: #b83f39; font-size: 13px; }
+    .check-row { display: flex !important; align-items: center; gap: 8px; margin-top: 12px; font-weight: 500 !important; cursor: pointer; }
+    .check-row input { width: 18px !important; height: 18px; margin: 0; accent-color: #2563eb; }
+    .category-other { margin-top: 8px; }
+    .category-other[hidden] { display: none; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .review-dialog { position: fixed; inset: 0; margin: auto; height: fit-content; width: min(720px, calc(100% - 32px)); max-height: calc(100vh - 48px); padding: 0; border: 0; border-radius: 16px; box-shadow: 0 24px 60px rgba(15, 23, 42, .25); color: #334155; }
+    .review-dialog[open] { display: flex; flex-direction: column; }
+    .review-dialog::backdrop { background: rgba(15, 23, 42, .55); }
+    .review-head { display: flex; justify-content: space-between; gap: 16px; padding: 22px 24px 16px; border-bottom: 1px solid #e2e8f0; }
+    .review-eyebrow { margin: 0 0 4px; color: #1d4ed8; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .review-head h2 { margin: 0; color: #0f172a; font-size: 20px; font-weight: 800; }
+    .review-sub { margin: 6px 0 0; color: #64748b; font-size: 13.5px; line-height: 1.5; }
+    .review-dialog .review-x { width: 36px; height: 36px; min-height: 0; flex-shrink: 0; margin: 0; padding: 0; border: 0; border-radius: 8px; background: transparent; box-shadow: none; transform: none; color: #64748b; font-size: 24px; line-height: 1; cursor: pointer; }
+    .review-dialog .review-x:hover { background: #f1f5f9; color: #0f172a; }
+    .review-body { display: grid; gap: 18px; padding: 20px 24px; overflow-y: auto; }
+    .review-job-title { margin: 0; color: #0f172a; font-size: 18px; font-weight: 800; overflow-wrap: anywhere; }
+    .review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; margin: 0; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc; }
+    .review-grid dt { color: #64748b; font-size: 12px; font-weight: 600; }
+    .review-grid dd { margin: 2px 0 0; color: #0f172a; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+    .review-body h4 { margin: 0 0 6px; color: #0f172a; font-size: 13.5px; font-weight: 700; }
+    .review-text { margin: 0; color: #334155; font-size: 14px; line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; }
+    .review-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .review-chips span { padding: 3px 10px; border: 1px solid #bfdbfe; border-radius: 999px; background: #eff6ff; color: #1e3a8a; font-size: 12.5px; font-weight: 600; }
+    .review-note, .review-empty { margin: 6px 0 0; color: #64748b; font-size: 13px; }
+    .review-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #e2e8f0; background: #fff; }
+    .review-submit { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 190px; }
+    .review-spinner { display: none; width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, .45); border-top-color: #fff; border-radius: 50%; animation: review-spin .7s linear infinite; }
+    .review-submit.is-loading .review-spinner { display: inline-block; }
+    .review-submit:disabled { opacity: .85; cursor: progress; }
+    @keyframes review-spin { to { transform: rotate(360deg); } }
+    @media (max-width: 600px) { .review-grid { grid-template-columns: 1fr; } .review-foot { flex-direction: column-reverse; } .review-foot .btn { width: 100%; } }
+    @media (prefers-reduced-motion: reduce) { .review-spinner { animation-duration: 2s; } }
+    .qualification-pick { margin-bottom: 8px; color: #1d4ed8; font-weight: 600; cursor: pointer; }
     .job-form-errors { border: 1px solid #fecaca; background: #fef2f2; color: #991b1b; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; }
     .job-form-errors ul { margin: 6px 0 0 18px; padding: 0; }
 </style>
@@ -184,7 +229,7 @@
 
     <div class="form-body">
 
-        <form method="POST">
+        <form method="POST" id="jobForm" data-editing="{% if job %}1{% endif %}" data-was-published="{% if job.status == 'approved' %}1{% endif %}">
             {% csrf_token %}
 
             {% if job_errors %}
@@ -208,16 +253,25 @@
 
                 <div class="form-group">
                     <label for="salary">Salary (PHP) <span>Optional</span></label>
-
-                    <input
-                        type="number"
-                        id="salary"
-                        name="salary"
-                        value="{% firstof form_values.salary job.salary '' %}"
-                        placeholder="25000"
-                        min="0"
-                        step="0.01"
-                    >
+                    <div class="salary-row">
+                        <input
+                            type="number"
+                            id="salary"
+                            name="salary"
+                            value="{% firstof form_values.salary job.salary '' %}"
+                            placeholder="e.g. 12000"
+                            min="0"
+                            step="0.01"
+                            aria-describedby="salary-help"
+                        >
+                        {% firstof form_values.salary_period job.salary_period 'month' as current_period %}
+                        <select id="salary_period" name="salary_period" aria-label="Salary is paid">
+                            <option value="month" {% if current_period == "month" %}selected{% endif %}>per month</option>
+                            <option value="day" {% if current_period == "day" %}selected{% endif %}>per day</option>
+                            <option value="hour" {% if current_period == "hour" %}selected{% endif %}>per hour</option>
+                        </select>
+                    </div>
+                    <span class="field-help" id="salary-help">Choose whether the amount is per month, per day, or per hour.</span>
                 </div>
 
                 <div class="form-group">
@@ -257,6 +311,12 @@
                         <option value="{{ key }}" {% if current_category == key %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}
                     </select>
+                    <div class="category-other" id="categoryOtherWrap" {% if current_category != "other" %}hidden{% endif %}>
+                        <label for="category_other" class="visually-hidden">Specify the category</label>
+                        <input type="text" id="category_other" name="category_other" maxlength="60"
+                               value="{% firstof form_values.category_other job.category_other '' %}"
+                               placeholder="Specify the category, e.g. Event Staff">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -274,11 +334,15 @@
 
                 <div class="form-group full">
                     <label for="deadline">Application Deadline <span class="required">*</span></label>
+                    {% now "Y-m-d" as today %}
                     <input type="date"
                            id="deadline"
                            name="deadline"
+                           min="{{ today }}"
+                           aria-describedby="deadline-help"
                            value="{% if form_values %}{{ form_values.deadline }}{% else %}{{ job.deadline|date:'Y-m-d' }}{% endif %}"
                            required>
+                    <span class="field-help" id="deadline-help">Choose today or a later date. Past dates cannot be selected.</span>
                 </div>
 
                 <div class="form-group full">
@@ -289,19 +353,58 @@
                               required>{% firstof form_values.description job.description '' %}</textarea>
                 </div>
 
-                <div class="form-group">
-                    <label for="required_skills">Required Skills for Matching</label>
-                    <textarea id="required_skills" name="required_skills" rows="2" placeholder="Customer Service, Inventory Management, Cashiering">{% if form_values %}{{ form_values.required_skills }}{% else %}{{ job.required_skills|default:'' }}{% endif %}</textarea>
-                    <p style="font-size:12px;color:#15284b">Separate skills with commas. Confirm the actual skills required for this job. Up to 20 skills. Leave blank if not yet defined; applicants will not receive a match score.</p>
-                    {% if ranking_error %}<p role="alert" style="color:#b83f39">{{ ranking_error }}</p>{% endif %}
-                    <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="experience_required" style="width:18px" {% if form_values %}{% if form_values.experience_required %}checked{% endif %}{% elif job.experience_required %}checked{% endif %}> Relevant work experience is required</label>
+                <div class="form-group full">
+                    <label for="skill_entry">Required Skills <span>Optional</span></label>
+                    <div class="skill-box" id="skillBox" hidden>
+                        <ul class="skill-chips" id="skillChips" aria-label="Selected skills"></ul>
+                        <input type="text" id="skill_entry" list="skill-suggestions" autocomplete="off"
+                               placeholder="Type a skill, then press Enter" aria-describedby="skill-help">
+                    </div>
+                    <datalist id="skill-suggestions">{% for skill in skill_suggestions %}<option value="{{ skill }}">{% endfor %}</datalist>
+                    <input type="text" id="required_skills" name="required_skills" class="skill-fallback"
+                           placeholder="Customer Service, Cashiering, Inventory Management"
+                           value="{% if form_values %}{{ form_values.required_skills }}{% else %}{{ job.required_skills|default:'' }}{% endif %}">
+                    <span class="field-help" id="skill-help">Used to match applicants. Add the main 3 to 5 skills.</span>
+                    {% if ranking_error %}<p role="alert" class="skill-error">{{ ranking_error }}</p>{% endif %}
+                    <label class="check-row"><input type="checkbox" name="experience_required" {% if form_values %}{% if form_values.experience_required %}checked{% endif %}{% elif job.experience_required %}checked{% endif %}> Relevant work experience is required</label>
                 </div>
+
                 <div class="form-group full">
                     <label for="qualifications">Qualifications <span class="required">*</span></label>
+                    <select id="qualification_pick" class="qualification-pick" aria-label="Add a common qualification">
+                        <option value="">+ Add a common qualification…</option>
+                        <optgroup label="Education">
+                            <option>At least high school graduate</option>
+                            <option>At least senior high school graduate</option>
+                            <option>College level</option>
+                            <option>College graduate</option>
+                            <option>Vocational course graduate</option>
+                        </optgroup>
+                        <optgroup label="Certificates and licenses">
+                            <option>TESDA National Certificate (NC II) holder</option>
+                            <option>With valid driver's license</option>
+                            <option>With valid professional license (PRC)</option>
+                        </optgroup>
+                        <optgroup label="Experience">
+                            <option>No experience needed; training is provided</option>
+                            <option>At least 6 months of related work experience</option>
+                            <option>At least 1 year of related work experience</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option>At least 18 years old</option>
+                            <option>Physically fit</option>
+                            <option>Willing to work on shifts, weekends, or holidays</option>
+                            <option>Resident of Pio Duran or nearby towns</option>
+                            <option>Good communication skills</option>
+                            <option>Basic computer skills</option>
+                        </optgroup>
+                    </select>
                     <textarea id="qualifications"
                               name="qualifications"
-                              placeholder="List key requirements, education, and skills..."
+                              aria-describedby="qualifications-help"
+                              placeholder="Pick from the list above or type your own, one per line..."
                               required>{% firstof form_values.qualifications job.qualifications '' %}</textarea>
+                    <span class="field-help" id="qualifications-help">Choose from the list to add a line, or type anything else you need.</span>
                 </div>
 
                 <div class="form-group full">
@@ -317,16 +420,45 @@
                 <a href="{% url 'job-list' %}" class="btn btn-secondary">
                     Cancel
                 </a>
-                <button type="submit" class="btn btn-primary">
-                    {% if job %}
-                        Update Job
-                    {% else %}
-                        Publish Job
-                    {% endif %}
+                <button type="submit" class="btn btn-primary" id="reviewJobButton">
+                    {% if job %}Review changes{% else %}Review job{% endif %}
                 </button>
             </div>
 
         </form>
+
+        <dialog class="review-dialog" id="reviewDialog" aria-labelledby="reviewTitle">
+            <header class="review-head">
+                <div>
+                    <p class="review-eyebrow">Step 2 of 2 &middot; Review</p>
+                    <h2 id="reviewTitle">{% if job %}Review your changes{% else %}Review your job post{% endif %}</h2>
+                    <p class="review-sub">Check the details. {% if job.status == 'approved' %}Saving will hide the job until PESO approves it again.{% else %}After you submit, PESO reviews the post before applicants can see it.{% endif %}</p>
+                </div>
+                <button type="button" class="review-x" data-review-close aria-label="Close">&times;</button>
+            </header>
+            <div class="review-body">
+                <h3 class="review-job-title" data-r="title"></h3>
+                <dl class="review-grid">
+                    <div><dt>Category</dt><dd data-r="category"></dd></div>
+                    <div><dt>Job type</dt><dd data-r="job_type"></dd></div>
+                    <div><dt>Salary</dt><dd data-r="salary"></dd></div>
+                    <div><dt>Vacancies</dt><dd data-r="vacancies"></dd></div>
+                    <div><dt>Location</dt><dd data-r="location"></dd></div>
+                    <div><dt>Application deadline</dt><dd data-r="deadline"></dd></div>
+                </dl>
+                <section><h4>Required skills</h4><div class="review-chips" data-r="skills"></div><p class="review-note" data-r="experience"></p></section>
+                <section><h4>Job description</h4><p class="review-text" data-r="description"></p></section>
+                <section><h4>Qualifications</h4><p class="review-text" data-r="qualifications"></p></section>
+                <section><h4>Responsibilities</h4><p class="review-text" data-r="responsibilities"></p></section>
+            </div>
+            <footer class="review-foot">
+                <button type="button" class="btn btn-secondary" data-review-close>Back to edit</button>
+                <button type="button" class="btn btn-primary review-submit" id="confirmJobButton">
+                    <span class="review-spinner" aria-hidden="true"></span>
+                    <span class="review-submit-label">{% if job.status == 'approved' %}Save and resubmit{% elif job %}Save changes{% else %}Submit for approval{% endif %}</span>
+                </button>
+            </footer>
+        </dialog>
 
     </div>
 
@@ -355,5 +487,176 @@
  field.addEventListener('blur',validate);
  field.addEventListener('invalid',event => { event.preventDefault(); validate(); field.focus(); });
 })();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Review before submitting: the first submit opens a summary; "Submit" posts the form.
+    const form = document.getElementById('jobForm');
+    const dialog = document.getElementById('reviewDialog');
+    const confirm = document.getElementById('confirmJobButton');
+    if (!form || !dialog || !confirm || typeof dialog.showModal !== 'function') return;
+    const value = name => (form.elements[name] ? form.elements[name].value.trim() : '');
+    const selected = name => { const el = form.elements[name]; return el && el.selectedIndex > 0 ? el.options[el.selectedIndex].text : ''; };
+    const put = (key, text, fallback) => {
+        const el = dialog.querySelector('[data-r="' + key + '"]');
+        el.textContent = text || fallback || 'Not provided';
+        el.classList.toggle('review-empty', !text);
+    };
+    function fill() {
+        put('title', value('title'));
+        put('category', value('category') === 'other' && value('category_other') ? value('category_other') : selected('category'));
+        put('job_type', selected('job_type'));
+        const amount = Number(value('salary'));
+        put('salary', value('salary') ? '₱' + amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' / ' + (value('salary_period') || 'month') : '', 'Not specified');
+        put('vacancies', value('vacancies'));
+        put('location', value('location'));
+        const d = value('deadline').split('-').map(Number);
+        put('deadline', d.length === 3 && d[0] ? new Date(d[0], d[1] - 1, d[2]).toLocaleDateString('en-PH', {month: 'long', day: 'numeric', year: 'numeric'}) : '');
+        const chips = dialog.querySelector('[data-r="skills"]');
+        chips.textContent = '';
+        const skills = value('required_skills').split(',').map(x => x.trim()).filter(Boolean);
+        skills.forEach(skill => { const span = document.createElement('span'); span.textContent = skill; chips.append(span); });
+        if (!skills.length) { const empty = document.createElement('p'); empty.className = 'review-empty'; empty.textContent = 'None - applicants will not get a match score.'; chips.append(empty); }
+        put('experience', form.elements.experience_required && form.elements.experience_required.checked ? 'Relevant work experience is required.' : '', 'Work experience is not required.');
+        put('description', value('description'));
+        put('qualifications', value('qualifications'));
+        put('responsibilities', value('responsibilities'), 'None listed');
+    }
+    let sending = false;
+    form.addEventListener('submit', function (event) {
+        if (sending) return;
+        event.preventDefault();
+        setTimeout(function () {           // let the skills field finish updating first
+            if (!form.reportValidity()) return;
+            fill();
+            dialog.showModal();
+            confirm.focus();
+        }, 0);
+    });
+    dialog.querySelectorAll('[data-review-close]').forEach(b => b.addEventListener('click', () => dialog.close()));
+    dialog.addEventListener('cancel', event => { if (sending) event.preventDefault(); });
+    confirm.addEventListener('click', function () {
+        if (sending) return;
+        sending = true;
+        confirm.disabled = true;
+        confirm.classList.add('is-loading');
+        confirm.querySelector('.review-submit-label').textContent = 'Submitting…';
+        dialog.querySelectorAll('[data-review-close]').forEach(b => { b.disabled = true; });
+        HTMLFormElement.prototype.submit.call(form);
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // "Other" category: show a text field to type the category.
+    const category = document.getElementById('category');
+    const otherWrap = document.getElementById('categoryOtherWrap');
+    const other = document.getElementById('category_other');
+    if (category && otherWrap && other) {
+        const sync = function (focus) {
+            const isOther = category.value === 'other';
+            otherWrap.hidden = !isOther;
+            other.required = isOther;
+            if (isOther && focus) other.focus();
+        };
+        category.addEventListener('change', function () { sync(true); });
+        sync(false);
+    }
+
+    // Deadline: no past dates (the server checks too).
+    const deadline = document.getElementById('deadline');
+    if (deadline && deadline.min) {
+        const check = function () {
+            deadline.setCustomValidity(deadline.value && deadline.value < deadline.min
+                ? 'The deadline cannot be in the past. Choose today or a later date.' : '');
+        };
+        deadline.addEventListener('input', check);
+        deadline.addEventListener('change', check);
+        check();
+    }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Required skills as chips. The plain text field stays the real form value
+    // (comma-separated), so the form still works without JavaScript.
+    const field = document.getElementById('required_skills');
+    const box = document.getElementById('skillBox');
+    const chips = document.getElementById('skillChips');
+    const entry = document.getElementById('skill_entry');
+    if (!field || !box || !chips || !entry) return;
+    const MAX = 20;
+    const skills = [];
+    const clean = text => text.replace(/\s+/g, ' ').trim();
+
+    function add(text) {
+        text = clean(text);
+        if (!text || skills.length >= MAX) return;
+        if (skills.some(s => s.toLowerCase() === text.toLowerCase())) return;
+        skills.push(text.slice(0, 60));
+    }
+    function render() {
+        chips.innerHTML = '';
+        skills.forEach(function (skill, i) {
+            const li = document.createElement('li');
+            li.append(skill);
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.textContent = '×';
+            remove.setAttribute('aria-label', 'Remove ' + skill);
+            remove.addEventListener('click', function () { skills.splice(i, 1); render(); entry.focus(); });
+            li.append(remove);
+            chips.append(li);
+        });
+        field.value = skills.join(', ');
+        entry.placeholder = skills.length >= MAX ? 'Maximum of 20 skills'
+            : (skills.length ? 'Add another skill' : 'Type a skill, then press Enter');
+    }
+    function commit() {
+        entry.value.split(/[,;]+/).forEach(add);
+        entry.value = '';
+        render();
+    }
+
+    field.value.split(/[,;\n|]+/).forEach(add);
+    field.hidden = true;
+    box.hidden = false;
+    render();
+
+    entry.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ',' || event.key === ';') {
+            event.preventDefault();
+            commit();
+        } else if (event.key === 'Backspace' && !entry.value && skills.length) {
+            skills.pop();
+            render();
+        }
+    });
+    // Choosing an item from the suggestion list adds it right away.
+    entry.addEventListener('input', function (event) {
+        if (!event.inputType || event.inputType === 'insertReplacementText') commit();
+    });
+    entry.addEventListener('blur', commit);
+    box.addEventListener('click', function (event) { if (event.target === box) entry.focus(); });
+    entry.form.addEventListener('submit', commit);
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Qualifications: picking a common item adds it as a new line; typing still works.
+    const pick = document.getElementById('qualification_pick');
+    const box = document.getElementById('qualifications');
+    if (!pick || !box) return;
+    pick.addEventListener('change', function () {
+        const item = pick.value.trim();
+        pick.value = '';
+        if (!item) return;
+        const lines = box.value.split('\n').map(l => l.replace(/^[-•]\s*/, '').trim().toLowerCase());
+        if (lines.includes(item.toLowerCase())) { box.focus(); return; }
+        box.value = (box.value.trim() ? box.value.replace(/\s+$/, '') + '\n' : '') + item;
+        box.focus();
+        box.setSelectionRange(box.value.length, box.value.length);
+    });
+});
 </script>
 {% endblock %}

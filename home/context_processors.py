@@ -12,6 +12,15 @@ def demo_sms(request):
     return {"demo_sms": request.session.get("demo_sms")}
 
 
+EXTRA_SKILLS = [
+    "Food Preparation", "Baking", "Housekeeping", "Caregiving", "First Aid", "Security",
+    "Masonry", "Motorcycle Driving", "Basic Math", "MS Office", "Troubleshooting",
+    "Computer Repair", "Fish Handling", "Farming", "Customer Handling", "Physical Fitness",
+]
+
+
 def job_categories(request):
-    """Category options for the job post form."""
-    return {"category_choices": CATEGORY_CHOICES}
+    """Category options and skill suggestions for the job post form."""
+    from .skill_extraction import SKILLS
+    suggestions = sorted(set(SKILLS) | set(EXTRA_SKILLS), key=str.casefold)
+    return {"category_choices": CATEGORY_CHOICES, "skill_suggestions": suggestions}

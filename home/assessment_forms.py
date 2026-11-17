@@ -30,10 +30,25 @@ class OutcomeForm(forms.ModelForm):
                    'evaluated_on':forms.DateInput(attrs={'type':'date'}, format='%Y-%m-%d'),
                    'outcome_notes':forms.Textarea(attrs={'rows':4})}
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        application = getattr(self.instance, 'application', None)
+        hired_at = getattr(application, 'hired_at', None)
+        self.hired_on = timezone.localtime(hired_at).date() if hired_at else None
+        today = timezone.localdate().isoformat()
+        start_min = self.hired_on.isoformat() if self.hired_on else ''
+        self.fields['started_on'].widget.attrs.update({'max': today, 'min': start_min})
+        self.fields['evaluated_on'].widget.attrs.update({
+            'max': today,
+            'min': (self.instance.started_on.isoformat() if self.instance.started_on else start_min),
+        })
+
     def clean(self):
         data = super().clean()
         outcome, start, evaluated = data.get('outcome'), data.get('started_on'), data.get('evaluated_on')
         today = timezone.localdate()
+        if start and self.hired_on and start < self.hired_on:
+            self.add_error('started_on', f"The start date cannot be earlier than the hire date ({self.hired_on:%b %d, %Y}).")
         if outcome in {'started','passed','failed'} and not start:
             self.add_error('started_on', 'Enter the actual work start date.')
         if outcome in {'passed','failed'} and not evaluated:

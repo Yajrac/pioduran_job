@@ -1,6 +1,6 @@
 """Forgot password for applicants and employers, by SMS code.
 
-Flow: identify (username, email or mobile number) -> 6-digit SMS code ->
+Flow: mobile number -> 6-digit SMS code ->
 [choose the account, when one number has several] -> new password.
 
 Security notes
@@ -22,7 +22,6 @@ from django.utils import timezone
 
 from applicant.models import Applicant
 from employer.models import Employer
-from user.models import User
 
 from .models import PasswordResetCode
 from .sms import SMS_BRAND, send_sms
@@ -58,14 +57,6 @@ def eligible(user):
     return bool(user and user.is_active and not user.is_superuser and user.role in ("applicant", "employer"))
 
 
-def phone_of(user):
-    if user.role == "applicant":
-        profile = Applicant.objects.filter(user=user).first()
-        return normalize_phone(profile.phone_number) if profile else ""
-    employer = Employer.objects.filter(employer=user).first()
-    return normalize_phone(employer.contact_no) if employer else ""
-
-
 def accounts_on_phone(phone):
     users = [a.user for a in Applicant.objects.filter(phone_number=phone).select_related("user")]
     users += [e.employer for e in Employer.objects.filter(contact_no=phone).select_related("employer")]
@@ -74,22 +65,12 @@ def accounts_on_phone(phone):
 
 
 def resolve(identifier):
-    """(phone, user) to send a code to, or (None, None) when nothing matches.
-    user is None when the person typed a mobile number."""
-    identifier = (identifier or "").strip()
+    """(phone, None) when an applicant/employer account uses this mobile number,
+    else (None, None). Only a mobile number is accepted (no username or email)."""
     phone = normalize_phone(identifier)
-    if phone:
-        return (phone, None) if accounts_on_phone(phone) else (None, None)
-    if "@" in identifier:
-        users = list(User.objects.filter(email__iexact=identifier))
-        users += [a.user for a in Applicant.objects.filter(email__iexact=identifier).select_related("user")]
-    else:
-        users = list(User.objects.filter(username__iexact=identifier))
-    users = [u for u in {u.pk: u for u in users}.values() if eligible(u)]
-    if len(users) != 1:
-        return None, None
-    phone = phone_of(users[0])
-    return (phone, users[0]) if phone else (None, None)
+    if phone and accounts_on_phone(phone):
+        return phone, None
+    return None, None
 
 
 def account_label(user):
@@ -155,8 +136,9 @@ def _allowed_accounts(record):
 def forgot_password(request):
     if request.method == "POST":
         identifier = request.POST.get("identifier", "").strip()
-        if not identifier:
-            return render(request, TEMPLATE, {"step": "identify", "error": "Enter your username, email, or mobile number."})
+        if not normalize_phone(identifier):
+            return render(request, TEMPLATE, {"step": "identify", "identifier": identifier,
+                                              "error": "Enter an 11-digit mobile number starting with 09."})
         request.session.pop(SESSION_KEY, None)
         request.session.pop("demo_sms", None)
         phone, user = resolve(identifier)
