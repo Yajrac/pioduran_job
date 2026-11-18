@@ -175,6 +175,7 @@ import random
 from django.contrib.auth.hashers import make_password
 
 from .sms import SMS_BRAND, send_sms, format_ph_mobile
+from .landing import signed_in_users_go_home
 
 def normalize_skill(skill):
     """
@@ -248,6 +249,7 @@ def get_job_recommendation(job, applicant_skills):
     return score, matched_skills
 
 
+@signed_in_users_go_home(("GET", "HEAD"))
 def home_view(request):
 
     # ==========================================
@@ -294,6 +296,7 @@ def home_view(request):
         }
     )
 
+@signed_in_users_go_home()
 def employee_registration(request):
 
     if request.method == "POST":
@@ -742,6 +745,7 @@ def verify_employer_registration(request):
         "pages/verify_employer.html"
     )
 
+@signed_in_users_go_home()
 def applicant_registration(request):
 
     if request.method == "POST":
@@ -1311,6 +1315,7 @@ def verify_applicant_registration(request):
 
 
 @limited_login
+@signed_in_users_go_home(("GET", "HEAD"))
 def login_user(request):
     if request.method == "POST":
         username=request.POST.get('username')

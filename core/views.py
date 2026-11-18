@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from home.landing import signed_in_users_go_home
 from user.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -41,6 +42,7 @@ def keep_alive(request):
     })
 
 @limited_login
+@signed_in_users_go_home(("GET", "HEAD"))
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")

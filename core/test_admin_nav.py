@@ -33,7 +33,7 @@ class AdminNavigationTests(TestCase):
         self.assertEqual(response.context['admin_page_title'], 'Job Demand Ranking')
 
     def test_public_pages_get_no_admin_nav(self):
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse('browse-job'))  # Home now sends a signed-in admin to the dashboard
         self.assertNotIn('admin_nav_section', response.context)
 
     def test_pending_employer_row_offers_review_instead_of_disabled_activate(self):

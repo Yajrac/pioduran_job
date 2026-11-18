@@ -23,6 +23,7 @@ from django.utils import timezone
 from applicant.models import Applicant
 from employer.models import Employer
 
+from .landing import signed_in_users_go_home
 from .models import PasswordResetCode
 from .sms import SMS_BRAND, send_sms
 
@@ -133,6 +134,7 @@ def _allowed_accounts(record):
 
 # ----------------------------------------------------------------- views
 
+@signed_in_users_go_home()
 def forgot_password(request):
     if request.method == "POST":
         identifier = request.POST.get("identifier", "").strip()
@@ -150,6 +152,7 @@ def forgot_password(request):
     return render(request, TEMPLATE, {"step": "identify"})
 
 
+@signed_in_users_go_home()
 def verify_code(request):
     state = _state(request)
     if "sent_at" not in state:
@@ -186,6 +189,7 @@ def verify_code(request):
     return render(request, TEMPLATE, context)
 
 
+@signed_in_users_go_home()
 def resend_code(request):
     state = _state(request)
     if request.method != "POST" or "sent_at" not in state:
@@ -205,6 +209,7 @@ def resend_code(request):
     return redirect("forgot-password-verify")
 
 
+@signed_in_users_go_home()
 def choose_account(request):
     record = _verified(request)
     if not record:
@@ -219,6 +224,7 @@ def choose_account(request):
     return render(request, TEMPLATE, {"step": "choose", "accounts": options, "phone": mask_phone(record.phone)})
 
 
+@signed_in_users_go_home()
 def new_password(request):
     record = _verified(request)
     user_id = _state(request).get("user_id")
