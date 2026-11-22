@@ -184,3 +184,13 @@
   .bj-sort .bj-select { min-width: 0; flex: 1; }
   .bj-tags li { font-size: 12px; }
 }
+
+/* Job cards: rotating soft pastel tints, dark text */
+.bj-card:nth-child(4n+1) { background: #f4f8fe; border-color: #dce7f7; }
+.bj-card:nth-child(4n+2) { background: #f3faf5; border-color: #d8ece0; }
+.bj-card:nth-child(4n+3) { background: #fef9f0; border-color: #f2e6cc; }
+.bj-card:nth-child(4n+4) { background: #f6f3fc; border-color: #e4ddf4; }
+.bj-card:hover { border-color: #bfdbfe; }
+.bj-card .bj-tags li:not(.bj-tag-salary) { background: rgba(255, 255, 255, .8); }
+.bj-card .bj-logo-text { background: #fff; }
+.bj-card .bj-card-foot { border-top-color: rgba(15, 23, 42, .08); }

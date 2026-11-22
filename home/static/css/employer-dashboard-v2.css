@@ -76,3 +76,10 @@
   .ed-alert { flex-wrap: wrap; }
   .ed .cp-actions .cp-btn { min-width: 0; }
 }
+
+/* Overview stat cards: soft pastel tints, dark text */
+.ed .cp-stat:nth-child(1) { background: #eef4fd; border-color: #d6e4f8; }
+.ed .cp-stat:nth-child(2) { background: #f3f0fb; border-color: #e0d8f3; }
+.ed .cp-stat:nth-child(3) { background: #fdf6e9; border-color: #f1e2c2; }
+.ed .cp-stat:nth-child(4) { background: #edf7f1; border-color: #d3eadb; }
+.ed .cp-stat:hover { border-color: #93c5fd; }

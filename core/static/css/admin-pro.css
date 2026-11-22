@@ -699,3 +699,11 @@ body.peso-admin-pages #main-content .btn-action.btn-action-approve {
 body.peso-admin-pages #main-content .btn-action.btn-action-approve:hover { filter: brightness(.92); color: #fff; }
 body.peso-admin-pages #main-content .btn-action.btn-action-approve img { filter: brightness(0) invert(1); }
 body.peso-admin-pages #main-content :is(#jobTable, #employerTable) td:nth-child(2) > * { white-space: nowrap; }
+
+/* Dashboard summary cards: soft pastel tint per meaning (text stays dark for readability) */
+body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-blue    { background: #eef4fd; border-color: #d6e4f8; }
+body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-green   { background: #edf7f1; border-color: #d3eadb; }
+body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-amber   { background: #fdf6e9; border-color: #f1e2c2; }
+body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-red     { background: #fcf0f1; border-color: #f1d9dc; }
+body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-hiring  { background: #ebf6f6; border-color: #cfe7e7; }
+body.peso-admin-pages .dashboard-summary-cards .stat-card .summary-card-icon { background: rgba(255, 255, 255, .75); }
