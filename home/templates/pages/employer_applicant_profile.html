@@ -1,0 +1,126 @@
+{% extends "employer_base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/company-profile-v2.css' %}">
+<link rel="stylesheet" href="{% static 'css/applicant-profile-v2.css' %}">
+<div class="cp ap">
+    <a class="cp-link" href="{% url 'applicants' %}">&larr; Back to Applicants</a>
+
+    <!-- Identity -->
+    <section class="cp-card cp-identity" aria-label="Applicant profile">
+        <span class="ap-avatar">
+            {% if applicant.profile_photo %}
+            <img src="{{ applicant.profile_photo.url }}" alt="Profile photo of {{ applicant.first_name }} {{ applicant.last_name }}" width="88" height="88">
+            {% else %}
+            <span aria-hidden="true">{{ applicant.first_name|first|upper }}{{ applicant.last_name|first|upper }}</span>
+            {% endif %}
+        </span>
+        <div class="cp-identity-text">
+            <p class="cp-eyebrow">Applicant profile</p>
+            <h1>{{ applicant.first_name }} {% if applicant.middle_name %}{{ applicant.middle_name }} {% endif %}{{ applicant.last_name }}</h1>
+            <div class="cp-meta">
+                <span class="cp-badge {% if application.status == 'hired' or application.status == 'offered' %}is-good{% elif application.status == 'rejected' or application.status == 'declined' or application.status == 'withdrawn' %}is-bad{% else %}is-warn{% endif %}">{{ application.get_status_display }}</span>
+                <span>Applied for <strong>{{ application.job.title }}</strong> on {{ application.applied_at|date:'M j, Y' }}</span>
+            </div>
+        </div>
+        <div class="cp-actions">
+            {% if application.resume or applicant.resume %}
+            <a class="cp-btn cp-btn-ghost" href="{% url 'application-document' application.pk 'resume' %}" target="_blank" rel="noopener noreferrer">View resume<span class="visually-hidden"> (opens in a new tab)</span></a>
+            {% endif %}
+            <a class="cp-btn cp-btn-primary" href="{% url 'review-applicant' application.pk %}">Assessment</a>
+        </div>
+    </section>
+
+    <div class="cp-grid">
+        <div class="cp-main">
+            <!-- Skills -->
+            <section class="cp-card" aria-labelledby="eap-skills-title">
+                <header class="cp-head"><h2 id="eap-skills-title">Skills</h2></header>
+                {% if skill_tags %}
+                <ul class="ap-skills">{% for skill in skill_tags %}<li>{{ skill }}</li>{% endfor %}</ul>
+                {% else %}
+                <p class="ap-note">No skills added yet.</p>
+                {% endif %}
+                {% if match.score != None %}
+                <p class="ap-note"><strong>{{ match.matched|length }} of {{ match.required|length }}</strong> required skill{{ match.required|length|pluralize }} for {{ application.job.title }} matched{% if match.matched %}: {{ match.matched|join:', ' }}{% endif %}.</p>
+                {% if match.missing %}<p class="ap-note">Missing: {{ match.missing|join:', ' }}</p>{% endif %}
+                {% endif %}
+            </section>
+
+            <!-- Work experience -->
+            <section class="cp-card" aria-labelledby="eap-exp-title">
+                <header class="cp-head"><h2 id="eap-exp-title">Work experience</h2></header>
+                {% if experiences %}
+                <ol class="ap-timeline">
+                    {% for experience in experiences %}
+                    <li>
+                        <div class="ap-timeline-head">
+                            <div>
+                                <h3>{{ experience.job_title }}</h3>
+                                <p>{{ experience.company }} &middot; {{ experience.start_date|date:'M Y' }} &ndash; {% if experience.is_current %}Present{% else %}{{ experience.end_date|date:'M Y' }}{% endif %}</p>
+                            </div>
+                        </div>
+                        {% if experience.description %}<div class="ap-desc">{{ experience.description|linebreaksbr }}</div>{% endif %}
+                    </li>
+                    {% endfor %}
+                </ol>
+                {% else %}
+                <p class="ap-note">No work experience added.</p>
+                {% endif %}
+            </section>
+
+            <!-- Documents -->
+            <section class="cp-card" aria-labelledby="eap-docs-title">
+                <header class="cp-head"><h2 id="eap-docs-title">Documents</h2></header>
+                <ul class="ap-docs">
+                    <li>
+                        <span class="ap-doc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H5v18h14V8l-5-5ZM14 3v5h5M8 12h8M8 16h5"/></svg></span>
+                        <div><strong>Resume / CV</strong><span>{% if application.resume or applicant.resume %}Uploaded{% else %}Not uploaded{% endif %}</span></div>
+                        {% if application.resume or applicant.resume %}<a class="cp-link" href="{% url 'application-document' application.pk 'resume' %}" target="_blank" rel="noopener noreferrer">View<span class="visually-hidden"> resume (opens in a new tab)</span></a>{% endif %}
+                    </li>
+                    <li>
+                        <span class="ap-doc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg></span>
+                        <div><strong>Cover letter</strong><span>{% if application.cover_letter or applicant.cover_letter %}Uploaded{% else %}Not uploaded{% endif %}</span></div>
+                        {% if application.cover_letter or applicant.cover_letter %}<a class="cp-link" href="{% url 'application-document' application.pk 'cover_letter' %}" target="_blank" rel="noopener noreferrer">View<span class="visually-hidden"> cover letter (opens in a new tab)</span></a>{% endif %}
+                    </li>
+                    {% for certificate in certificates %}
+                    <li>
+                        <span class="ap-doc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="m9 12-2 9 5-3 5 3-2-9"/></svg></span>
+                        <div><strong>{{ certificate.title }}</strong><span>Certificate &middot; uploaded {{ certificate.uploaded_at|date:'M j, Y' }}</span></div>
+                        <a class="cp-link" href="{% url 'certificate-file' certificate.pk %}" target="_blank" rel="noopener noreferrer">View<span class="visually-hidden"> {{ certificate.title }} (opens in a new tab)</span></a>
+                    </li>
+                    {% empty %}
+                    <li>
+                        <span class="ap-doc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="m9 12-2 9 5-3 5 3-2-9"/></svg></span>
+                        <div><strong>Certificates</strong><span>None uploaded</span></div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+
+        <aside class="cp-side">
+            <!-- Contact -->
+            <section class="cp-card" aria-labelledby="eap-contact-title">
+                <header class="cp-head"><h2 id="eap-contact-title">Contact details</h2></header>
+                <dl class="cp-contact">
+                    <div><dt>Email</dt><dd>{% if applicant.email %}<a href="mailto:{{ applicant.email }}">{{ applicant.email }}</a>{% else %}<span>Not provided</span>{% endif %}</dd></div>
+                    <div><dt>Mobile number</dt><dd>{% if applicant.phone_number %}<a href="tel:{{ applicant.phone_number }}">{{ applicant.phone_number }}</a>{% else %}<span>Not provided</span>{% endif %}</dd></div>
+                </dl>
+            </section>
+
+            <!-- Application -->
+            <section class="cp-card" aria-labelledby="eap-app-title">
+                <header class="cp-head"><h2 id="eap-app-title">This application</h2></header>
+                <dl class="cp-contact">
+                    <div><dt>Position</dt><dd><span>{{ application.job.title }}</span></dd></div>
+                    <div><dt>Status</dt><dd><span>{{ application.get_status_display }}</span></dd></div>
+                    <div><dt>Applied</dt><dd><span>{{ application.applied_at|date:'F j, Y' }}</span></dd></div>
+                </dl>
+                <a class="cp-link" href="{% url 'review-applicant' application.pk %}">Assessment &rarr;</a>
+            </section>
+        </aside>
+    </div>
+</div>
+{% endblock %}

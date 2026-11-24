@@ -9,7 +9,8 @@ from django.contrib.auth.decorators import login_required
 from user.models import User
 from employer.models import Employer, JobPost, JobApplication, EmployerRegistrationOTP
 from applicant.models import Applicant, ApplicantRegistrationOTP
-from .registration_validation import applicant_field_errors, employer_field_errors
+from .registration_validation import (applicant_field_errors, clean_company_name, company_name_error,
+                                      employer_field_errors, employer_username_error)
 from .login_limits import limited_login
 from .company_forms import CompanyProfileForm
 from employer.application_status import change_application_status
@@ -19,9 +20,9 @@ from django.core.exceptions import ValidationError
 
 
 def registration_company_check(request):
-    fields = {"company_name": "Company name", "business_permit_no": "Business permit number", "contact_no": "Mobile number"}
+    fields = {"company_name": "Company name", "contact_no": "Mobile number"}
     field = request.GET.get("field", "")
-    value = request.GET.get("value", "").strip()
+    value = clean_company_name(request.GET.get("value", ""))
     if field not in fields:
         return JsonResponse({"error": "Invalid field."}, status=400)
     error = ""
@@ -29,6 +30,8 @@ def registration_company_check(request):
         error = f"{fields[field]} is required."
     elif field == "contact_no" and not re.fullmatch(r"09[0-9]{9}", value):
         error = "Enter an 11-digit mobile number starting with 09."
+    elif field == "company_name" and company_name_error(value):
+        error = company_name_error(value)
     elif Employer.objects.filter(**{field + "__iexact": value}).exists():
         error = f"{fields[field]} is already registered."
     response = JsonResponse({"available": not bool(error), "error": error})
@@ -45,7 +48,7 @@ def resume_check(request):
 
 def registration_username_check(request):
     username = request.GET.get('username', '').strip()
-    error = username_error(username)
+    error = (employer_username_error(username) if request.GET.get('role') == 'employer' else '') or username_error(username)
     response = JsonResponse({'available': not bool(error), 'error': error})
     response['Cache-Control'] = 'no-store'
     return response
@@ -300,10 +303,11 @@ def home_view(request):
 def employee_registration(request):
 
     if request.method == "POST":
-        errors = employer_field_errors(request.POST)
-        error = username_error(request.POST.get('username', '').strip())
-        if error:
-            errors['username'] = error
+        errors = employer_field_errors(request.POST, request.FILES)
+        if 'username' not in errors:
+            error = username_error(request.POST.get('username', '').strip())
+            if error:
+                errors['username'] = error
         if errors:
             return render(request, 'pages/register_employer.html', {
                 'field_errors': errors, 'form_values': request.POST,
@@ -325,15 +329,9 @@ def employee_registration(request):
             ""
         )
 
-        company_name = request.POST.get(
-            "company_name",
-            ""
-        ).strip()
+        company_name = clean_company_name(request.POST.get("company_name", ""))
 
-        business_permit_no = request.POST.get(
-            "business_permit_no",
-            ""
-        ).strip()
+        business_permit_file = request.FILES.get("business_permit_file")
 
         contact_no = request.POST.get(
             "contact_no",
@@ -404,24 +402,6 @@ def employee_registration(request):
             )
 
         # ==========================================
-        # CHECK BUSINESS PERMIT
-        # ==========================================
-
-        if Employer.objects.filter(
-            business_permit_no=business_permit_no
-        ).exists():
-
-            messages.error(
-                request,
-                "Business Permit Number already exists.",
-                extra_tags="registration"
-            )
-
-            return redirect(
-                "employee-registration"
-            )
-
-        # ==========================================
         # CHECK CONTACT NUMBER
         # ==========================================
 
@@ -476,7 +456,7 @@ def employee_registration(request):
 
             company_name=company_name,
 
-            business_permit_no=business_permit_no,
+            business_permit_file=business_permit_file,
 
             contact_no=contact_no,
 
@@ -701,6 +681,7 @@ def verify_employer_registration(request):
             company_name=registration.company_name,
 
             business_permit_no=registration.business_permit_no,
+            business_permit_file=registration.business_permit_file.name,
 
             contact_no=registration.contact_no,
 
@@ -1379,10 +1360,18 @@ def _employer_dashboard_extras(employer, jobs, applications, now):
               applications.order_by().annotate(month=TruncMonth("applied_at")).values("month").annotate(total=Count("pk"))
               if item["month"]}
     import datetime as _dt
-    series = [{"label": _dt.date(y, m, 1).strftime("%b"), "total": counts.get((y, m), 0)} for y, m in months]
+    series = [{"label": _dt.date(y, m, 1).strftime("%b"), "month": _dt.date(y, m, 1).strftime("%B %Y"),
+               "total": counts.get((y, m), 0)} for y, m in months]
     series_top = max([item["total"] for item in series] + [1])
-    for item in series:
+    # Line chart geometry, in percent of the plot box (y = 0 at the top).
+    # The scale top is rounded up to an even number so the middle gridline is a whole number.
+    scale_top = max(2, series_top + series_top % 2)
+    last = len(series) - 1
+    for i, item in enumerate(series):
         item["percent"] = round(item["total"] / series_top * 100)
+        item["x"] = round(i / last * 100, 2)
+        item["y"] = round(100 - item["total"] / scale_top * 100, 2)
+    line = " ".join(f"{'M' if i == 0 else 'L'}{item['x']} {item['y']}" for i, item in enumerate(series))
 
     open_jobs = (jobs.filter(status="approved", deadline__gte=timezone.localdate())
                  .annotate(application_count=Count("applications")).order_by("deadline")[:5])
@@ -1393,6 +1382,8 @@ def _employer_dashboard_extras(employer, jobs, applications, now):
         "pipeline": [{"label": label, "count": count, "key": key, "percent": round(count / pipeline_top * 100)}
                      for label, count, key in pipeline],
         "month_series": series,
+        "month_chart": {"line": line, "area": f"{line} L100 100 L0 100 Z",
+                        "ticks": [{"value": scale_top, "y": 0}, {"value": scale_top // 2, "y": 50}, {"value": 0, "y": 100}]},
         "month_series_total": sum(item["total"] for item in series),
         "open_jobs": open_jobs,
     }
@@ -2193,7 +2184,6 @@ def applicants(request):
     jobs = employer.jobs.order_by('title')
     status = request.GET.get('status', '')
     skill = request.GET.get('skill', '').strip()[:60]
-    experience = request.GET.get('experience', '')
     job_id = request.GET.get('job', '')
     applications = JobApplication.objects.filter(job__employer=employer).select_related(
         'applicant', 'applicant__user', 'job', 'assessment',
@@ -2221,12 +2211,6 @@ def applicants(request):
         application.benchmark = compare(application, benchmarks, application.match['score'], confirmed, experiences)
         if skill and not any(skill_in_text(skill, s) or skill_in_text(s, skill) for s in confirmed):
             continue
-        if experience == 'relevant' and not matched_experience:
-            continue
-        if experience == 'any' and not experiences:
-            continue
-        if experience == 'none' and experiences:
-            continue
         results.append(application)
     sort = request.GET.get('sort', 'match')
     if sort == 'likelihood':
@@ -2243,7 +2227,7 @@ def applicants(request):
     return render(request, 'pages/applicants.html', {
         'applications':page, 'page_obj':page, 'result_count':len(results), 'filter_jobs':jobs,
         'status_choices':JobApplication.STATUS_CHOICES, 'filter_status':status,
-        'filter_skill':skill, 'filter_experience':experience, 'filter_job':job_id,
+        'filter_skill':skill, 'filter_job':job_id,
         'page_query':params.urlencode(), 'filter_sort':sort,
     })
 

@@ -101,8 +101,8 @@
                         <dd><span>{{ employer.contact_no }}</span><button type="button" class="cp-copy" data-copy="{{ employer.contact_no }}">Copy</button></dd>
                     </div>
                     <div>
-                        <dt>Business permit no.</dt>
-                        <dd><span>{{ employer.business_permit_no }}</span></dd>
+                        <dt>Business permit</dt>
+                        <dd><span>{% include 'components/business_permit.html' with emp=employer %}</span></dd>
                     </div>
                 </dl>
             </section>

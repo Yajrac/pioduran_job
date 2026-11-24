@@ -1,18 +1,16 @@
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
+from .permit_test_utils import TempPermitStorageMixin, registration_form
+
 from employer.models import EmployerRegistrationOTP
 
-FORM = {
-    'username': 'newcompany', 'email': 'hr@newcompany.example', 'password': 'Strong#2026', 'confirm_password': 'Strong#2026',
-    'company_name': 'New Company', 'business_permit_no': 'BP-777', 'contact_no': '09171234567', 'description': 'd',
-}
 
 
-class DemoSmsTests(TestCase):
+class DemoSmsTests(TempPermitStorageMixin, TestCase):
     @override_settings(DEBUG=True, OTP_DEV_MODE=True)
     def test_demo_mode_shows_the_code_on_the_verify_page(self):
-        self.client.post(reverse('employee-registration'), FORM)
+        self.client.post(reverse('employee-registration'), registration_form())
         code = EmployerRegistrationOTP.objects.get(username='newcompany').otp_code
         response = self.client.get(reverse('verify-employer-registration'))
         self.assertContains(response, 'DEMO MODE')

@@ -64,10 +64,11 @@ class HiredReportTests(TestCase):
         response = self.client.get(reverse('employer-dashboard'))
         self.assertContains(response, 'Time to Hire')
         self.assertIn('hiring_stats', response.context)
-        response = self.client.get(reverse('employer-reports'), {'export':'time-to-hire'})
+        response = self.client.get(reverse('employer-reports'), {'export':'pdf'})
         self.assertEqual(response['Content-Type'], 'application/pdf')
         text = '\n'.join(page.extract_text() for page in PdfReader(BytesIO(response.content)).pages)
-        self.assertIn('Time-to-Hire Analytics', text)
+        self.assertIn('Time to Hire', text)
+        self.assertIn('Per Job Post', text)
 
     def test_admin_pdf_includes_duration_column_and_analytics(self):
         response = self.client.get(self.url, {'section':'hired','export':'hired'})

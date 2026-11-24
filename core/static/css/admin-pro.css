@@ -707,3 +707,8 @@ body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-amber   { back
 body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-red     { background: #fcf0f1; border-color: #f1d9dc; }
 body.peso-admin-pages .dashboard-summary-cards .stat-card.summary-hiring  { background: #ebf6f6; border-color: #cfe7e7; }
 body.peso-admin-pages .dashboard-summary-cards .stat-card .summary-card-icon { background: rgba(255, 255, 255, .75); }
+
+/* Business permit link (uploaded file) in admin tables and details */
+body.peso-admin-pages .permit-link { color: var(--a-brand, #1d4ed8); font-weight: 600; text-decoration: none; white-space: nowrap; }
+body.peso-admin-pages .permit-link:hover, body.peso-admin-pages .permit-link:focus-visible { text-decoration: underline; }
+body.peso-admin-pages .permit-missing { color: var(--a-muted, #64748b); }

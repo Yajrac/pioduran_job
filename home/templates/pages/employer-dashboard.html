@@ -3,7 +3,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/company-profile-v2.css' %}">
-<link rel="stylesheet" href="{% static 'css/employer-dashboard-v2.css' %}?v=2">
+<link rel="stylesheet" href="{% static 'css/employer-dashboard-v2.css' %}?v=4">
 <div class="cp ed">
 
     <!-- Heading -->
@@ -46,14 +46,23 @@
                     <h2 id="ed-trend-title">Applications per month</h2>
                     <span class="ed-muted">Last 6 months &middot; {{ month_series_total }} total</span>
                 </header>
-                <div class="ed-bars" role="img" aria-label="Applications per month: {% for m in month_series %}{{ m.label }} {{ m.total }}{% if not forloop.last %}, {% endif %}{% endfor %}">
-                    {% for m in month_series %}
-                    <div class="ed-bar{% if forloop.last %} is-current{% endif %}">
-                        <span class="ed-bar-value">{{ m.total }}</span>
-                        <span class="ed-bar-track"><span class="ed-bar-fill" style="height:{{ m.percent }}%"></span></span>
-                        <span class="ed-bar-label">{{ m.label }}</span>
+                <div class="ed-line" role="group" aria-label="Applications per month chart: {% for m in month_series %}{{ m.month }} {{ m.total }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+                    <div class="ed-line-plot">
+                        {% for t in month_chart.ticks %}<span class="ed-line-grid" style="top:{{ t.y }}%"><span>{{ t.value }}</span></span>{% endfor %}
+                        <svg class="ed-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                            <defs><linearGradient id="edLineFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563eb" stop-opacity=".16"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></linearGradient></defs>
+                            <path d="{{ month_chart.area }}" fill="url(#edLineFill)"/>
+                            <path d="{{ month_chart.line }}" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                        </svg>
+                        {% for m in month_series %}
+                        <div class="ed-line-point{% if forloop.last %} is-current{% endif %}" style="left:{{ m.x }}%;--y:{{ m.y }}%" tabindex="0" aria-label="{{ m.month }}: {{ m.total }} application{{ m.total|pluralize }}">
+                            <span class="ed-line-dot"></span>
+                            <span class="ed-line-tip" role="tooltip"><strong>{{ m.total }}</strong> application{{ m.total|pluralize }}<small>{{ m.month }}</small></span>
+                            {% if forloop.last %}<span class="ed-line-value">{{ m.total }}</span>{% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+                    <div class="ed-line-labels" aria-hidden="true">{% for m in month_series %}<span{% if forloop.last %} class="is-current"{% endif %} style="left:{{ m.x }}%">{{ m.label }}</span>{% endfor %}</div>
                 </div>
             </section>
 
@@ -114,7 +123,7 @@
                     <li>
                         <a href="{% url 'applicants' %}?status={{ step.key }}">
                             <span class="ed-pipe-label">{{ step.label }}</span>
-                            <span class="ed-pipe-track" aria-hidden="true"><span style="width:{{ step.percent }}%"></span></span>
+                            <span class="ed-pipe-track is-{{ step.key }}" aria-hidden="true"><span style="width:{{ step.percent }}%"></span></span>
                             <strong>{{ step.count }}</strong>
                         </a>
                     </li>

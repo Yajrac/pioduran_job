@@ -1,9 +1,51 @@
 {% extends 'employer_base.html' %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/hiring-analytics.css' %}">
-<header class="dashboard-header"><h1>Reports</h1><p>Filter hiring dates and download your hiring report.</p></header>
-<form method="get" class="hiring-date-controls"><div><label for="hired_from">Hiring Date From</label><input type="date" id="hired_from" name="hired_from" value="{{ hired_from }}"></div><div><label for="hired_to">Hiring Date To</label><input type="date" id="hired_to" name="hired_to" value="{{ hired_to }}"></div><button type="submit">Apply Dates</button><button type="submit" name="export" value="time-to-hire">Download PDF</button><a href="{% url 'employer-reports' %}">Reset</a></form>
-{% if hiring_error %}<p role="alert">{{ hiring_error }}</p>{% endif %}
+<link rel="stylesheet" href="{% static 'css/hiring-analytics.css' %}?v=2">
+<header class="dashboard-header"><h1>Reports</h1><p>Job posts, applicants, rejections and hires for {{ employer.company_name }}. Filter by date and download the report as PDF.</p></header>
+<form method="get" class="hiring-date-controls">
+    <div><label for="date_from">Date From</label><input type="date" id="date_from" name="date_from" value="{{ date_from }}"></div>
+    <div><label for="date_to">Date To</label><input type="date" id="date_to" name="date_to" value="{{ date_to }}"></div>
+    <button type="submit">Apply Dates</button>
+    <button type="submit" name="export" value="pdf">Download PDF</button>
+    <a href="{% url 'employer-reports' %}">Reset</a>
+</form>
+{% if date_error %}<p role="alert" class="er-error">{{ date_error }}</p>{% endif %}
+
+<section class="er-cards" aria-label="Report summary">
+    <div class="er-card er-blue"><span>Job posts</span><strong>{{ report.totals.job_posts }}</strong><small>posted in this period</small></div>
+    <div class="er-card er-violet"><span>Applicants</span><strong>{{ report.totals.applications }}</strong><small>{{ report.totals.in_progress }} still in progress</small></div>
+    <div class="er-card er-rose"><span>Rejected</span><strong>{{ report.totals.rejected }}</strong><small>of the applicants above</small></div>
+    <div class="er-card er-green"><span>Hired</span><strong>{{ report.totals.hired }}</strong><small>hired in this period</small></div>
+</section>
+<p class="er-note">Job posts count by date posted, applicants and rejections by application date, and hires by hiring date.{% if not date_from and not date_to %} No dates selected, so all records are shown.{% endif %}</p>
+
+<section class="hiring-analytics" aria-labelledby="er-jobs-title">
+    <div class="hiring-analytics-heading"><h3 id="er-jobs-title">Per job post</h3><span>{{ report.rows|length }} job post{{ report.rows|length|pluralize }}</span></div>
+    {% if report.rows %}
+    <div class="hiring-analytics-table-wrap">
+        <table class="hiring-analytics-table er-table">
+            <thead><tr><th>Job post</th><th>Date posted</th><th>Status</th><th>Applicants</th><th>In progress</th><th>Rejected</th><th>Hired</th></tr></thead>
+            <tbody>
+                {% for job in report.rows %}
+                <tr>
+                    <td>{{ job.title }}</td>
+                    <td>{{ job.created_at|date:'M j, Y' }}</td>
+                    <td>{{ job.get_status_display }}</td>
+                    <td>{{ job.n_applications }}</td>
+                    <td>{{ job.n_in_progress }}</td>
+                    <td>{{ job.n_rejected }}</td>
+                    <td>{{ job.n_hired }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot><tr><th scope="row">Total</th><td></td><td></td><td>{{ report.totals.applications }}</td><td>{{ report.totals.in_progress }}</td><td>{{ report.totals.rejected }}</td><td>{{ report.totals.hired }}</td></tr></tfoot>
+        </table>
+    </div>
+    {% else %}
+    <p>No job posts or applications in this period.</p>
+    {% endif %}
+</section>
+
 {% include 'components/hiring_analytics.html' %}
 {% endblock %}

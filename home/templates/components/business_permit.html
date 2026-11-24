@@ -1,0 +1,2 @@
+{# Business permit for one employer (`emp`): a link to the uploaded file, or the permit number older accounts registered with. #}
+{% if emp.business_permit_file %}<a href="{% url 'business-permit' emp.pk %}" target="_blank" rel="noopener noreferrer" class="permit-link">View permit<span class="visually-hidden"> (opens in a new tab)</span></a>{% elif emp.business_permit_no %}<code class="permit-code">{{ emp.business_permit_no }}</code>{% else %}<span class="permit-missing">Not provided</span>{% endif %}

@@ -484,7 +484,7 @@
                     <tr>
 
                         <th>Company Name</th>
-                        <th>Business Permit No.</th>
+                        <th>Business Permit</th>
                         <th>Contact No.</th>
                         <th>Job Title</th>
                         <th>Status</th>
@@ -538,9 +538,7 @@
 
                         <td>
 
-                            <code class="permit-code">
-                                {{ i.employer.business_permit_no }}
-                            </code>
+                            {% include 'components/business_permit.html' with emp=i.employer %}
 
                         </td>
 

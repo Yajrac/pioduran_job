@@ -4,3 +4,19 @@
 .hiring-date-controls { display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin:24px 0 12px; }.hiring-date-controls label { display:block; margin-bottom:6px; font-size:11px; color:#15284b; }.hiring-date-controls input,.hiring-date-controls button,.hiring-date-controls a { min-height:40px; padding:9px 12px; border:1px solid #d9dde4; border-radius:7px; background:#fff; color:#15284b; font:inherit; font-size:12px; text-decoration:none; }.hiring-date-controls button { cursor:pointer; }.hiring-date-controls button[name=export] { background:#2563eb; color:#fff; border-color:#2563eb; }
 @media screen { #report-hired .hiring-analytics { margin:20px 24px; } }
 @media print { .hiring-date-controls { display:none; }.hiring-analytics { padding:10px; margin:10px 0; }.hiring-analytics-table { min-width:0; } }
+
+/* Employer reports: summary cards + per-job table */
+.er-cards { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin:8px 0 10px; }
+.er-card { display:grid; gap:2px; padding:16px 18px; border:1px solid; border-radius:12px; color:#15284b; }
+.er-card span { font-size:12.5px; font-weight:600; }
+.er-card strong { font-size:28px; font-weight:800; line-height:1.25; }
+.er-card small { color:#475569; font-size:12px; }
+.er-blue { background:#eef4fd; border-color:#d6e4f8; }
+.er-violet { background:#f3f0fb; border-color:#e0d8f3; }
+.er-rose { background:#fcf0f1; border-color:#f1d9dc; }
+.er-green { background:#edf7f1; border-color:#d3eadb; }
+.er-note { margin:0 0 4px; color:#475569; font-size:12px; }
+.er-error { color:#b91c1c; font-size:13px; }
+.er-table td:nth-child(n+4), .er-table th:nth-child(n+4) { text-align:right; font-variant-numeric:tabular-nums; }
+.er-table tfoot th, .er-table tfoot td { background:#f8fafc; font-weight:700; border-bottom:0; }
+@media (max-width:900px) { .er-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } }

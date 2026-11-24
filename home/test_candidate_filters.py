@@ -21,17 +21,18 @@ class CandidateFilterTests(TestCase):
         self.url = reverse('applicants')
 
     def test_combined_filters_and_explanation(self):
-        response = self.client.get(self.url, {'skill':'Inventory','experience':'relevant','status':'shortlisted','job':self.job.pk})
+        response = self.client.get(self.url, {'skill':'Inventory','status':'shortlisted','job':self.job.pk})
         self.assertContains(response, 'Candidate0')
         self.assertNotContains(response, 'Candidate1')
         self.assertContains(response, 'Matched skills:')
         self.assertContains(response, 'Store Assistant at Sample Store')
         self.assertEqual(response.context['result_count'], 1)
 
-    def test_no_experience_filter(self):
-        response = self.client.get(self.url, {'experience':'none'})
-        self.assertContains(response, 'Candidate1')
-        self.assertNotContains(response, 'Candidate0')
+    def test_filters_apply_automatically_without_experience_filter(self):
+        response = self.client.get(self.url)
+        self.assertNotContains(response, 'Apply Filters')
+        self.assertNotContains(response, 'candidateExperience')
+        self.assertContains(response, 'candidate-filters.js')
 
     def test_foreign_job_and_bad_job_id_do_not_leak_records(self):
         for value in ['999999', 'not-a-number']:

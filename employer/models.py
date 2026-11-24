@@ -3,6 +3,7 @@ from user.models import User
 from applicant.models import Applicant
 from django.utils import timezone
 from .job_categories import CATEGORY_CHOICES
+from .permit_storage import permit_path, permit_storage
 
 
 class Employer(models.Model):
@@ -12,7 +13,9 @@ class Employer(models.Model):
     reviewed_at = models.DateTimeField(null=True, blank=True)
     employer = models.OneToOneField(User, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255)
-    business_permit_no = models.CharField(max_length=255, unique=True)
+    # Older employers registered with a permit number; new ones upload the permit itself.
+    business_permit_no = models.CharField(max_length=255, blank=True, default='')
+    business_permit_file = models.FileField(storage=permit_storage, upload_to=permit_path, blank=True)
     contact_no = models.CharField(max_length=11, unique=True)
     description = models.TextField()
     company_logo = models.ImageField(upload_to="company_logo")
@@ -25,7 +28,8 @@ class EmployerRegistrationOTP(models.Model):
     password = models.CharField(max_length=255)
 
     company_name = models.CharField(max_length=255)
-    business_permit_no = models.CharField(max_length=255)
+    business_permit_no = models.CharField(max_length=255, blank=True, default='')
+    business_permit_file = models.FileField(storage=permit_storage, upload_to=permit_path, blank=True)
     contact_no = models.CharField(max_length=11)
 
     description = models.TextField(

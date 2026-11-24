@@ -3,6 +3,8 @@ from unittest.mock import patch
 
 from django.test import TestCase, override_settings
 from django.urls import reverse
+
+from .permit_test_utils import TempPermitStorageMixin, registration_form
 from django.utils import timezone
 
 from applicant.models import Applicant
@@ -10,17 +12,13 @@ from employer.models import Employer, JobApplication, JobPost
 from home.sms import SMSResult, SMS_BRAND
 from user.models import User
 
-FORM = {
-    'username': 'newcompany', 'email': 'hr@newcompany.example', 'password': 'Strong#2026', 'confirm_password': 'Strong#2026',
-    'company_name': 'New Company', 'business_permit_no': 'BP-777', 'contact_no': '09171234567', 'description': 'd',
-}
 
 
 @override_settings(DEBUG=False, OTP_DEV_MODE=False)
-class SmsBrandingTests(TestCase):
+class SmsBrandingTests(TempPermitStorageMixin, TestCase):
     @patch('home.views.send_sms', return_value=SMSResult(True, 'test'))
     def test_employer_otp_names_the_portal(self, send):
-        self.client.post(reverse('employee-registration'), FORM)
+        self.client.post(reverse('employee-registration'), registration_form())
         self.assertTrue(send.call_args.args[1].startswith(f'{SMS_BRAND}: '))
 
     @patch('home.views.send_sms', return_value=SMSResult(True, 'test'))

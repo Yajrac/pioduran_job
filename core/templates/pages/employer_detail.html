@@ -275,8 +275,8 @@
                         <td>{{ employer.employer.email }}</td>
                     </tr>
                     <tr>
-                        <th>Business Permit No.</th>
-                        <td><code class="permit-code">{{ employer.business_permit_no }}</code></td>
+                        <th>Business Permit</th>
+                        <td>{% include 'components/business_permit.html' with emp=employer %}</td>
                     </tr>
                     <tr>
                         <th>Contact Hotline Number</th>

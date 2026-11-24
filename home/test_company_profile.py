@@ -13,7 +13,7 @@ class CompanyProfileTests(TestCase):
         self.client.force_login(self.user)
 
     def payload(self, **changes):
-        data = dict(company_name='Updated Company', contact_no='09123456789', description='Updated', email='new@example.com')
+        data = dict(company_name='Updated Company', contact_no='09123456789', description='Updated description of the company.', email='new@example.com')
         data.update(changes)
         return data
 

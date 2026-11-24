@@ -7,6 +7,8 @@ from .profile_photo import profile_photo
 from .skill_review import review_resume_skills
 from .employer_approval import approval_status
 from .assessment_views import review_applicant
+from .applicant_profile_views import employer_applicant_profile
+from .permit_views import business_permit
 from .password_views import AccountPasswordChangeView
 from .report_views import employer_reports
 from . import document_views
@@ -24,6 +26,8 @@ urlpatterns = [
     path('account/change-password/', AccountPasswordChangeView.as_view(), name='change-password'),
     path('account/password-changed/', AccountPasswordChangeView.as_view(extra_context={'password_changed': True}), name='change-password-done'),
     path('employer/applications/<int:pk>/review/', review_applicant, name='review-applicant'),
+    path('employer/applications/<int:pk>/profile/', employer_applicant_profile, name='employer-applicant-profile'),
+    path('employers/<int:pk>/business-permit/', business_permit, name='business-permit'),
     path('employer/approval-status/', approval_status, name='employer-approval-status'),
     path('applicant/profile/review-skills/', review_resume_skills, name='review-resume-skills'),
     path('applicant/profile/photo/', profile_photo, name='applicant-profile-photo'),

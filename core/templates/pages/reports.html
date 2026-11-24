@@ -662,7 +662,7 @@
                     <tr>
                         <th>No.</th>
                         <th>Company Name</th>
-                        <th>Business Permit No.</th>
+                        <th>Business Permit</th>
                         <th>Contact No.</th>
                         <th>Status</th>
                         <th>Date Registered</th>
@@ -674,7 +674,7 @@
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ employer.company_name|default:"—" }}</td>
-                            <td>{{ employer.business_permit_no|default:"—" }}</td>
+                            <td>{% if employer.business_permit_file %}Uploaded{% else %}{{ employer.business_permit_no|default:"—" }}{% endif %}</td>
                             <td>{{ employer.contact_no|default:"—" }}</td>
                             <td>
                                 {% if employer.is_active %}

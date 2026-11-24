@@ -974,9 +974,12 @@
                                 name="username" aria-describedby="username-feedback" value="{{ form_values.username|default:'' }}"
                                 placeholder="Enter portal username"
                                 autocomplete="username"
+                                minlength="4"
+                                maxlength="30"
                                 required
                             >
 <p class="field-feedback" id="username-feedback" aria-live="polite">{{ field_errors.username }}</p>
+                            <div class="field-help">4–30 characters. Start with a letter; letters, numbers, dots (.) or underscores (_).</div>
 
                         </div>
 
@@ -1204,25 +1207,28 @@
                                 id="company_name"
                                 name="company_name" aria-describedby="company_name-feedback" value="{{ form_values.company_name|default:'' }}"
                                 placeholder="Registered commercial entity name"
+                                maxlength="150"
                              required>
 <p class="field-feedback" id="company_name-feedback" aria-live="polite">{{ field_errors.company_name }}</p>
+                            <div class="field-help">As written on your permit, e.g. Rawis General Merchandise or J&amp;B Trading Co.</div>
 
                         </div>
 
 
                         <div class="field-group">
 
-                            <label for="permit_no">
-                                Business Permit No.
+                            <label for="permit_file">
+                                Business Permit
                             </label>
 
                             <input
-                                type="text"
-                                id="permit_no"
-                                name="business_permit_no" aria-describedby="permit_no-feedback" value="{{ form_values.business_permit_no|default:'' }}"
-                                placeholder="e.g., BP-2026-XXXXX"
+                                type="file"
+                                id="permit_file"
+                                name="business_permit_file" aria-describedby="permit_file-feedback permit_file-help"
+                                accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
                              required>
-<p class="field-feedback" id="permit_no-feedback" aria-live="polite">{{ field_errors.business_permit_no }}</p>
+<p class="field-feedback" id="permit_file-feedback" aria-live="polite">{{ field_errors.business_permit_file }}</p>
+                            <div class="field-help" id="permit_file-help">Upload a clear scan or photo of your current business permit (PDF, JPG or PNG, up to 5 MB). Only PESO can view it.</div>
 
                         </div>
 
@@ -1267,12 +1273,13 @@
                             <input
                                 type="file"
                                 id="company_logo"
-                                name="company_logo"
-                                accept="image/*"
+                                name="company_logo" aria-describedby="company_logo-feedback"
+                                accept="image/png,image/jpeg,image/webp"
                             >
+<p class="field-feedback" id="company_logo-feedback" aria-live="polite">{{ field_errors.company_logo }}</p>
 
                             <div class="field-help">
-                                Upload a clear company logo for your employer profile.
+                                Optional. PNG, JPG or WebP image, up to 5 MB.
                             </div>
 
                         </div>
@@ -1288,9 +1295,14 @@
 
                         <textarea
                             id="company_description"
-                            name="description"
+                            name="description" aria-describedby="company_description-feedback company_description-count"
+                            minlength="20"
+                            maxlength="1000"
+                            required
                             placeholder="Briefly describe your company's industry, core operations, and mission..."
-                        ></textarea>
+                        >{{ form_values.description|default:'' }}</textarea>
+<p class="field-feedback" id="company_description-feedback" aria-live="polite">{{ field_errors.description }}</p>
+                        <div class="field-help" id="company_description-count">At least 20 characters.</div>
 
                     </div>
 
@@ -1729,7 +1741,7 @@
 
 </script>
 
-<script src="{% static 'js/employer-validation.js' %}" data-username-url="{% url 'check-registration-username' %}" data-company-url="{% url 'check-registration-company' %}"></script>
+<script src="{% static 'js/employer-validation.js' %}?v=2" data-username-url="{% url 'check-registration-username' %}" data-company-url="{% url 'check-registration-company' %}"></script>
 <script src="{% static 'js/password-toggle.js' %}?v=2"></script>
 <script src="{% static 'js/email-availability.js' %}?v=2" data-email-url="{% url 'check-registration-email' %}"></script>
 {% endblock %}

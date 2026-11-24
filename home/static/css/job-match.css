@@ -36,3 +36,20 @@
 /* "4 of 4 required skills" headline (the 0-100 score is no longer shown) */
 .jm-score.jm-skills strong { font-size: 18px; }
 .jm-score.jm-skills span { font-size: 13px; }
+
+/* "View details" opens a modal instead of expanding inside the table row */
+.jm-details-open { width: fit-content; padding: 0; border: 0; background: none; color: #1d4ed8; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.jm-details-open:hover, .jm-details-open:focus-visible { text-decoration: underline; }
+.jm-modal { box-sizing: border-box; width: calc(100% - 32px); max-width: 520px; max-height: calc(100dvh - 32px); margin: auto; padding: 0; overflow: auto; border: 1px solid #dfe2e8; border-radius: 16px; background: #fff; color: #15284b; box-shadow: 0 24px 80px rgba(16, 47, 36, .2); }
+.jm-modal::backdrop { background: rgba(16, 42, 34, .4); backdrop-filter: blur(3px); }
+.jm-modal-head { position: sticky; top: 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px 20px 14px; border-bottom: 1px solid #eef2f6; background: #fff; }
+.jm-modal-head h2 { margin: 0; color: #0f172a; font-size: 17px; font-weight: 700; }
+.jm-modal-head p { margin: 2px 0 0; color: #64748b; font-size: 13px; }
+.jm-modal-close { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; padding: 0; border: 0; border-radius: 8px; background: #f1f5f9; color: #334155; font-size: 20px; line-height: 1; cursor: pointer; }
+.jm-modal-close:hover, .jm-modal-close:focus-visible { background: #e2e8f0; }
+.jm-modal .jm-details-body { gap: 10px; margin: 0; padding: 16px 20px 20px; border: 0; border-radius: 0; background: #fff; }
+.jm-modal .jm-details-body p { font-size: 13.5px; }
+@media (prefers-reduced-motion: no-preference) {
+  .jm-modal[open] { animation: jm-modal-in .18s ease-out; }
+  @keyframes jm-modal-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+}

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/job-match.css' %}?v=2">
+<link rel="stylesheet" href="{% static 'css/job-match.css' %}?v=3">
 <style>
     /* --- Container & Layout --- */
     .applicants-container {
@@ -103,6 +103,12 @@
         font-size: 0.975rem;
     }
 
+    .candidate-action-menu .btn-action { display: flex; align-items: center; gap: 8px; }
+    .candidate-action-menu .btn-icon { width: 15px; height: 15px; flex-shrink: 0; }
+
+    a.applicant-name { text-decoration: none; }
+    a.applicant-name:hover, a.applicant-name:focus-visible { color: #1d4ed8; text-decoration: underline; }
+
     .applicant-email {
         font-size: 0.85rem;
         color: #15284b;
@@ -172,10 +178,10 @@
     .btn-shortlist:hover { background-color: #f0f9ff; }
 
     .btn-accept { background-color: var(--gov-green); color: #ffffff; }
-    .btn-accept:hover { background-color: var(--gov-green-light); }
+    .employer-portal .btn-accept:hover, .employer-portal .btn-accept:focus-visible { background-color: #1d4ed8; border-color: #1d4ed8; color: #ffffff; }
 
     .btn-reject { background-color: var(--gov-red); color: #ffffff; }
-    .btn-reject:hover { background-color: #991b1b; }
+    .employer-portal .btn-reject:hover, .employer-portal .btn-reject:focus-visible { background-color: #f8dcd8; border-color: #e9b8b2; color: #8f2a24; }
 
     .btn-resume {
         border-color: #cbd5e1;
@@ -211,13 +217,12 @@
         </div>
     </div>
 
-    <form method="get" class="candidate-filters">
+    <form method="get" class="candidate-filters" id="candidateFilters">
         <div><label for="candidateSkill">Confirmed skill</label><input type="search" id="candidateSkill" name="skill" maxlength="60" value="{{ filter_skill }}" placeholder="e.g. Customer Service"></div>
         <div><label for="candidateJob">Job position</label><select id="candidateJob" name="job"><option value="">All positions</option>{% for job in filter_jobs %}<option value="{{ job.pk }}" {% if filter_job == job.pk|stringformat:'s' %}selected{% endif %}>{{ job.title }}</option>{% endfor %}</select></div>
         <div><label for="candidateStatus">Status</label><select id="candidateStatus" name="status"><option value="">All statuses</option>{% for value,label in status_choices %}<option value="{{ value }}" {% if filter_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
-        <div><label for="candidateExperience">Work experience</label><select id="candidateExperience" name="experience"><option value="">All applicants</option><option value="relevant" {% if filter_experience == 'relevant' %}selected{% endif %}>Relevant experience</option><option value="any" {% if filter_experience == 'any' %}selected{% endif %}>Has experience</option><option value="none" {% if filter_experience == 'none' %}selected{% endif %}>No experience added</option></select></div>
         <div><label for="candidateSort">Sort by</label><select id="candidateSort" name="sort"><option value="match" {% if filter_sort == 'match' %}selected{% endif %}>Most skills matched</option><option value="likelihood" {% if filter_sort == 'likelihood' %}selected{% endif %}>Likelihood of Success</option><option value="recent" {% if filter_sort == 'recent' %}selected{% endif %}>Newest Application</option></select></div>
-        <button type="submit">Apply Filters</button><a href="{% url 'applicants' %}">Reset</a>
+        <a href="{% url 'applicants' %}">Reset</a>
     </form>
     <div class="candidate-results-bar"><strong role="status">{{ result_count }} application{{ result_count|pluralize }} found</strong><details><summary>How matching works</summary><p>Each applicant's confirmed skills are compared with the job's required skills. When the job requires work experience, applicants with related experience are listed higher. Compare applicants for the same position. This helps you review; it does not decide who gets hired.</p></details></div>
     <!-- MAIN DATA INTERFACE PANEL -->
@@ -240,7 +245,7 @@
                         <!-- Candidate Identity Details -->
                         <td>
                             <div class="applicant-info">
-                                <span class="applicant-name">{{ application.applicant.first_name }} {{ application.applicant.last_name }}</span>
+                                <a class="applicant-name" href="{% url 'employer-applicant-profile' application.pk %}" title="View full profile">{{ application.applicant.first_name }} {{ application.applicant.last_name }}</a>
                                 <span class="applicant-email">{{ application.applicant.email }}</span>
 
                             </div>
@@ -279,8 +284,15 @@
                                     {% endif %}
                                 </ul>
 
-                                <details class="jm-details">
-                                    <summary>Details</summary>
+                                <button type="button" class="jm-details-open" data-dialog="jm-details-{{ application.pk }}" aria-haspopup="dialog">View details</button>
+                                <dialog class="jm-modal" id="jm-details-{{ application.pk }}" aria-labelledby="jm-details-title-{{ application.pk }}">
+                                    <header class="jm-modal-head">
+                                        <div>
+                                            <h2 id="jm-details-title-{{ application.pk }}">{{ application.applicant.first_name }} {{ application.applicant.last_name }}</h2>
+                                            <p>{{ application.job.title }}</p>
+                                        </div>
+                                        <button type="button" class="jm-modal-close" data-close aria-label="Close details">&times;</button>
+                                    </header>
                                     <div class="jm-details-body">
                                         {% if application.match.score != None %}
                                         <p><strong>Matched skills:</strong> {{ application.match.matched|join:', '|default:'None' }}</p>
@@ -302,7 +314,7 @@
                                         <p><strong>Benchmark:</strong> needs at least 3 employees who passed probation in this job category.</p>
                                         {% endif %}
                                     </div>
-                                </details>
+                                </dialog>
                             </div>
                         </td>
                         <!-- Submission Timestamp -->
@@ -328,14 +340,14 @@
                         <!-- Workflow Form Controls -->
                         <td>
                             <button type="button" class="candidate-actions-toggle" popovertarget="candidate-actions-{{ application.pk }}" aria-label="Actions for {{ application.applicant.first_name }} {{ application.applicant.last_name }}" aria-controls="candidate-actions-{{ application.pk }}" title="Applicant actions">&#8942;</button>
-                            <div class="action-group candidate-action-menu" id="candidate-actions-{{ application.pk }}" popover><a href="{% url 'review-applicant' application.pk %}" class="btn-action btn-review">Review Applicant</a>
+                            <div class="action-group candidate-action-menu" id="candidate-actions-{{ application.pk }}" popover><a href="{% url 'employer-applicant-profile' application.pk %}" class="btn-action btn-review"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>View Profile</a><a href="{% url 'review-applicant' application.pk %}" class="btn-action btn-review"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9zM9 14l2 2 4-4"/></svg>Assessment</a>
                                 <!-- View Resume Action -->
                                 {% for certificate in application.applicant.certificates.all %}
-                                    <a href="{% url 'certificate-file' certificate.pk %}" target="_blank" rel="noopener" class="btn-action btn-resume" title="View certificate: {{ certificate.title }}">{{ certificate.title }}</a>
+                                    <a href="{% url 'certificate-file' certificate.pk %}" target="_blank" rel="noopener" class="btn-action btn-resume" title="View certificate: {{ certificate.title }}"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="m9 12-2 9 5-3 5 3-2-9"/></svg>{{ certificate.title }}</a>
                                 {% endfor %}
                                 {% if application.applicant.resume %}
                                     <a href="{% url 'application-document' application.pk 'resume' %}" target="_blank" class="btn-action btn-resume" title="View Resume File">
-                                        Resume
+                                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7l-4-4ZM14 3v4h4M9 13h6M9 17h4"/></svg>Resume
                                     </a>
                                 {% endif %}
 
@@ -345,19 +357,19 @@
                                     {% csrf_token %}
                                     
                                     {% if application.status != 'reviewing' %}
-                                        <button type="submit" name="status" value="reviewing" class="btn-action btn-review">Review</button>
+                                        <button type="submit" name="status" value="reviewing" class="btn-action btn-review"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>Review</button>
                                     {% endif %}
                                     
                                     {% if application.status != 'shortlisted' %}
-                                        <button type="submit" name="status" value="shortlisted" class="btn-action btn-shortlist">Shortlist</button>
+                                        <button type="submit" name="status" value="shortlisted" class="btn-action btn-shortlist"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9Z"/></svg>Shortlist</button>
                                     {% endif %}
                                     
                                     {% if application.status != 'offered' %}
-                                        <button type="submit" name="status" value="offered" class="btn-action btn-accept">Send Offer</button>
+                                        <button type="submit" name="status" value="offered" class="btn-action btn-accept"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z"/></svg>Send Offer</button>
                                     {% endif %}
                                     
                                     {% if application.status != 'rejected' %}
-                                        <button type="submit" name="status" value="rejected" class="btn-action btn-reject">Reject</button>
+                                        <button type="submit" name="status" value="rejected" class="btn-action btn-reject"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg>Reject</button>
                                     {% endif %}
                                 </form>
 {% endif %}
@@ -381,4 +393,6 @@
 </div>
 <nav class="candidate-pagination" aria-label="Applicant list pages">{% if page_obj.has_previous %}<a href="?{{ page_query }}&amp;page={{ page_obj.previous_page_number }}">Previous</a>{% endif %}<span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>{% if page_obj.has_next %}<a href="?{{ page_query }}&amp;page={{ page_obj.next_page_number }}">Next</a>{% endif %}</nav>
 <script src="{% static 'js/candidate-actions.js' %}"></script>
+<script src="{% static 'js/match-details-modal.js' %}"></script>
+<script src="{% static 'js/candidate-filters.js' %}"></script>
 {% endblock %}

@@ -1,11 +1,50 @@
 (() => {
  const endpoint = document.currentScript.dataset.usernameUrl;
  const companyEndpoint = document.currentScript.dataset.companyUrl;
- const companyFields = {company_name:'company_name', permit_no:'business_permit_no', contact_no:'contact_no'};
+ const companyFields = {company_name:'company_name', contact_no:'contact_no'};
  const companyChecks = {};
  const companyTimers = {};
  const form = document.getElementById('registrationForm');
- const ids = ['username','email','password','confirm_password','company_name','permit_no','contact_no'];
+ const ids = ['username','email','password','confirm_password','company_name','permit_file','contact_no','company_logo','company_description'];
+ const MAX_UPLOAD = 5 * 1024 * 1024;
+ // Same format rules as the server (home/registration_validation.py).
+ function usernameFormatError(value) {
+  return /^[A-Za-z][A-Za-z0-9._]{3,29}$/.test(value) ? '' : 'Use 4 to 30 characters: start with a letter, then letters, numbers, dots or underscores.';
+ }
+ function companyNameError(value) {
+  value = value.replace(/\s+/g, ' ').trim();
+  if (!value) return 'Company name is required.';
+  if (value.length < 2 || value.length > 150) return 'Company name must be 2 to 150 characters.';
+  if (!/\p{L}/u.test(value)) return 'Company name must contain letters.';
+  if (!/^[\p{L}\p{N}\p{M} .,&'()\/-]+$/u.test(value)) return "Use letters, numbers, spaces and . , & ' - ( ) / only.";
+  return '';
+ }
+ function fileError(field) {
+  const file = field.files && field.files[0];
+  if (field.id === 'permit_file') {
+   if (!file) return 'Upload your business permit.';
+   if (!/\.(pdf|jpe?g|png)$/i.test(file.name)) return 'Upload the permit as a PDF, JPG or PNG file.';
+   if (file.size > MAX_UPLOAD) return 'Business permit must not exceed 5 MB.';
+  } else if (file) {
+   if (!/\.(png|jpe?g|webp)$/i.test(file.name)) return 'Upload a PNG, JPEG, or WebP image.';
+   if (file.size > MAX_UPLOAD) return 'Logo must not exceed 5 MB.';
+  }
+  return '';
+ }
+ function descriptionError(value) {
+  const length = value.trim().length;
+  if (length < 20) return 'Describe your company in at least 20 characters.';
+  if (length > 1000) return 'Keep the description to 1000 characters or fewer.';
+  return '';
+ }
+ const description = document.getElementById('company_description');
+ const descriptionCount = document.getElementById('company_description-count');
+ function updateCount() {
+  const length = description.value.trim().length;
+  descriptionCount.textContent = length < 20 ? `${length} / 1000 characters (at least 20).` : `${length} / 1000 characters.`;
+ }
+ description.addEventListener('input', updateCount);
+ if (description.value) updateCount();
  const touched = new Set();
  const attemptedSteps = new Set();
  let checked = '', available = false, revision = 0, timer;
@@ -22,7 +61,14 @@
   let error = '';
   if (id === 'username') {
    if (!value) error = 'Username is required.';
+   else if (usernameFormatError(value)) error = usernameFormatError(value);
    else if (checked !== value || !available) { checkUsername(); return false; }
+  } else if (id === 'permit_file' || id === 'company_logo') {
+   error = fileError(field);
+   paint(field, error, !error && Boolean(field.files && field.files.length));
+   return !error;
+  } else if (id === 'company_description') {
+   error = descriptionError(field.value);
   } else if (id === 'confirm_password') {
    if (!field.value || field.value !== document.getElementById('password').value) error = 'Passwords do not match.';
   } else if (id === 'password') {
@@ -30,6 +76,7 @@
   } else if (!value) error = 'This field is required.';
   else if (id === 'email' && field.validity.typeMismatch) error = 'Enter a valid email address.';
   else if (id === 'contact_no' && !/^09[0-9]{9}$/.test(value)) error = 'Enter an 11-digit mobile number starting with 09.';
+  else if (id === 'company_name') error = companyNameError(value);
   if (!error && companyFields[id]) {
    const result = companyChecks[id];
    if (!result || result.value !== value) { checkCompany(id); return false; }
@@ -41,9 +88,12 @@
  async function checkCompany(id) {
   const field = document.getElementById(id), value = field.value.trim();
   clearTimeout(companyTimers[id]);
-  if (!value || (id === 'contact_no' && !/^09[0-9]{9}$/.test(value))) {
+  const formatError = !value ? 'This field is required.'
+   : id === 'contact_no' && !/^09[0-9]{9}$/.test(value) ? 'Enter an 11-digit mobile number starting with 09.'
+   : id === 'company_name' ? companyNameError(value) : '';
+  if (formatError) {
    delete companyChecks[id];
-   paint(field, !value ? 'This field is required.' : 'Enter an 11-digit mobile number starting with 09.', false);
+   paint(field, formatError, false);
    return;
   }
   const check = {value, error:'Checking availability...', pending:true};
@@ -68,9 +118,10 @@
  async function checkUsername() {
   const field = document.getElementById('username'), value = field.value.trim(), version = ++revision;
   if (!value) { paint(field,'Username is required.',false); return; }
+  if (usernameFormatError(value)) { paint(field, usernameFormatError(value), false); return; }
   paint(field, 'Checking username…', false);
   try {
-   const response = await fetch(endpoint + '?username=' + encodeURIComponent(value), {cache:'no-store'});
+   const response = await fetch(endpoint + '?role=employer&username=' + encodeURIComponent(value), {cache:'no-store'});
    if (!response.ok) throw new Error();
    const data = await response.json();
    if (version !== revision || field.value.trim() !== value) return;
@@ -79,7 +130,9 @@
  }
  ids.forEach(id => {
   const field = document.getElementById(id);
+  if (field.type === 'file') field.addEventListener('change', () => { touched.add(id); validate(id); });
   field.addEventListener('input', () => {
+   if (field.type === 'file') return;
    touched.add(id);
    if (companyFields[id]) {
     clearTimeout(companyTimers[id]);

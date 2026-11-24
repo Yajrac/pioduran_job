@@ -51,8 +51,14 @@
             <div class="cp-field cp-span-2">
                 <label for="{{ form.description.id_for_label }}">About the company <span class="cp-req">*</span></label>
                 {{ form.description }}
-                <span class="cp-help"><span id="aboutCount">0</span> characters &middot; aim for at least 100 so applicants know what you do.</span>
+                <span class="cp-help"><span id="aboutCount">0</span> / 1000 characters &middot; at least 20 (aim for 100 so applicants know what you do).</span>
                 {% for error in form.description.errors %}<span class="cp-error" role="alert">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="cp-field cp-span-2">
+                <label for="{{ form.business_permit_file.id_for_label }}">Business permit</label>
+                {{ form.business_permit_file }}
+                <span class="cp-help">{% if employer.business_permit_file %}Uploaded &middot; {% include 'components/business_permit.html' with emp=employer %} &middot; choose a file only to replace it.{% elif employer.business_permit_no %}Permit no. {{ employer.business_permit_no }} on record. Upload a scan or photo of the permit (PDF, JPG or PNG, up to 5 MB).{% else %}Upload a scan or photo of the permit (PDF, JPG or PNG, up to 5 MB).{% endif %} Only PESO can view it.</span>
+                {% for error in form.business_permit_file.errors %}<span class="cp-error" role="alert">{{ error }}</span>{% endfor %}
             </div>
         </div>
 

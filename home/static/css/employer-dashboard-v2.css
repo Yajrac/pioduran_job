@@ -83,3 +83,33 @@
 .ed .cp-stat:nth-child(3) { background: #fdf6e9; border-color: #f1e2c2; }
 .ed .cp-stat:nth-child(4) { background: #edf7f1; border-color: #d3eadb; }
 .ed .cp-stat:hover { border-color: #93c5fd; }
+
+/* Applications per month: line + soft area chart (replaces the bar columns) */
+.ed-line { padding: 8px 4px 0 32px; }
+.ed-line-plot { position: relative; height: 180px; margin: 0 14px; }
+.ed-line-grid { position: absolute; left: -14px; right: -14px; height: 0; border-top: 1px dashed #e8edf3; }
+.ed-line-grid:last-of-type { border-top: 1px solid #dfe5ec; }
+.ed-line-grid > span { position: absolute; right: calc(100% + 8px); top: -8px; color: #94a3b8; font-size: 11px; font-variant-numeric: tabular-nums; }
+.ed-line-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ed-line-point { position: absolute; top: 0; bottom: 0; width: 48px; margin-left: -24px; outline: none; cursor: default; }
+.ed-line-dot { position: absolute; left: 50%; top: var(--y); width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border: 2px solid #fff; border-radius: 50%; background: #2563eb; box-shadow: 0 0 0 1px #2563eb; transition: transform .12s ease; }
+.ed-line-point.is-current .ed-line-dot { width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; }
+.ed-line-point:hover .ed-line-dot, .ed-line-point:focus-visible .ed-line-dot { transform: scale(1.35); }
+.ed-line-point:hover::before, .ed-line-point:focus-visible::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px solid #cbd5e1; }
+.ed-line-value { position: absolute; left: 50%; top: var(--y); transform: translate(-50%, -26px); color: #15284b; font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ed-line-tip { position: absolute; left: 50%; top: var(--y); z-index: 2; display: none; transform: translate(-50%, calc(-100% - 14px)); padding: 7px 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; box-shadow: 0 6px 18px rgba(15, 23, 42, .1); color: #334155; font-size: 12px; white-space: nowrap; text-align: center; }
+.ed-line-tip strong { color: #15284b; font-size: 14px; }
+.ed-line-tip small { display: block; color: #64748b; font-size: 11.5px; }
+.ed-line-point:hover .ed-line-tip, .ed-line-point:focus-visible .ed-line-tip { display: block; }
+.ed-line-point:hover .ed-line-value, .ed-line-point:focus-visible .ed-line-value { visibility: hidden; }
+.ed-line-labels { position: relative; height: 20px; margin: 10px 14px 0; }
+.ed-line-labels span { position: absolute; transform: translateX(-50%); color: #64748b; font-size: 12px; }
+.ed-line-labels span.is-current { color: #15284b; font-weight: 700; }
+
+/* Hiring pipeline: one colour per stage (the label beside each bar names it) */
+.ed-pipe-track.is-pending span { background: #fbbf24; }
+.ed-pipe-track.is-reviewing span { background: #60a5fa; }
+.ed-pipe-track.is-shortlisted span { background: #a78bfa; }
+.ed-pipe-track.is-offered span { background: #2dd4bf; }
+.ed-pipe-track.is-hired span { background: #4ade80; }
+.ed-pipe-track.is-rejected span { background: #f87171; }
