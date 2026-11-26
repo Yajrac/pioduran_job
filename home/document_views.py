@@ -1,40 +1,24 @@
-"""Access-controlled downloads for resumes and cover letters.
+"""Access-controlled, view-only resumes and cover letters (see document_viewer.py).
 
 These files contain personal data, so they are never linked through the
 public /media/ URL. Each request checks who is asking for the file.
 """
-from pathlib import Path
-
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse, Http404
+from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 
 from applicant.models import Applicant
 from employer.models import JobApplication
 
+from .document_viewer import render_document
+
 KINDS = {"resume", "cover_letter"}
-CONTENT_TYPES = {
-    ".pdf": "application/pdf",
-    ".doc": "application/msword",
-    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-}
+LABELS = {"resume": "Resume", "cover_letter": "Cover letter"}
 
 
-def _file_response(field, label):
-    if not field:
-        raise Http404()
-    try:
-        handle = field.open("rb")
-    except (FileNotFoundError, ValueError):
-        raise Http404()
-    extension = Path(field.name).suffix.lower()
-    content_type = CONTENT_TYPES.get(extension, "application/octet-stream")
-    # PDFs open in the browser; Word files download.
-    response = FileResponse(handle, content_type=content_type,
-                            as_attachment=extension != ".pdf", filename=label + extension)
-    response["Cache-Control"] = "private, no-store"
-    response["X-Content-Type-Options"] = "nosniff"
-    return response
+def _name(applicant):
+    return " ".join(filter(None, [applicant.first_name, applicant.last_name])) or applicant.user.username
 
 
 @login_required(login_url="login-user")
@@ -43,7 +27,8 @@ def my_document(request, kind):
     if kind not in KINDS:
         raise Http404()
     applicant = get_object_or_404(Applicant, user=request.user)
-    return _file_response(getattr(applicant, kind), kind.replace("_", "-"))
+    return render_document(request, getattr(applicant, kind), LABELS[kind], _name(applicant),
+                           reupload_url=reverse("edit-applicant-profile"))
 
 
 @login_required(login_url="login-user")
@@ -67,4 +52,7 @@ def application_document(request, pk, kind):
     if not allowed:
         raise Http404()
     field = getattr(application, kind) or getattr(application.applicant, kind)
-    return _file_response(field, kind.replace("_", "-"))
+    own = application.applicant.user_id == user.pk
+    return render_document(request, field, f"{LABELS[kind]} \u00b7 {_name(application.applicant)}",
+                           f"Applied for {application.job.title}",
+                           reupload_url=reverse("edit-applicant-profile") if own else None)

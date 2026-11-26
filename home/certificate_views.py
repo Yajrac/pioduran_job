@@ -1,12 +1,14 @@
-from pathlib import Path
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse, Http404
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from applicant.models import Applicant, ApplicantCertificate
 from employer.models import JobApplication
 from .certificate_forms import CertificateForm
+
+from .document_viewer import render_document
 
 
 @login_required(login_url="login-user")
@@ -34,16 +36,10 @@ def certificate_file(request, pk):
     ).exists()
     if not owner and not employer:
         raise Http404()
-    try:
-        file = certificate.file.open("rb")
-    except FileNotFoundError:
-        raise Http404()
-    extension = Path(certificate.file.name).suffix.lower()
-    content_type = {".pdf": "application/pdf", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg"}[extension]
-    response = FileResponse(file, content_type=content_type, filename="certificate" + extension)
-    response["Cache-Control"] = "private, no-store"
-    response["X-Content-Type-Options"] = "nosniff"
-    return response
+    applicant = certificate.applicant
+    name = " ".join(filter(None, [applicant.first_name, applicant.last_name]))
+    return render_document(request, certificate.file, certificate.title, name,
+                           reupload_url=reverse("applicant-certificates") if owner else None)
 
 
 @login_required(login_url="login-user")

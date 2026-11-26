@@ -1,0 +1,119 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>{{ title }} | PESO Pio Duran</title>
+<link rel="icon" href="{% static 'images/PESO.png' %}">
+<style>
+  :root { --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#e2e8f0; --brand:#1d4ed8; --canvas:#eef2f7; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); color: var(--ink2); font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .dv-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 14px; padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--line); }
+  .dv-back { flex-shrink: 0; color: var(--ink2); font-size: 14px; font-weight: 600; text-decoration: none; }
+  .dv-back:hover { color: var(--brand); }
+  .dv-title { flex: 1; min-width: 0; }
+  .dv-title strong { display: block; overflow: hidden; color: var(--ink); font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+  .dv-title span { color: var(--muted); font-size: 12.5px; }
+  .dv-tag { flex-shrink: 0; padding: 3px 10px; border: 1px solid #bfdbfe; border-radius: 999px; background: #eff6ff; color: #1e3a8a; font-size: 12px; font-weight: 700; }
+  .dv-tools { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .dv-tools button { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink2); font-size: 18px; line-height: 1; cursor: pointer; }
+  .dv-tools button:hover { border-color: var(--brand); color: var(--brand); }
+  .dv-tools span { min-width: 48px; color: var(--muted); font-size: 13px; text-align: center; }
+  .dv-body { display: grid; justify-items: center; gap: 16px; padding: 24px 16px 48px; }
+  .dv-page { display: block; max-width: 100%; background: #fff; box-shadow: 0 2px 10px rgba(15, 23, 42, .12); }
+  .dv-docx { width: min(860px, 100%); min-height: 80vh; border: 0; background: #fff; box-shadow: 0 2px 10px rgba(15, 23, 42, .12); }
+  .dv-image { max-width: min(1000px, 100%); height: auto; background: #fff; box-shadow: 0 2px 10px rgba(15, 23, 42, .12); }
+  .dv-note { width: min(560px, 100%); padding: 28px; border: 1px solid var(--line); border-radius: 14px; background: #fff; text-align: center; }
+  .dv-note h1 { margin: 0 0 8px; color: var(--ink); font-size: 18px; }
+  .dv-note p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .dv-note a { display: inline-block; margin-top: 14px; padding: 10px 16px; border-radius: 10px; background: var(--brand); color: #fff; font-weight: 700; text-decoration: none; }
+  .dv-status { color: var(--muted); font-size: 14px; }
+  .dv-body canvas, .dv-body img { -webkit-user-drag: none; user-select: none; }
+  @media (max-width: 600px) { .dv-bar { flex-wrap: wrap; padding: 10px 14px; } .dv-tag { display: none; } .dv-body { padding: 14px 8px 32px; } }
+  @media print { body * { display: none !important; } body::after { content: "This document is view only."; display: block; padding: 40px; font: 16px sans-serif; } }
+</style>
+</head>
+<body>
+<header class="dv-bar">
+  <a class="dv-back" href="{{ back_url|default:'javascript:history.back()' }}">&larr; Back</a>
+  <div class="dv-title"><strong>{{ title }}</strong>{% if subtitle %}<span>{{ subtitle }}</span>{% endif %}</div>
+  <span class="dv-tag">View only</span>
+  {% if kind == 'pdf' %}
+  <div class="dv-tools" aria-label="Zoom">
+    <button type="button" id="zoomOut" aria-label="Zoom out">&minus;</button>
+    <span id="zoomLabel">100%</span>
+    <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+  </div>
+  {% endif %}
+</header>
+
+<main class="dv-body" id="viewer" oncontextmenu="return false">
+  {% if kind == 'pdf' %}
+    <p class="dv-status" id="pdfStatus" role="status">Loading document&hellip;</p>
+  {% elif kind == 'docx' %}
+    <iframe class="dv-docx" title="{{ title }}" sandbox
+            srcdoc="<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;padding:48px 56px;font:15px/1.6 Calibri,Arial,sans-serif;color:#111;-webkit-user-select:text}img{max-width:100%}table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:4px 8px}@media(max-width:600px){body{padding:20px}}</style></head><body oncontextmenu='return false'>{{ docx_html }}</body></html>"></iframe>
+  {% elif kind == 'image' %}
+    <img class="dv-image" src="{{ image_src }}" alt="{{ title }}" draggable="false">
+  {% else %}
+    <section class="dv-note" role="alert">
+      <h1>This file can't be previewed</h1>
+      <p>Only PDF and Word (.docx) files can be viewed in the portal.{% if reupload_url %} Please upload your document again as a PDF or .docx file.{% else %} Ask the applicant to upload a PDF or .docx file.{% endif %}</p>
+      {% if reupload_url %}<a href="{{ reupload_url }}">Upload a new file</a>{% endif %}
+    </section>
+  {% endif %}
+</main>
+
+{% if kind == 'pdf' %}
+<script type="text/plain" id="pdfData">{{ data_b64 }}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function () {
+  const status = document.getElementById('pdfStatus');
+  const viewer = document.getElementById('viewer');
+  if (!window.pdfjsLib) { status.textContent = 'The viewer could not load. Check your internet connection and refresh.'; return; }
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const raw = atob(document.getElementById('pdfData').textContent.trim());
+  const bytes = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+  let pdf, zoom = 1, rendering = false;
+  const label = document.getElementById('zoomLabel');
+
+  async function draw() {
+    if (rendering) return;
+    rendering = true;
+    viewer.querySelectorAll('canvas').forEach(c => c.remove());
+    const width = Math.min(viewer.clientWidth - 16, 900);
+    const ratio = window.devicePixelRatio || 1;
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const page = await pdf.getPage(n);
+      const base = page.getViewport({ scale: 1 });
+      const scale = (width / base.width) * zoom;
+      const vp = page.getViewport({ scale: scale * ratio });
+      const canvas = document.createElement('canvas');
+      canvas.className = 'dv-page';
+      canvas.width = vp.width; canvas.height = vp.height;
+      canvas.style.width = (vp.width / ratio) + 'px';
+      canvas.style.height = (vp.height / ratio) + 'px';
+      canvas.setAttribute('aria-label', 'Page ' + n + ' of ' + pdf.numPages);
+      viewer.appendChild(canvas);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    }
+    label.textContent = Math.round(zoom * 100) + '%';
+    rendering = false;
+  }
+  pdfjsLib.getDocument({ data: bytes }).promise.then(function (doc) {
+    pdf = doc;
+    status.remove();
+    return draw();
+  }).catch(function () { status.textContent = 'This PDF could not be opened.'; });
+  document.getElementById('zoomIn').addEventListener('click', () => { zoom = Math.min(zoom + 0.25, 3); draw(); });
+  document.getElementById('zoomOut').addEventListener('click', () => { zoom = Math.max(zoom - 0.25, 0.5); draw(); });
+  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => pdf && draw(), 250); });
+})();
+</script>
+{% endif %}
+</body>
+</html>

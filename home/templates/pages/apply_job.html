@@ -819,7 +819,7 @@
                             id="resume"
                             name="resume"
                             class="file-input"
-                            accept=".pdf,.doc,.docx"
+                            accept=".pdf,.docx"
                         >
 {% if resume_error %}<p style="color:#b83f39;font-size:12px;margin-top:8px" role="alert">{{ resume_error }}</p>{% endif %}
 
@@ -862,7 +862,7 @@
                             id="resume"
                             name="resume"
                             class="file-input"
-                            accept=".pdf,.doc,.docx"
+                            accept=".pdf,.docx"
                             required
                         >
 {% if resume_error %}<p style="color:#b83f39;font-size:12px;margin-top:8px" role="alert">{{ resume_error }}</p>{% endif %}
@@ -884,7 +884,7 @@
 
 
                     <span class="file-limit">
-                        PDF, DOC or DOCX • Maximum 5 MB
+                        PDF or DOCX • Maximum 5 MB
                     </span>
 
                 </div>
@@ -964,7 +964,7 @@
                             id="cover_letter"
                             name="cover_letter"
                             class="file-input"
-                            accept=".pdf,.doc,.docx"
+                            accept=".pdf,.docx"
                         >
 
 
@@ -1006,7 +1006,7 @@
                             id="cover_letter"
                             name="cover_letter"
                             class="file-input"
-                            accept=".pdf,.doc,.docx"
+                            accept=".pdf,.docx"
                         >
 
 
@@ -1026,7 +1026,7 @@
 
 
                     <span class="file-limit">
-                        PDF, DOC or DOCX • Maximum 5 MB
+                        PDF or DOCX • Maximum 5 MB
                     </span>
 
                 </div>
@@ -1255,7 +1255,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const allowedExtensions = [
                 ".pdf",
-                ".doc",
                 ".docx"
             ];
 
@@ -1294,7 +1293,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     alert(
                         fieldName +
-                        " must be a PDF, DOC, or DOCX file."
+                        " must be a PDF or DOCX file."
                     );
 
                     input.focus();

@@ -40,9 +40,11 @@ class CertificateTests(TestCase):
         certificate = self.upload()
         response = self.client.get(reverse('certificate-file', args=[certificate.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'image/png')
+        # View only: an HTML viewer page with the image inside, never the file itself
+        self.assertTrue(response['Content-Type'].startswith('text/html'))
+        self.assertNotIn('Content-Disposition', response)
+        self.assertContains(response, 'data:image/png;base64,')
         self.assertEqual(response['Cache-Control'], 'private, no-store')
-        response.close()
 
     def test_employer_access_requires_application(self):
         certificate = self.upload()

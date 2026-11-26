@@ -1923,7 +1923,6 @@ def apply_job(request, id):
 
             allowed_extensions = [
                 ".pdf",
-                ".doc",
                 ".docx"
             ]
 
@@ -1934,7 +1933,7 @@ def apply_job(request, id):
             if extension not in allowed_extensions:
 
                 return (
-                    f"{field_name} must be a PDF, DOC, or DOCX file."
+                    f"{field_name} must be a PDF or DOCX file."
                 )
 
             return None
@@ -2527,7 +2526,7 @@ def edit_applicant_profile(request):
             errors["resume"] = resume_result["error"]
 
         # Optional file validation
-        allowed_extensions = {".pdf", ".doc", ".docx"}
+        allowed_extensions = {".pdf", ".docx"}
 
         from pathlib import Path
 
@@ -2539,7 +2538,7 @@ def edit_applicant_profile(request):
                 extension = Path(uploaded_file.name).suffix.lower()
 
                 if extension not in allowed_extensions:
-                    errors[field_name] = "Only PDF, DOC, and DOCX files are allowed."
+                    errors[field_name] = "Only PDF and DOCX files are allowed."
                 elif uploaded_file.size > 5 * 1024 * 1024:
                     errors[field_name] = "The file must not exceed 5 MB."
 

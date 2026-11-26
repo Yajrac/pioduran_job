@@ -36,7 +36,7 @@ def inspect_resume(upload):
     if upload.size > 5 * 1024 * 1024:
         return {"error": "The file must not exceed 5 MB.", "warning": ""}
     extension = Path(upload.name).suffix.lower()
-    if extension not in {".pdf", ".docx", ".doc"}:
+    if extension not in {".pdf", ".docx"}:
         return {"error": NOT_RESUME, "warning": ""}
     warning = "The file could not be read clearly. Its resume content could not be verified."
     try:
