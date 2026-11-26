@@ -17,6 +17,9 @@
   .dv-title strong { display: block; overflow: hidden; color: var(--ink); font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
   .dv-title span { color: var(--muted); font-size: 12.5px; }
   .dv-tag { flex-shrink: 0; padding: 3px 10px; border: 1px solid #bfdbfe; border-radius: 999px; background: #eff6ff; color: #1e3a8a; font-size: 12px; font-weight: 700; }
+  .dv-change { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; height: 34px; padding: 0 12px; border-radius: 8px; background: var(--brand); color: #fff; font-size: 13.5px; font-weight: 700; text-decoration: none; }
+  .dv-change:hover { background: #1e40af; }
+  .dv-change svg { width: 16px; height: 16px; }
   .dv-tools { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .dv-tools button { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink2); font-size: 18px; line-height: 1; cursor: pointer; }
   .dv-tools button:hover { border-color: var(--brand); color: var(--brand); }
@@ -37,9 +40,15 @@
 </head>
 <body>
 <header class="dv-bar">
-  <a class="dv-back" href="{{ back_url|default:'javascript:history.back()' }}">&larr; Back</a>
+  <a class="dv-back" id="dvBack" href="{{ back_url|default:back_fallback }}" data-fallback="{{ back_fallback }}">&larr; Back</a>
   <div class="dv-title"><strong>{{ title }}</strong>{% if subtitle %}<span>{{ subtitle }}</span>{% endif %}</div>
   <span class="dv-tag">View only</span>
+  {% if reupload_url and kind != 'unsupported' %}
+  <a class="dv-change" href="{{ reupload_url }}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 20h16"/></svg>
+    Change file
+  </a>
+  {% endif %}
   {% if kind == 'pdf' %}
   <div class="dv-tools" aria-label="Zoom">
     <button type="button" id="zoomOut" aria-label="Zoom out">&minus;</button>
@@ -66,6 +75,22 @@
   {% endif %}
 </main>
 
+<script>
+// Back: close the tab when the viewer was opened in a new tab (so the page and
+// any half-filled form behind it are still there); otherwise go back, or to a
+// sensible page for this account.
+(function () {
+  const back = document.getElementById('dvBack');
+  back.addEventListener('click', function (event) {
+    event.preventDefault();
+    const fallback = back.dataset.fallback || '/';
+    const fromHere = document.referrer && new URL(document.referrer).origin === location.origin;
+    if (history.length > 1 && fromHere) { history.back(); return; }
+    if (history.length <= 1) { window.close(); }
+    setTimeout(function () { location.href = fallback; }, 150);   // if the tab could not be closed
+  });
+})();
+</script>
 {% if kind == 'pdf' %}
 <script type="text/plain" id="pdfData">{{ data_b64 }}</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>

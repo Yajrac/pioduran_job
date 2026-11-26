@@ -28,7 +28,7 @@ def my_document(request, kind):
         raise Http404()
     applicant = get_object_or_404(Applicant, user=request.user)
     return render_document(request, getattr(applicant, kind), LABELS[kind], _name(applicant),
-                           reupload_url=reverse("edit-applicant-profile"))
+                           reupload_url=reverse("edit-applicant-profile") + "#" + kind)
 
 
 @login_required(login_url="login-user")
@@ -55,4 +55,4 @@ def application_document(request, pk, kind):
     own = application.applicant.user_id == user.pk
     return render_document(request, field, f"{LABELS[kind]} \u00b7 {_name(application.applicant)}",
                            f"Applied for {application.job.title}",
-                           reupload_url=reverse("edit-applicant-profile") if own else None)
+                           reupload_url=reverse("edit-applicant-profile") + "#" + kind if own else None)

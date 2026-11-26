@@ -39,7 +39,8 @@ def certificate_file(request, pk):
     applicant = certificate.applicant
     name = " ".join(filter(None, [applicant.first_name, applicant.last_name]))
     return render_document(request, certificate.file, certificate.title, name,
-                           reupload_url=reverse("applicant-certificates") if owner else None)
+                           reupload_url=reverse("applicant-certificates") if owner else None,
+                           back_fallback=reverse("applicant-certificates") if owner else None)
 
 
 @login_required(login_url="login-user")

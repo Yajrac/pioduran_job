@@ -33,7 +33,16 @@ def _docx_html(data):
     return html
 
 
-def render_document(request, field, title, subtitle="", reupload_url=None):
+def _default_back(user):
+    from django.urls import reverse
+    if user.is_superuser or getattr(user, "role", "") == "admin":
+        return reverse("applicant-list")
+    if getattr(user, "role", "") == "employer":
+        return reverse("applicants")
+    return reverse("applicant-profile")
+
+
+def render_document(request, field, title, subtitle="", reupload_url=None, back_fallback=None):
     """Render the viewer page for a FileField, or 404 when there is no file."""
     if not field:
         raise Http404()
@@ -45,7 +54,8 @@ def render_document(request, field, title, subtitle="", reupload_url=None):
     if len(data) > MAX_BYTES:
         raise Http404()
     extension = Path(field.name).suffix.lower()
-    context = {"title": title, "subtitle": subtitle, "kind": "unsupported", "reupload_url": reupload_url}
+    context = {"title": title, "subtitle": subtitle, "kind": "unsupported", "reupload_url": reupload_url,
+               "back_fallback": back_fallback or _default_back(request.user)}
     if extension == ".pdf":
         context.update(kind="pdf", data_b64=base64.b64encode(data).decode("ascii"))
     elif extension == ".docx":

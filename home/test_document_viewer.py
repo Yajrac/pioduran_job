@@ -66,3 +66,23 @@ class DocumentViewerTests(TestCase):
         upload = io.BytesIO(b'x' * 200)
         upload.name, upload.size = 'cv.doc', 200
         self.assertTrue(inspect_resume(upload)['error'])
+
+    def test_owner_sees_change_file_to_the_right_field(self):
+        self.applicant.resume.save('cv.pdf', ContentFile(b'%PDF-1.4 sample'))
+        response = self.view()
+        self.assertContains(response, 'Change file')
+        self.assertContains(response, reverse('edit-applicant-profile') + '#resume')
+
+    def test_employer_does_not_see_change_file(self):
+        from employer.models import Employer, JobApplication, JobPost
+        from datetime import date
+        self.applicant.resume.save('cv.pdf', ContentFile(b'%PDF-1.4 sample'))
+        owner = User.objects.create_user('store', 's@example.com', 'x', role='employer')
+        employer = Employer.objects.create(employer=owner, company_name='Store', business_permit_no='BP-1',
+                                           contact_no='09170000001', description='d')
+        job = JobPost.objects.create(employer=employer, title='Clerk', deadline=date(2030, 1, 1), status='approved')
+        application = JobApplication.objects.create(job=job, applicant=self.applicant)
+        self.client.force_login(owner)
+        response = self.client.get(reverse('application-document', args=[application.pk, 'resume']))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'Change file')
